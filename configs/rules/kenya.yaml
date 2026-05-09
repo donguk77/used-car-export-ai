@@ -1,0 +1,47 @@
+# 케냐 — RHD + 8년 + JEVIC/QISJ. 룰엔진 검증의 풀세트
+# 출처: docs/used_car_export_top20_countries.md §10, used_car_export_research_v2.md §5.1
+
+country:
+  code: KE
+  name_en: Kenya
+  name_ko: 케냐
+  name_local: Kenya
+  region: africa
+  primary_language: en
+  business_language: en
+  steering: RHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Mombasa
+  pre_registration_system: KRA_iCMS
+  consular_legalization: false
+  notes: |
+    KEBS 2025.11.13 발표: 2026.1.1부터 2019년 1월 1일 이후 등록차만 허용.
+    관세 25% + 소비세 20% + VAT 16% (총 60%+).
+
+rules:
+  - body_type_filter: null  # 전 차종 공통
+    age_limit_years: 8
+    age_basis: first_registration
+    age_effective_from: 2026-01-01
+    registration_after_date: 2019-01-01
+    steering_required: RHD_only
+    psi_required:
+      - JEVIC
+      - QISJ
+    doc_translation_lang: null  # 영문 OK
+    consular_required: false
+    pre_registration: KRA_iCMS
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - jevic_certificate
+      - qisj_certificate
+    source_url: https://www.kebs.org
+    effective_from: 2026-01-01
+    last_verified_at: 2026-05-09

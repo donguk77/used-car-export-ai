@@ -1,0 +1,52 @@
+# 시리아 — 2025년 신규 폭발 시장 (3월 2만대 / 4월 1.6만대 직수출)
+# 정세 격변 중 — 매뉴얼 검토 모드, OFAC 사전 조회 필수
+# 출처: docs/used_car_export_top20_countries.md §3, used_car_export_research_v2.md §1.3
+
+country:
+  code: SY
+  name_en: Syria
+  name_ko: 시리아
+  name_local: سوريا
+  region: middle_east
+  primary_language: ar
+  business_language: ar
+  steering: LHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: true  # OFAC 부분 제재 잔존
+  is_blocked: false  # 자동 차단은 안 함, 매뉴얼 검토
+  main_ports:
+    - Latakia
+    - Tartus
+  pre_registration_system: null  # 정세 따라 변동
+  consular_legalization: false  # 변동
+  notes: |
+    2024.12 아사드 정권 붕괴 후 과도정부. 통관 절차 매월 변동.
+    제재 부분 완화/해제 진행 중 — OFAC SDN 자동 조회 필수.
+    결제는 UAE·요르단 거점 경유가 일반적.
+    Notify=시리아 / Consignee=요르단·UAE 패턴 인식 필요.
+
+rules:
+  - body_type_filter: null
+    age_limit_years: null  # 사실상 모든 연식 수용 (변동 가능)
+    steering_required: LHD_only
+    doc_translation_lang: ar  # 표준 아랍어 (MSA)
+    consular_required: false
+    pre_registration: null
+    manual_review: true
+    blocked_conditions:
+      - field: buyer.sanctions_status
+        op: eq
+        value: blocked
+        reason: "OFAC SDN 매치 — 자동 차단"
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - ofac_clearance
+      - arabic_translation
+    last_verified_at: 2026-05-09
+    notes: |
+      재건 수요라 SUV·1톤 트럭·중형 세단 강세.
+      시리아 방언(Levantine) 채팅 vs 격식 MSA 구분 필요.

@@ -1,0 +1,51 @@
+[project]
+name = "used-car-export-ai-backend"
+version = "0.1.0"
+description = "Backend for the Korean used-car export AI agent (capstone PoC)"
+requires-python = ">=3.11"
+authors = [{ name = "조우진", email = "dongsoon010@hanyang.ac.kr" }]
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.5",
+    "sqlalchemy>=2.0.35",
+    "psycopg[binary]>=3.2",
+    "alembic>=1.13",
+    "anthropic>=0.39",
+    "google-genai>=0.3",
+    "httpx>=0.27",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "playwright>=1.50",
+    "pypdf>=6.0",
+    "python-multipart>=0.0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.7",
+    "mypy>=1.13",
+    "types-pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N"]
+ignore = ["B008"]  # FastAPI Depends() in defaults
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

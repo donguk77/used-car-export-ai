@@ -1,0 +1,55 @@
+# 키르기스스탄 — 한국 수출액 1위 (14.9억$). 러시아 우회 핵심 차단 대상
+# 2025.10 부산경찰청 적발 사례 — 형사 처벌 실제 발생
+# 출처: docs/used_car_export_top20_countries.md §2, used_car_export_research_v2.md §1.2/§4.3
+
+country:
+  code: KG
+  name_en: Kyrgyzstan
+  name_ko: 키르기스스탄
+  name_local: Кыргызстан
+  region: central_asia
+  primary_language: ky
+  business_language: ru
+  steering: LHD
+  is_high_risk: true
+  is_russia_proxy_risk: true
+  is_sanctioned: false
+  is_blocked: false
+  main_ports: []  # 육로 / Bandar Abbas 경유
+  pre_registration_system: EAEU
+  consular_legalization: false
+  notes: |
+    EAEU 통합 통관 (러시아·카자흐스탄·아르메니아·벨라루스).
+    2025.10 부산경찰청 우회수출 적발 (40대 구속).
+    수출자 본인이 형사 처벌 대상이 됨 — 컴플라이언스 자동 차단 필수.
+
+rules:
+  - body_type_filter: null
+    age_limit_years: null  # 자체 연식 제한 사실상 없음
+    steering_required: LHD_only
+    doc_translation_lang: ru
+    consular_required: false
+    pre_registration: EAEU
+    blocked_conditions:
+      - field: engine_cc
+        op: gt
+        value: 2000
+        unless: has_situational_license
+        reason: "내연 2,000cc 초과 — 산업통상자원부 상황허가 필요 (전략물자고시 2024.2.24)"
+      - field: fuel_type
+        op: in
+        value: [HEV, PHEV, BEV, EV, Hybrid]
+        unless: has_situational_license
+        reason: "하이브리드/EV 는 배기량 무관 전체 상황허가 대상"
+      - field: list_price_usd
+        op: gt
+        value: 50000
+        reason: "USD 50,000 초과 승용차는 수출금지 품목 (러시아 우회 차단)"
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - end_user_certificate
+      - situational_license  # 위 조건 충족 시
+    last_verified_at: 2026-05-09

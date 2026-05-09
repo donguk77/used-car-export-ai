@@ -1,0 +1,50 @@
+{% extends "_base.html" %}
+{% block title %}Packing List {{ d.invoice_no }}{% endblock %}
+{% block doc_title %}PACKING LIST{% endblock %}
+{% block doc_meta %}
+  Reference: <strong>{{ d.invoice_no }}</strong> &middot; Date: {{ d.invoice_date }}
+{% endblock %}
+
+{% block content %}
+  {% include "_party_blocks.html" %}
+  {% include "_shipping_kv.html" %}
+
+  <table class="goods">
+    <thead>
+      <tr>
+        <th style="width:5%">No.</th>
+        <th>Description</th>
+        <th style="width:25%">VIN (Chassis No.)</th>
+        <th style="width:6%" class="right">Qty</th>
+        <th style="width:13%" class="right">Net Weight (kg)</th>
+        <th style="width:13%" class="right">Gross Weight (kg)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>
+          <strong>{{ d.make }} {{ d.model }} {{ d.year }}</strong><br>
+          {{ d.body_type|title }}, {{ d.engine_cc }}cc {{ d.fuel_type }}<br>
+          Color: {{ d.color }}
+        </td>
+        <td><code>{{ d.vin }}</code></td>
+        <td class="right">{{ d.quantity }}</td>
+        <td class="right">{{ "{:,}".format(d.net_weight_kg) }}</td>
+        <td class="right">{{ "{:,}".format(d.gross_weight_kg) }}</td>
+      </tr>
+      <tr class="total-row">
+        <td></td><td>TOTAL</td><td></td>
+        <td class="right">{{ d.quantity }}</td>
+        <td class="right">{{ "{:,}".format(d.net_weight_kg * d.quantity) }}</td>
+        <td class="right">{{ "{:,}".format(d.gross_weight_kg * d.quantity) }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Marks &amp; Numbers</div>
+  <p>VIN <code>{{ d.vin }}</code> stenciled on driver-side door post. No additional shipping marks.</p>
+  <p class="note">No additional packaging — vehicle shipped as-is on
+    {% if d.shipping_method.lower() == 'container' %}flat-rack container.{% else %}RoRo deck.{% endif %}
+  </p>
+{% endblock %}

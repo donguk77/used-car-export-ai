@@ -1,0 +1,63 @@
+{% extends "_base.html" %}
+{% block title %}C/O Application {{ d.invoice_no }}{% endblock %}
+{% block doc_title %}CERTIFICATE OF ORIGIN — APPLICATION{% endblock %}
+{% block doc_meta %}
+  대한상공회의소 무역인증서비스 (https://cert.korcham.net) 제출용
+{% endblock %}
+
+{% block content %}
+  <table class="kv">
+    <tr><th>Application Type</th><td>{{ d.fta_used or 'General (Non-FTA)' }}</td></tr>
+    <tr><th>Reference Invoice</th><td>{{ d.invoice_no }}</td></tr>
+    <tr><th>Application Date</th><td>{{ d.invoice_date }}</td></tr>
+  </table>
+
+  {% include "_party_blocks.html" %}
+
+  <div class="section-title">Producer (if different from Exporter)</div>
+  <table class="kv">
+    <tr><th>Producer</th><td>{{ d.producer or 'Same as Exporter (Shipper above)' }}</td></tr>
+  </table>
+
+  <div class="section-title">Transport Details</div>
+  <table class="kv">
+    <tr><th>Country of Origin</th><td>Republic of Korea</td></tr>
+    <tr><th>Country of Destination</th><td>{{ d.consignee_country }}</td></tr>
+    <tr><th>Means of Transport</th><td>By sea — {{ d.vessel_name or 'TBA' }}</td></tr>
+    <tr><th>Port of Loading</th><td>{{ d.port_of_loading }}</td></tr>
+    <tr><th>Port of Discharge</th><td>{{ d.port_of_discharge or 'TBA' }}</td></tr>
+  </table>
+
+  <table class="goods">
+    <thead>
+      <tr>
+        <th style="width:5%">No.</th>
+        <th style="width:22%">Marks &amp; Numbers</th>
+        <th>Description of Goods</th>
+        <th style="width:11%">HS Code</th>
+        <th style="width:13%">Origin Criterion</th>
+        <th style="width:7%" class="right">Qty</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><code>{{ d.vin }}</code></td>
+        <td>
+          <strong>{{ d.make }} {{ d.model }} {{ d.year }}</strong><br>
+          {{ d.body_type|title }}, {{ d.engine_cc }}cc {{ d.fuel_type }}<br>
+          Used motor vehicle of Korean origin
+        </td>
+        <td>{{ d.hs_code }}</td>
+        <td>{{ d.origin_criterion or 'WO (Wholly Obtained)' }}</td>
+        <td class="right">{{ d.quantity }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="declaration">
+    The undersigned hereby declares that the above-mentioned goods are of Republic of Korea
+    origin in accordance with the relevant rules of origin, and that the information
+    provided herein is true and correct to the best of our knowledge.
+  </div>
+{% endblock %}

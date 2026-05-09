@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+KR:wght@400;700&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+{% include "_styles.css" %}
+  </style>
+</head>
+<body>
+  <header class="doc-header">
+    <h1>{% block doc_title %}{% endblock %}</h1>
+    <div class="doc-meta">{% block doc_meta %}{% endblock %}</div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block signature %}
+  <footer class="signature-block">
+    <div class="signature-line">Authorized Signature &amp; Stamp</div>
+  </footer>
+  {% endblock %}
+</body>
+</html>

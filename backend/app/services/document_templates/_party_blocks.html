@@ -1,0 +1,28 @@
+{# 재사용 — 모든 문서 상단의 Shipper / Consignee / (옵션) Notify Party 블록 #}
+
+<div class="party-row">
+  <div class="party-block">
+    <div class="party-label">Shipper (Exporter)</div>
+    <div class="party-body">{{ d.shipper_name }}
+{{ d.shipper_address }}
+Tel: {{ d.shipper_phone }}
+Biz Reg.: {{ d.shipper_business_no }}</div>
+  </div>
+  <div class="party-block">
+    <div class="party-label">Consignee</div>
+    <div class="party-body">{{ d.consignee_name }}
+Attn: {{ d.consignee_contact }}
+{{ d.consignee_address }}
+Country: {{ d.consignee_country }}
+Tax ID: {{ d.consignee_tax_id }}</div>
+  </div>
+</div>
+
+{% if d.notify_party %}
+<div class="party-row">
+  <div class="party-block" style="flex:1">
+    <div class="party-label">Notify Party</div>
+    <div class="party-body">{{ d.notify_party }}</div>
+  </div>
+</div>
+{% endif %}

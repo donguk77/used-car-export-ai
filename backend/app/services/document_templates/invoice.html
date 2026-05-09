@@ -1,0 +1,64 @@
+{% extends "_base.html" %}
+{% block title %}Commercial Invoice {{ d.invoice_no }}{% endblock %}
+{% block doc_title %}COMMERCIAL INVOICE{% endblock %}
+{% block doc_meta %}
+  Invoice No. <strong>{{ d.invoice_no }}</strong> &middot; Invoice Date: {{ d.invoice_date }}
+{% endblock %}
+
+{% block content %}
+  {% include "_party_blocks.html" %}
+  {% include "_shipping_kv.html" %}
+
+  <table class="goods">
+    <thead>
+      <tr>
+        <th style="width:5%">No.</th>
+        <th>Description of Goods</th>
+        <th style="width:11%">HS Code</th>
+        <th style="width:6%" class="right">Qty</th>
+        <th style="width:14%" class="right">Unit Price ({{ d.currency }})</th>
+        <th style="width:14%" class="right">Amount ({{ d.currency }})</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>
+          <strong>USED MOTOR VEHICLE — {{ d.make }} {{ d.model }} {{ d.year }}</strong><br>
+          {{ d.body_type|title }}, {{ d.engine_cc }}cc {{ d.fuel_type }}<br>
+          Color: {{ d.color }}, Mileage: {{ "{:,}".format(d.mileage_km) }} km<br>
+          VIN: <code>{{ d.vin }}</code>
+        </td>
+        <td>{{ d.hs_code }}</td>
+        <td class="right">{{ d.quantity }}</td>
+        <td class="right">{{ "{:,.2f}".format(d.unit_price_usd) }}</td>
+        <td class="right">{{ "{:,.2f}".format(d.total_usd) }}</td>
+      </tr>
+      <tr class="total-row">
+        <td></td><td>TOTAL</td><td></td>
+        <td class="right">{{ d.quantity }}</td>
+        <td></td>
+        <td class="right">{{ "{:,.2f}".format(d.total_usd) }} {{ d.currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Country of Origin:</strong> Republic of Korea</p>
+  {% if d.fta_used %}
+  <p><strong>FTA applied:</strong> {{ d.fta_used }}</p>
+  {% endif %}
+
+  {% if d.bank_name %}
+  <div class="section-title">Bank Information (for T/T payment)</div>
+  <table class="kv">
+    <tr><th>Bank Name</th><td>{{ d.bank_name }}</td></tr>
+    <tr><th>SWIFT</th><td>{{ d.bank_swift }}</td></tr>
+    <tr><th>Account</th><td>{{ d.bank_account }}</td></tr>
+  </table>
+  {% endif %}
+
+  <div class="declaration">
+    We hereby certify that the above information is true and correct. The goods described
+    are of Republic of Korea origin and comply with the applicable export regulations.
+  </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{# 재사용 — 선적 정보 K/V 테이블 #}
+<table class="kv">
+  <tr><th>Vessel / Voyage</th><td>{{ d.vessel_name or 'TBA' }} / {{ d.voyage_no or 'TBA' }}</td></tr>
+  <tr><th>Port of Loading</th><td>{{ d.port_of_loading }}</td></tr>
+  <tr><th>Port of Discharge</th><td>{{ d.port_of_discharge or 'TBA' }}</td></tr>
+  <tr><th>Final Destination</th><td>{{ d.final_destination or d.consignee_country }}</td></tr>
+  <tr><th>Incoterms</th><td>{{ d.incoterm }}</td></tr>
+  <tr><th>Payment Terms</th><td>{{ d.payment_terms }}</td></tr>
+  <tr><th>Shipping Method</th><td>{{ d.shipping_method }}</td></tr>
+  {% if d.shipping_method.lower() == 'container' %}
+  <tr><th>Container No. / Seal</th><td>{{ d.container_no or 'TBA' }} / {{ d.seal_no or 'TBA' }}</td></tr>
+  {% endif %}
+</table>

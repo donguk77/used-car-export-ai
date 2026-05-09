@@ -1,0 +1,65 @@
+# 도미니카공화국 — PoC 1순위 (정세 안정 + LHD + 영사관 인증 시연)
+# 출처: docs/used_car_export_top20_countries.md §8, used_car_export_research_v2.md §5.4
+
+country:
+  code: DO
+  name_en: Dominican Republic
+  name_ko: 도미니카공화국
+  name_local: República Dominicana
+  region: latin_america
+  primary_language: es
+  business_language: es
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Rio Haina
+    - Caucedo
+  pre_registration_system: DGA
+  consular_legalization: true
+  notes: |
+    한-도미니카 FTA 없음. CAFTA-DR 무관. 일반 관세 적용.
+    1인 1대 제한 (개인 이주자 케이스).
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 10
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    max_cylinders: 6
+    psi_required: []
+    doc_translation_lang: es
+    consular_required: true
+    pre_registration: DGA
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - consular_legalization
+    source_url: https://www.icontainers.com/help/vehicle-shipping-restrictions-by-country
+    last_verified_at: 2026-05-09
+
+  - body_type_filter: bus
+    age_limit_years: 7
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    max_cylinders: 6
+    psi_required: []
+    doc_translation_lang: es
+    consular_required: true
+    pre_registration: DGA
+    last_verified_at: 2026-05-09
+
+  - body_type_filter: truck
+    age_limit_years: 10
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    max_cylinders: 6
+    psi_required: []
+    doc_translation_lang: es
+    consular_required: true
+    pre_registration: DGA
+    last_verified_at: 2026-05-09

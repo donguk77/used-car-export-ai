@@ -1,0 +1,50 @@
+# 리비아 — 한국 직수출 양 1위 (12.1만대). ACI + 아랍어 + 영사관까지 가장 복잡
+# 출처: docs/used_car_export_top20_countries.md §1, used_car_export_research_v2.md §5.1
+
+country:
+  code: LY
+  name_en: Libya
+  name_ko: 리비아
+  name_local: ليبيا
+  region: africa
+  primary_language: ar
+  business_language: ar
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Misrata
+    - Tripoli
+    - Benghazi
+  pre_registration_system: ACI
+  consular_legalization: true
+  notes: |
+    동·서 정부 분열로 항구별 적용 규칙 상이.
+    2024 ACI 사전등록 의무화. 관세 산정 컨테이너 → 대당(per unit).
+    이스라엘 원산 부품 일체 금지. CBL 결제 채널 확인.
+
+rules:
+  - body_type_filter: null
+    age_limit_years: 10
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    fuel_blocked: []  # EV는 면세지만 허용
+    psi_required: []
+    doc_translation_lang: ar
+    consular_required: true
+    pre_registration: ACI
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - aci_pre_registration
+      - consular_legalization
+      - arabic_translation
+    source_url: https://customs.gov.ly
+    last_verified_at: 2026-05-09
+    notes: |
+      EV 는 Euro 4+ 충족 시 VAT/관세 면제.
+      럭셔리카 수입 금지 (HS 분류 사전 차단 필요).

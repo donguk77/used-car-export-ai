@@ -1,0 +1,39 @@
+{% extends "_base.html" %}
+{% block title %}Shipping Instruction {{ d.invoice_no }}{% endblock %}
+{% block doc_title %}SHIPPING INSTRUCTION{% endblock %}
+{% block doc_meta %}
+  To: Carrier &middot; Reference: <strong>{{ d.invoice_no }}</strong>
+{% endblock %}
+
+{% block content %}
+  {% include "_party_blocks.html" %}
+  {% include "_shipping_kv.html" %}
+
+  <div class="section-title">Description of Goods (B/L wording)</div>
+  <table class="kv">
+    <tr><td style="background:#fff;font-family:'Courier New',monospace;font-size:9pt;line-height:1.5;white-space:pre">1 (ONE) UNIT OF USED MOTOR VEHICLE
+{{ d.make.upper() }} {{ d.model.upper() }} {{ d.year }}
+VIN: {{ d.vin }}
+HS CODE: {{ d.hs_code }}
+COUNTRY OF ORIGIN: REPUBLIC OF KOREA</td></tr>
+  </table>
+
+  <div class="section-title">Carrier Instructions</div>
+  <table class="kv">
+    <tr>
+      <th>Freight Term</th>
+      <td>{% if d.incoterm in ('CIF','CFR','CIP','CPT') %}Prepaid{% else %}Collect{% endif %}</td>
+    </tr>
+    <tr><th>B/L No. (to be assigned by carrier)</th><td>—</td></tr>
+    <tr><th>B/L Type</th><td>Original B/L (3 originals + 3 non-negotiable copies)</td></tr>
+    <tr><th>Consignee on B/L</th><td>{{ d.consignee_name }} (use "TO ORDER" if L/C payment)</td></tr>
+  </table>
+
+  <div class="section-title">Marks &amp; Numbers</div>
+  <p>VIN <code>{{ d.vin }}</code> stenciled on driver-side door post. No additional shipping marks.</p>
+
+  <p class="note">
+    Please send the draft B/L for our review before issuing originals.
+    Container interior &amp; lashing photos required prior to gate-in.
+  </p>
+{% endblock %}

@@ -1,0 +1,304 @@
+# 공개 샘플·1차 자료 레지스트리
+#
+# scripts/fetch_public_samples.py 가 이 파일을 읽어 docs/samples/<category>/ 로 다운로드한다.
+# type: pdf  → 직접 다운로드
+# type: ref  → 다운로드 안 함, REGISTRY.md 에 링크만 기록 (로그인·JS 렌더링 페이지 등)
+#
+# verified_on 은 URL 이 실제 살아있음을 마지막으로 확인한 날짜.
+# 출처는 1·2차 권위 자료로 한정 (정부·국제기구·선사 공식 문서). 블로그·요약글 X.
+#
+# 카테고리:
+#   - 도착국 규제: kenya, libya, dominican_republic, uae, nigeria, jordan, kotra_country
+#   - 한국 표준:   korea_customs, fta_co
+#   - 국제 표준:   incoterms, shipping_lines (선사 B/L·SI 양식), psi (선적전검사)
+#   - 참조:       references_misc
+
+samples:
+
+  # ─────────────────────── 케냐 (KEBS) — 8년 룰 1차 출처
+  - category: kenya
+    type: pdf
+    filename: KEBS_2025-07_validation_used_motor_vehicles.pdf
+    url: https://kebs.org/wp-content/uploads/2025/07/PUBLIC-NOTICE-VALIDATION-OF-USED-MOTOR-VEHICLES.pdf
+    source_org: Kenya Bureau of Standards
+    title: PUBLIC NOTICE — Validation of used motor vehicle importation documents
+    issued: 2025-07-05
+    used_for: configs/rules/kenya.yaml
+    verified_on: 2026-05-09
+
+  - category: kenya
+    type: pdf
+    filename: KEBS_2023-12_notice_to_importers.pdf
+    url: https://www.kebs.org/wp-content/uploads/2023/12/NOTICE-TO-IMPORTERS-OF-USED-SECONDHAND-MOTOR-VEHICLES.pdf
+    source_org: Kenya Bureau of Standards
+    title: NOTICE TO IMPORTERS OF USED/SECONDHAND MOTOR VEHICLES
+    issued: 2023-12-01
+    used_for: configs/rules/kenya.yaml
+    verified_on: 2026-05-09
+
+  # ─────────────────────── 리비아 — ACI 공식 매뉴얼 3종
+  - category: libya
+    type: pdf
+    filename: Libya_ACI_2024-07_creation_manual_EN.pdf
+    url: https://customs.gov.ly/wp-content/uploads/2024/07/ACI-Creation-English-Version.pdf
+    source_org: Libya Customs Authority
+    title: Advance Cargo Information (ACI) — Creation Manual (English)
+    issued: 2024-07
+    used_for: configs/rules/libya.yaml
+    verified_on: 2026-05-09
+
+  - category: libya
+    type: pdf
+    filename: Libya_ACI_2024-07_importer_registration_EN.pdf
+    url: https://customs.gov.ly/wp-content/uploads/2024/07/ACI-Registration-for-Importers-English-Version.pdf
+    source_org: Libya Customs Authority
+    title: ACI — Registration for Importers (English)
+    issued: 2024-07
+    used_for: configs/rules/libya.yaml
+    verified_on: 2026-05-09
+
+  - category: libya
+    type: pdf
+    filename: Libya_ACI_2024-07_exporter_registration_EN.pdf
+    url: https://customs.gov.ly/wp-content/uploads/2024/07/ACI-Registration-for-Exporters-Exporter-Representatives-English-Version.pdf
+    source_org: Libya Customs Authority
+    title: ACI — Registration for Exporters / Exporter Representatives (English)
+    issued: 2024-07
+    used_for: configs/rules/libya.yaml
+    verified_on: 2026-05-09
+
+  # ─────────────────────── 한국 관세청 / KITA — 수출신고필증 ★
+  - category: korea_customs
+    type: pdf
+    filename: KITA_export_declaration_form_loaded_pre.pdf
+    url: https://okfta.kita.net/upload/downAtch?atchGbn=ONLINE&atchId=12807531&atchOrdr=0
+    source_org: 한국무역협회 KITA / OK FTA
+    title: 수출신고필증 양식 (적재전, 갑지) — 한국 표준 양식
+    used_for: backend/app/services/document_writer.py — 5종 서류 중 수출신고필증 검증 1차 출처
+    verified_on: 2026-05-09
+    notes: 우리 시스템이 자동 생성하는 수출신고 데이터 패키지 검증의 핵심 기준.
+
+  - category: korea_customs
+    type: ref
+    url: https://www.customs.go.kr/common/nttFileDownload.do?fileKey=6a00ebb588d3f7e7b779add42c1e4181
+    source_org: 관세청 (Korea Customs Service)
+    title: 전자상거래 수출신고 안내
+    notes: |
+      자동 다운로드 실패 (서버가 referer 검사). 브라우저로 직접 클릭해서
+      docs/samples/korea_customs/ 에 저장하면 됨.
+    verified_on: 2026-05-09
+
+  - category: korea_customs
+    type: pdf
+    filename: UNIPASS_FAQ_2023-11-17.pdf
+    url: https://www.customs.go.kr/download/UNIPASS_FAQ_231117.pdf
+    source_org: 관세청
+    title: 유니패스 사용자 FAQ
+    issued: 2023-11-17
+    used_for: 수출신고 절차 검증
+    verified_on: 2026-05-09
+
+  - category: korea_customs
+    type: pdf
+    filename: UNIPASS_FAQ_2021-05-24.pdf
+    url: https://www.customs.go.kr/download/UNIPASS_FAQ_210524.pdf
+    source_org: 관세청
+    title: 유니패스 FAQ (2021)
+    issued: 2021-05-24
+    verified_on: 2026-05-09
+
+  - category: korea_customs
+    type: pdf
+    filename: KCS_QnA.pdf
+    url: http://www.customs.go.kr/download/_down/KCS_QnA.pdf
+    source_org: 관세청
+    title: 관세청 상담 Q&A
+    verified_on: 2026-05-09
+
+  # ─────────────────────── FTA C/O 표준 양식
+  - category: fta_co
+    type: pdf
+    filename: AKFTA_certificate_of_origin_form.pdf
+    url: https://akfta.asean.org/uploads/docs/akfta-certificate-of-origin-form.pdf
+    source_org: ASEAN Secretariat (Korea-ASEAN FTA)
+    title: AK FTA Certificate of Origin Form
+    used_for: backend/app/services/document_templates/co_application.html
+    verified_on: 2026-05-09
+
+  - category: fta_co
+    type: pdf
+    filename: Korea_FTA_Annex5B_CO_format.pdf
+    url: https://fta.motir.go.kr/webmodule/_PSD_FTA/sg/1/eng/CHAPTER5_Annex5B.pdf
+    source_org: KOTRA / fta.motir.go.kr
+    title: ANNEX 5B — Format of the Certificate of Origin issued by Korea
+    used_for: C/O 양식 표준
+    verified_on: 2026-05-09
+
+  # ─────────────────────── Incoterms 2020 (ICC 국제 표준)
+  - category: incoterms
+    type: pdf
+    filename: ICC_Incoterms_2020_full.pdf
+    url: https://iscosafricashipping.org/wp-content/uploads/2020/02/ICC-INCOTERMS-2020.pdf
+    source_org: ICC International Chamber of Commerce (mirror)
+    title: ICC Incoterms 2020 — full rules
+    issued: 2020
+    used_for: configs/rules/* (Incoterm 처리), backend/app/services/mail_writer.py
+    verified_on: 2026-05-09
+
+  - category: incoterms
+    type: ref
+    url: https://icc.se/wp-content/uploads/2022/05/icc-incoterms-2020-checklist-int.pdf
+    source_org: ICC Sweden
+    title: Incoterms 2020 Checklist & Flowcharts
+    notes: 404 (URL 만료). icc.se 새 위치 확인 필요. ICC_Incoterms_2020_full.pdf 가 상위 자료라 우선순위 낮음.
+    verified_on: 2026-05-09
+
+  # ─────────────────────── 선사 B/L · Shipping Instruction 표준
+  - category: shipping_lines
+    type: pdf
+    filename: Maersk_BL_example.pdf
+    url: https://africactn.com/staging/wp-content/uploads/2023/02/Example-Maersk-BIll-of-Lading.pdf
+    source_org: Maersk (via Africa CTN reference site)
+    title: Example Maersk Bill of Lading
+    used_for: backend/app/services/document_templates/shipping_instruction.html — B/L wording 검증
+    verified_on: 2026-05-09
+
+  - category: shipping_lines
+    type: pdf
+    filename: CMA_CGM_paperless_BL.pdf
+    url: https://www.cma-cgm.com/assets/public/pdf/Paperless%20BL.pdf
+    source_org: CMA CGM
+    title: CMA CGM Paperless B/L — overview & format
+    used_for: 전자 B/L 흐름 참조
+    verified_on: 2026-05-09
+
+  - category: shipping_lines
+    type: ref
+    url: https://www.cma-cgm.com/static/CR/attachments/Shipping%20instructions%20format%20-%20CMA-CGM.pdf
+    source_org: CMA CGM
+    title: CMA CGM Shipping Instructions Format
+    notes: |
+      404 (URL 만료). cma-cgm.com 사이트에서 "Shipping Instructions" 검색해서 새 URL 확인 필요.
+      대체로 Maersk_BL_example.pdf 와 CMA_CGM_paperless_BL.pdf 로 SI 양식 추정 가능.
+    verified_on: 2026-05-09
+
+  # ─────────────────────── PSI (선적 전 검사) — Nigeria SONCAP / SGS
+  - category: psi
+    type: pdf
+    filename: SGS_PCA_Nigeria_datasheet.pdf
+    url: https://www.sgs.com/en/-/media/sgscorp/documents/corporate/brochures/sgs-pca-nigeria-datasheet-a4-en-v21.cdn.en.pdf
+    source_org: SGS
+    title: SGS PCA Nigeria Datasheet (Pre-Arrival Conformity Assessment)
+    used_for: 나이지리아 SONCAP 워크플로우 참조
+    verified_on: 2026-05-09
+
+  - category: psi
+    type: pdf
+    filename: SON_SONCAP_approved_fees_2022-08.pdf
+    url: https://son.gov.ng/wp-content/uploads/2022/08/SONCAP-Approved-Fees-Aug-2022.pdf
+    source_org: Standards Organisation of Nigeria (SON)
+    title: SONCAP Approved Fees (Aug 2022)
+    issued: 2022-08
+    used_for: 나이지리아 SONCAP 비용 추정
+    verified_on: 2026-05-09
+
+  # ─────────────────────── UAE — Dubai Customs
+  - category: uae
+    type: pdf
+    filename: Dubai_Customs_customer_guide_EN.pdf
+    url: https://www.dubaicustoms.gov.ae/en/OpenData/Publications/Customer_Guide_Booklet_EN.pdf
+    source_org: Dubai Customs
+    title: Dubai Customs — Customer Guide Booklet (English)
+    used_for: configs/rules 에 UAE 추가 시 1차 출처
+    verified_on: 2026-05-09
+
+  # ─────────────────────── 참조 (다운로드 불가)
+  - category: dominican_republic
+    type: ref
+    url: https://www.trade.gov/country-commercial-guides/dominican-republic-prohibited-restricted-imports
+    source_org: U.S. Department of Commerce (Trade.gov)
+    title: Dominican Republic — Prohibited & Restricted Imports
+    used_for: docs/validation/findings.md #001 (DR 5/15년 룰 confirm)
+    verified_on: 2026-05-09
+
+  - category: dominican_republic
+    type: ref
+    url: https://contadoresdominicanos.com/en/post/customs/requirements-for-importing-vehicles-to-the-dominican-republic/
+    source_org: Contadores Dominicanos (현지 회계법인)
+    title: Requirements for Importing Vehicles to the Dominican Republic
+    used_for: docs/validation/findings.md #001
+    notes: |
+      Law 04-07 (2007.01.05) + Decree 671 (2002.08.27) 명시.
+      승용 5년 / 트럭 15년 / 엔진 200,000cc 한도.
+    verified_on: 2026-05-09
+
+  - category: kotra_country
+    type: ref
+    url: https://openknowledge.kotra.or.kr/handle/2014.oak/33862
+    source_org: KOTRA Open Knowledge Repository
+    title: 2026 케냐 진출전략 (디지털자료)
+    notes: JS 렌더링. 직접 방문해서 PDF 다운로드.
+    verified_on: 2026-05-09
+
+  - category: kotra_country
+    type: ref
+    url: https://openknowledge.kotra.or.kr/handle/2014.oak/33740
+    source_org: KOTRA
+    title: 수출, 더 이상 어렵지 않아요 — 온·오프라인 가이드북
+    verified_on: 2026-05-09
+
+  - category: korea_customs
+    type: ref
+    url: https://cert.korcham.net/
+    source_org: 대한상공회의소 원산지증명센터
+    title: 일반(비특혜) C/O 신청 양식 — 회원가입·로그인 필요
+    notes: 인증서 로그인 필요. 발표 직전 시연용 계정 1개 만들 것.
+    verified_on: 2026-05-09
+
+  - category: korea_customs
+    type: ref
+    url: https://unipass.customs.go.kr/csp/index.do
+    source_org: 관세청 UNI-PASS
+    title: 수출신고필증 발급·조회 — 공인인증서 로그인 필요
+    notes: 인증서·관세사 위임 필요.
+    verified_on: 2026-05-09
+
+  - category: korea_customs
+    type: ref
+    url: http://www.31customs.com/bbs/sub04_4/13841
+    source_org: 삼일관세법인
+    title: 인보이스 서식(예시).xls — 가장 많이 사용하는 Commercial Invoice + Packing List 서식
+    notes: 페이지 클릭으로만 다운로드되는 Excel 첨부파일. 수동으로 한 번 받아 docs/samples/korea_customs/ 에 두면 좋음.
+    verified_on: 2026-05-09
+
+  - category: jordan
+    type: ref
+    url: https://www.customs.gov.jo/en/eForms.aspx
+    source_org: Jordan Customs
+    title: Jordan Customs eForms — 공식 폼 페이지
+    notes: 영문 페이지 직접 PDF 적음. 아랍어 버전이 더 많음.
+    verified_on: 2026-05-09
+
+  - category: uae
+    type: ref
+    url: https://www.dubaitrade.ae/en/help/support-document/category/150-forms
+    source_org: Dubai Trade
+    title: Dubai Trade — Forms section
+    notes: 차량 declaration 포함 다양한 폼. 수동 탐색 필요.
+    verified_on: 2026-05-09
+
+  - category: references_misc
+    type: ref
+    url: https://www.tradlinx.com/blog/guide/%EC%88%98%EC%B6%9C%EC%8B%A0%EA%B3%A0%ED%95%84%EC%A6%9D-%EC%88%98%EC%B6%9C%EB%A9%B4%EC%9E%A5-%EB%B3%B4%EB%8A%94-%EB%B2%95/
+    source_org: 트레드링스 (Tradlinx) blog
+    title: 수출신고필증(수출면장) 보는 법 — 항목별 설명
+    notes: 양식 자체 + 각 항목 의미 한국어 해설. 우리가 자동 채울 필드 정의 시 참조.
+    verified_on: 2026-05-09
+
+  - category: references_misc
+    type: ref
+    url: https://www.picknbuy24.com/regulation.html
+    source_org: PicknBuy24 (일본 중고차 수출업체)
+    title: Important information & Regulation by country for Japanese used cars
+    notes: 200+ 국가별 중고차 수입 규제 한눈에. 참조용 (도착국 추가 시 빠른 lookup).
+    verified_on: 2026-05-09
