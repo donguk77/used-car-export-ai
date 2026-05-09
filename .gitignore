@@ -24,6 +24,9 @@ node_modules/
 .next/
 out/
 .vite/
+dist/
+.tsbuildinfo
+*.tsbuildinfo
 
 # IDE
 .vscode/settings.json
