@@ -205,7 +205,14 @@ def _condition_matches(cond: dict[str, Any], vehicle: Vehicle, buyer: Buyer | No
         return actual == expected
     if op == "in":
         return actual in expected
-    raise ValueError(f"unknown condition operator: {op}")
+    raise RuleEngineError(
+        f"unknown condition operator {op!r}. Valid: gt/lt/eq/in. "
+        f"Check configs/rules/*.yaml blocked_conditions[].op"
+    )
+
+
+class RuleEngineError(ValueError):
+    """룰 YAML 정의가 잘못됐을 때. 라우트에서 422 로 변환."""
 
 
 def _attach_country_warnings(country: Country, warnings: list[str]) -> None:

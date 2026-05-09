@@ -128,7 +128,10 @@ def list_vehicles(
 
 
 @router.get("/decode-vin/{vin}", response_model=DecodedVin)
-def preview_vin_decode(vin: str) -> DecodedVin:
+def preview_vin_decode(
+    vin: str,
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],  # 외부 NHTSA 프록시 악용 방지
+) -> DecodedVin:
     """NHTSA VIN 디코드 미리보기 (저장하지 않음). UI 폼 자동완성용."""
     return decode_vin(vin)
 

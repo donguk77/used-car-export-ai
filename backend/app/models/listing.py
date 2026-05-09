@@ -37,7 +37,12 @@ class Listing(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
     # 룰 엔진 결과
     can_import: Mapped[bool | None] = mapped_column(Boolean)
-    import_check_json: Mapped[dict] = mapped_column(JSONB, default=dict)
+    import_check_json: Mapped[dict] = mapped_column(
+        JSONB,
+        default=dict,
+        server_default="{}",
+        nullable=False,
+    )
 
     # 가격·조건
     agreed_price_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))

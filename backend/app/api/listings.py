@@ -23,16 +23,46 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_current_user_id
 from app.core import compliance
-from app.core.rule_engine import ImportCheckResult, evaluate
+from app.core.rule_engine import ImportCheckResult, RuleEngineError, evaluate
 from app.db import get_db
 from app.models import Buyer, Country, Document, Listing, Message, User, Vehicle
 from app.services.document_writer import DocumentInput, generate_all
-from app.services.mail_writer import MailRequest, MailWriter
+from app.services.mail_writer import MailDraftParseError, MailRequest, MailWriter
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 GENERATED_PDFS_DIR = PROJECT_ROOT / "generated_pdfs"
 
 router = APIRouter(prefix="/listings", tags=["listings"])
+
+
+# Listing 상태 머신 — 합법 전환만 허용. 같은 상태로 재설정도 OK.
+# disputed 는 어디서든 진입 가능, closed 는 종착.
+_FSM_TRANSITIONS: dict[str, set[str]] = {
+    "inquiry": {"quoted", "negotiating", "disputed", "closed"},
+    "quoted": {"negotiating", "agreed", "disputed", "closed"},
+    "negotiating": {"quoted", "agreed", "disputed", "closed"},
+    "agreed": {"documenting", "disputed", "closed"},
+    "documenting": {"shipping", "disputed", "closed"},
+    "shipping": {"in_transit", "arrived", "disputed"},
+    "in_transit": {"arrived", "disputed"},
+    "arrived": {"cleared", "disputed"},
+    "cleared": {"delivered", "disputed"},
+    "delivered": {"closed", "disputed"},
+    "disputed": {"closed", "agreed"},  # 분쟁 해결 후 재합의 가능
+    "closed": set(),  # terminal
+}
+
+
+def _validate_status_transition(current: str, new: str) -> None:
+    if new == current:
+        return
+    valid = _FSM_TRANSITIONS.get(current, set())
+    if new not in valid:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            f"invalid status transition: {current!r} → {new!r}. "
+            f"Allowed from {current!r}: {sorted(valid) or 'terminal'}",
+        )
 
 
 # ── /import-check 전용 (DB 저장 없는 평가) 스키마 ─────────────
@@ -184,7 +214,10 @@ def create_listing(
     )
 
     if payload.auto_import_check:
-        result = evaluate(vehicle, country, rules=country.rules, buyer=buyer)
+        try:
+            result = evaluate(vehicle, country, rules=country.rules, buyer=buyer)
+        except RuleEngineError as e:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(e)) from e
         listing.can_import = result.can_import
         listing.import_check_json = result.to_dict()
 
@@ -234,10 +267,13 @@ def import_check(
     vehicle = _payload_to_vehicle(payload.vehicle)
     buyer = _payload_to_buyer(payload.buyer)
 
-    rule_result = evaluate(
-        vehicle, country, rules=country.rules,
-        buyer=buyer, today=payload.today, granted_flags=set(payload.granted_flags),
-    )
+    try:
+        rule_result = evaluate(
+            vehicle, country, rules=country.rules,
+            buyer=buyer, today=payload.today, granted_flags=set(payload.granted_flags),
+        )
+    except RuleEngineError as e:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(e)) from e
     compliance_dict = None
     if buyer is not None:
         compliance_dict = compliance.check(buyer, vehicle).to_dict()
@@ -271,9 +307,10 @@ def update_listing(
     if "destination_country" in update_data and update_data["destination_country"]:
         update_data["destination_country"] = update_data["destination_country"].upper()
 
-    # 상태 전환 시 타임스탬프 자동 기록
+    # 상태 전환 검증 + 타임스탬프 자동 기록
     if "status" in update_data:
         new_status = update_data["status"]
+        _validate_status_transition(listing.status, new_status)
         now = datetime.now(timezone.utc)
         if new_status == "quoted" and listing.quoted_at is None:
             listing.quoted_at = now
@@ -343,17 +380,24 @@ def draft_mail(
     )
 
     writer = MailWriter()  # uses LLM_PROVIDER env var
-    draft = writer.draft(
-        MailRequest(
-            scenario=payload.scenario,
-            language=language,
-            vehicle=vehicle,
-            buyer=buyer,
-            country=country,
-            rules=country.rules,
-            extra_context=payload.extra_context,
+    try:
+        draft = writer.draft(
+            MailRequest(
+                scenario=payload.scenario,
+                language=language,
+                vehicle=vehicle,
+                buyer=buyer,
+                country=country,
+                rules=country.rules,
+                extra_context=payload.extra_context,
+            )
         )
-    )
+    except MailDraftParseError as e:
+        # LLM 이 JSON 형식 어김 — 쓰레기 메일 저장 X, 502 반환
+        raise HTTPException(
+            status.HTTP_502_BAD_GATEWAY,
+            f"LLM provider returned malformed response. Try again or switch provider. ({e})",
+        ) from e
 
     message = Message(
         listing_id=listing.id,
@@ -408,34 +452,57 @@ def generate_documents(
 ) -> DocumentsGenerateResponse:
     """4종 PDF (Invoice/PL/SI/CO) 를 동시 생성 → DB Document 행 + 파일 시스템 저장.
 
-    멱등: 다시 호출하면 기존 PDF·Document 행을 새로 덮어씀.
+    원자성·동시성 보장:
+      1. SELECT FOR UPDATE 로 해당 listing 행 락 → 동시 호출 직렬화
+      2. .tmp 파일로 먼저 작성 (Playwright 동안 기존 PDF 보존)
+      3. 모든 .tmp 가 정상 작성된 후 단일 디렉터리 내 atomic rename
+      4. DB 트랜잭션은 마지막에 한 번 commit
+    Playwright 실패 → 기존 파일·DB 행 모두 그대로.
     """
-    listing = _get_owned(db, listing_id, user_id)
+    # 1. Row lock — 동시 /documents 호출 직렬화
+    listing = db.execute(
+        select(Listing)
+        .where(Listing.id == listing_id, Listing.user_id == user_id)
+        .with_for_update()
+    ).scalar_one_or_none()
+    if listing is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"listing {listing_id} not found")
     if listing.buyer_id is None or listing.destination_country is None:
         raise HTTPException(400, "listing must have buyer_id and destination_country set")
 
     user = db.get(User, user_id)
     vehicle = db.get(Vehicle, listing.vehicle_id)
     buyer = db.get(Buyer, listing.buyer_id)
-
     doc_input = _build_document_input(user, vehicle, buyer, listing)
 
-    # 1. 기존 Document 행·파일 삭제 (멱등성)
-    out_dir = GENERATED_PDFS_DIR / str(listing.id)
-    db.execute(delete(Document).where(Document.listing_id == listing.id))
-    if out_dir.exists():
-        for f in out_dir.glob("*.pdf"):
-            f.unlink()
+    # Path traversal 방어 (defense-in-depth — listing_id 가 UUID 라 이론상 안전하지만)
+    base = GENERATED_PDFS_DIR.resolve()
+    out_dir = (base / str(listing.id)).resolve()
+    if not out_dir.is_relative_to(base):
+        raise HTTPException(500, "computed path escapes generated_pdfs root")
 
-    # 2. PDF 생성 (Playwright로 4장 한 번에)
+    # 2. PDF 생성 — 실패해도 기존 파일·DB 행은 그대로 유지됨
     pdfs = generate_all(doc_input)
 
-    # 3. 파일 저장 + Document 행 insert
+    # 3. .tmp 파일로 모두 작성
     out_dir.mkdir(parents=True, exist_ok=True)
-    documents: list[Document] = []
+    tmp_pairs: list[tuple[str, Path, Path]] = []  # (doc_type, tmp_path, final_path)
     for doc_type, pdf_bytes in pdfs.items():
-        path = out_dir / f"{doc_type}.pdf"
-        path.write_bytes(pdf_bytes)
+        tmp_path = out_dir / f"{doc_type}.pdf.tmp"
+        final_path = out_dir / f"{doc_type}.pdf"
+        tmp_path.write_bytes(pdf_bytes)
+        tmp_pairs.append((doc_type, tmp_path, final_path))
+
+    # 4. Atomic swap (row lock 보유 중이라 unlink/rename 사이 race 없음)
+    for _, tmp_path, final_path in tmp_pairs:
+        if final_path.exists():
+            final_path.unlink()
+        tmp_path.rename(final_path)
+
+    # 5. DB 트랜잭션 — 기존 Document 행 삭제 + 새 행 insert (한 transaction)
+    db.execute(delete(Document).where(Document.listing_id == listing.id))
+    documents: list[Document] = []
+    for doc_type, _, _ in tmp_pairs:
         rel_url = f"/api/listings/{listing.id}/documents/{doc_type}.pdf"
         doc = Document(
             listing_id=listing.id,
@@ -469,7 +536,12 @@ def serve_document(
     _get_owned(db, listing_id, user_id)
     if doc_type not in {"invoice", "packing_list", "shipping_instruction", "co_application"}:
         raise HTTPException(400, f"unknown doc_type: {doc_type}")
-    path = GENERATED_PDFS_DIR / str(listing_id) / f"{doc_type}.pdf"
+
+    base = GENERATED_PDFS_DIR.resolve()
+    path = (base / str(listing_id) / f"{doc_type}.pdf").resolve()
+    # defense-in-depth: 결과 경로가 generated_pdfs 안에 있는지 확인
+    if not path.is_relative_to(base):
+        raise HTTPException(403, "path outside allowed directory")
     if not path.exists():
         raise HTTPException(404, "PDF not generated yet — POST /documents first")
     return FileResponse(

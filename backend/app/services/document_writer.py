@@ -123,7 +123,8 @@ _PDF_OPTIONS = {
 def _html_to_pdf(browser: Browser, html: str) -> bytes:
     page = browser.new_page()
     try:
-        page.set_content(html, wait_until="networkidle", timeout=20_000)
+        # 정적 HTML + 폰트 CDN 한 번 로드라 "load" 면 충분 (networkidle 보다 ~3초 빠름)
+        page.set_content(html, wait_until="load", timeout=20_000)
         return page.pdf(**_PDF_OPTIONS)
     finally:
         page.close()

@@ -125,14 +125,14 @@ def _recent_listings(db: Session, user_id: uuid.UUID, limit: int = 5) -> list[Re
     ).all()
     return [
         RecentListing(
-            id=l.id,
+            id=listing.id,
             vehicle_label=f"{v.make or '?'} {v.model or '?'} {v.year or ''}".strip(),
             buyer_name=b.company_name if b else None,
-            destination_country=l.destination_country,
-            status=l.status,
-            can_import=l.can_import,
+            destination_country=listing.destination_country,
+            status=listing.status,
+            can_import=listing.can_import,
         )
-        for l, v, b in rows
+        for listing, v, b in rows
     ]
 
 

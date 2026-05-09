@@ -224,9 +224,16 @@ class MailWriter:
         try:
             payload = json.loads(cleaned)
             return str(payload.get("subject", "")), str(payload.get("body", ""))
-        except json.JSONDecodeError:
-            # LLM 이 형식을 어겼을 때 fallback — 본문 그대로 body 로
-            return "(no subject parsed)", text
+        except json.JSONDecodeError as e:
+            # LLM 이 형식을 어김 — 라우트 레이어에서 502 로 변환됨
+            raise MailDraftParseError(
+                f"LLM did not return valid JSON ({e.msg} at pos {e.pos}). "
+                f"Raw response preview: {text[:200]!r}"
+            ) from e
+
+
+class MailDraftParseError(ValueError):
+    """LLM 응답이 약속한 JSON 형식이 아닐 때."""
 
 
 _FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
