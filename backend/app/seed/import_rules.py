@@ -19,6 +19,7 @@ import yaml
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
+from app.api.deps import ensure_demo_user
 from app.config import get_settings
 from app.db import SessionLocal, create_all
 from app.models import Country, ImportRule
@@ -132,6 +133,12 @@ def seed_all(files: list[Path] | None = None) -> None:
     create_all()  # PoC 단계 — 운영은 Alembic 으로 전환
 
     with SessionLocal() as session:
+        # 1. demo 사용자 (PoC: 모든 데이터의 owner)
+        user_id = ensure_demo_user(session)
+        session.flush()
+        print(f"👤 demo user: {user_id}")
+
+        # 2. 국가 + 룰
         for path in files:
             try:
                 code, n = seed_file(session, path)

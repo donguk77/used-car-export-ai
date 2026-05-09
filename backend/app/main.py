@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import health, listings
+from app.api import buyers, countries, dashboard, health, listings, vehicles
 from app.config import get_settings
 
 settings = get_settings()
@@ -32,6 +32,10 @@ app.add_middleware(
 
 app.include_router(health.router, prefix="/health", tags=["health"])
 app.include_router(listings.router, prefix="/api", tags=["listings"])
+app.include_router(vehicles.router, prefix="/api")
+app.include_router(buyers.router, prefix="/api")
+app.include_router(countries.router, prefix="/api")
+app.include_router(dashboard.router, prefix="/api")
 
 
 @app.get("/")
