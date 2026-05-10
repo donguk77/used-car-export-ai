@@ -200,17 +200,23 @@ def seed(*, fresh: bool = False) -> None:
 
         if fresh:
             print("  🧹 clearing existing demo vehicles/buyers/listings...")
-            # 순서: child → parent (FK 안전)
-            for table in (Document, Message, Shipment, Listing, ComplianceCheck, Buyer, Vehicle):
-                if table is Vehicle:
-                    s.execute(delete(table).where(table.user_id == user_id))
-                elif table is Buyer:
-                    s.execute(delete(table).where(table.user_id == user_id))
-                elif table is Listing:
-                    s.execute(delete(table).where(table.user_id == user_id))
-                else:
-                    # Child tables: cascade via FK from parents being deleted will handle them
-                    pass
+            # findings #044 — Message.listing_id 가 ondelete=SET NULL 이라 listing 삭제 시
+            # cascade 안됨. 명시적으로 messages 먼저 삭제 (user 의 listings 참조).
+            user_listing_ids = [
+                row[0] for row in s.execute(
+                    select(Listing.id).where(Listing.user_id == user_id)
+                ).all()
+            ]
+            if user_listing_ids:
+                s.execute(delete(Message).where(Message.listing_id.in_(user_listing_ids)))
+                s.execute(delete(Document).where(Document.listing_id.in_(user_listing_ids)))
+                s.execute(delete(Shipment).where(Shipment.listing_id.in_(user_listing_ids)))
+            # 그 다음 user 의 vehicles/buyers/listings (Buyer.compliance_checks 는 cascade)
+            s.execute(delete(Listing).where(Listing.user_id == user_id))
+            s.execute(delete(Vehicle).where(Vehicle.user_id == user_id))
+            s.execute(delete(Buyer).where(Buyer.user_id == user_id))
+            # 추가 안전장치: orphan messages (listing_id IS NULL) 정리
+            s.execute(delete(Message).where(Message.listing_id.is_(None)))
             s.flush()
 
         # Vehicles

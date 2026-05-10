@@ -6,6 +6,57 @@
 
 ---
 
+## 🟢 #045 — 5 listings × mail + 4 PDFs E2E 라이브 검증 (20/20)
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+Round 11 시스템 무결성 audit 의 일환으로 **5 시드 listings 전체 × mail-draft
++ 4 PDF 생성** 종단 라이브 테스트:
+
+| Listing | Lang | Mail subject | PDFs |
+|---|---|---|---|
+| DO Rodriguez quote | es | "Cotización Formal - Hyundai Sonata 2020..." | **4/4** |
+| LY Sahara quote | ar | "عرض سعر لسيارة Hyundai Sonata 2018..." | **4/4** |
+| KG ABC quote | ru | "Коммерческое предложение по Genesis G80 2022..." | **4/4** |
+| KE East Africa quote | en | "Quotation for Hyundai Tucson 2017..." | **4/4** |
+| SY Damascus quote | ar | "عرض سعر رسمي لسيارة Kia Bongo 2020..." | **4/4** |
+
+**결과: 20/20 (5 mail + 20 PDF) all SUCCESS.** 4 언어 (es/ar/ru/en) 커버.
+
+#040 의 mail_writer prompt 강화 (관세 + 운임 자동 주입) + #035 의 LLM
+auto-retry 가 안정성 보장. 이전 ~30% fail rate 였는데 retry 로 0%.
+
+→ 시연 narrative: "5 시드 거래 → 1 클릭으로 정확한 다국어 견적 메일 + 4종
+   PDF 자동 생성. 100% 성공률 (auto-retry 포함)."
+
+---
+
+## 🟢 #044 — seed --fresh 가 messages 14건 orphan 으로 남기던 bug (FIX)
+
+**발견일:** 2026-05-11
+**상태:** 🟢 fixed in seed_demo_data.py
+
+이전 `seed_demo_data.py --fresh`:
+- Vehicle/Buyer/Listing 만 명시 delete
+- Document/Message/Shipment 는 cascade FK 의존
+
+문제:
+- `Message.listing_id` FK 가 `ondelete=SET NULL` (CASCADE 아님)
+- listing 삭제 시 messages 가 cascade 안 됨 → orphan (listing_id=NULL) 잔존
+- 라이브 테스트 14회 후 messages 14건 누적
+
+수정:
+1. `Message`/`Document`/`Shipment` 명시 delete (user_listing_ids 참조 기반)
+2. 추가 안전장치: `delete(Message).where(listing_id IS NULL)` 로 잔존 orphan
+   정리
+
+검증:
+- `--fresh` 후 messages = 0 ✓ (이전 14)
+- 5 listings E2E 후 messages = 5 (예상치) ✓
+
+---
+
 ## 🟢 #043 — Yestrade 우려거래자 stub 강화 (공개 자료 기반)
 
 **발견일:** 2026-05-10

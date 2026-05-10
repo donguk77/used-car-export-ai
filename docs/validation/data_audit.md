@@ -17,7 +17,7 @@
 | 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
 | 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
 | Cross-validate 검증 | **32개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **37개** | #001 + #006~#043 |
+| 발견된 finding | **39개** | #001 + #006~#045 |
 | 신규 분석 문서 | **4건** | findings.md (34) · data_audit.md · tariff_matrix.md · shipping_matrix.md |
 | 관세 매트릭스 | **28/28 국가** | duty + VAT + 추가세 + 총 부담 + Sonata 도착 비용 (#038) |
 | 항구 물류 매트릭스 | **28/28 국가** | ETA + RoRo/Container 운임 + 운송 빈도 + Sonata DDP 기간 (#039) |
@@ -25,6 +25,8 @@
 | HS 분류기 정확도 | van/bus/truck 0.6 → 0.95 | Vehicle 모델에 GVW 추가 + seats 활용 분기 (#041 → #033 해소) |
 | **OFAC SDN 자동 통합** | **18,947 entries** | sdn.xml 28MB · in-memory loader · `_check_ofac()` 통합 (#042). RUSSIA-EO14024 6,392건 1위 |
 | Yestrade stub 강화 | 부산경찰청 적발 사례 | 정식 통합은 인증서 + 가입 필요 (Phase 2) (#043) |
+| 시드 fresh 정리 fix | messages 0 (이전 14 orphan) | seed_demo_data.py 명시 delete (#044) |
+| **5 listings E2E 라이브** | **20/20 SUCCESS** | mail (4 lang) + 4 PDFs/거래 모두 100% (#045) |
 | YAML 수정 적용 | **9개국** | DO·KE·JO·GH·MX·ZW·KH + NG·AE (룰 변경 또는 docs 추가) |
 | YAML notes 추가 | **10개국** | KZ·DZ·ZA + PH·BD·LK + NG·AE·LK·ZW 보강 |
 | Backend 코드 fix | **3건** | mail-draft 언어 fallback (#026) + HS 분류기 (#034) + LLM 자동 retry (#035) |
