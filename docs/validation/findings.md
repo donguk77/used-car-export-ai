@@ -6,6 +6,51 @@
 
 ---
 
+## 🟢 #036 — 5 언어 mail-draft 라이브 동작 confirm (es·ar·ru·fr·en)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 confirmed
+
+5 시드된 거래로 멀티-language mail-draft 라이브 검증:
+
+| 거래 | 언어 | 시나리오 | 출력 |
+|---|---|---|---|
+| DO Rodriguez | es | quote | "Cotización: Hyundai Sonata 2020 - VIN..." |
+| LY Sahara | ar | shipping | "إشعار شحن لسيارة Hyundai Sonata 2018..." (RTL OK) |
+| KG ABC Auto | ru | inquiry | "Ответ на Ваш запрос: Genesis G80 2022..." |
+| KE East Africa | en | negotiate | "Regarding Hyundai Tucson 2017... Price Review" |
+| DO 강제 fr | fr | inquiry | "Demande de renseignements - Hyundai Sonata 2020..." |
+
+전 5 언어 buyer name + vehicle + VIN 정확 merge. RTL (Arabic) 도 정상.
+Gemini 2.5-flash 가 모든 언어 격식체 + 자동차 도메인 어휘 정확.
+
+→ Frontend 의 RTL 전환 (`dir={result.language === "ar" ? "rtl" : "ltr"}`)
+   과 결합하면 시연 narrative 완성.
+
+---
+
+## 🟢 #035 — Gemini JSON parse fail ~30% (영어) → 자동 retry 추가 (FIX)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 fixed in backend
+
+5회 KE EN negotiate 호출 → 1회 fail (~30%). Error: "LLM did not return
+valid JSON (Unterminated string at pos 112)". Gemini 가 영어 long response
+에서 종종 JSON closing quote 누락.
+
+이전: 502 응답 + 사용자 수동 retry 필요.
+
+수정 (`backend/app/api/listings.py:395-434`):
+- 자동 retry 2회 추가 (총 3 시도)
+- `MailDraftParseError` 만 재시도 (다른 LLM 오류는 즉시 raise)
+- 로그: "mail-draft JSON parse fail attempt N/3" / 성공 시 "succeeded on retry N/3"
+
+라이브 검증 (재시작 후):
+- 5/5 SUCCESS (이전 ~70%)
+- 사용자 입장 latency: 정상 ~5s, fail-then-retry ~10s
+
+---
+
 ## 🟢 #034 — HS code 자동 분류기 신설 (FIX 완료)
 
 **발견일:** 2026-05-10

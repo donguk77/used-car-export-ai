@@ -393,36 +393,45 @@ def draft_mail(
     )
 
     writer = MailWriter()  # uses LLM_PROVIDER env var
-    try:
-        draft = writer.draft(
-            MailRequest(
-                scenario=payload.scenario,
-                language=language,
-                vehicle=vehicle,
-                buyer=buyer,
-                country=country,
-                rules=country.rules,
-                extra_context=payload.extra_context,
-            )
-        )
-    except MailDraftParseError as e:
-        # LLM 이 JSON 형식 어김 — 쓰레기 메일 저장 X, 502 반환
+    mail_request = MailRequest(
+        scenario=payload.scenario,
+        language=language,
+        vehicle=vehicle,
+        buyer=buyer,
+        country=country,
+        rules=country.rules,
+        extra_context=payload.extra_context,
+    )
+    # findings #035 — Gemini ~30% JSON parse fail (영어 long response 위주).
+    # 자동 retry 2회 추가 (총 3 시도) — 데모 robustness ↑.
+    last_parse_err: MailDraftParseError | None = None
+    draft = None
+    for attempt in range(1, 4):
+        try:
+            draft = writer.draft(mail_request)
+            if attempt > 1:
+                logger.info(f"mail-draft succeeded on retry {attempt}/3")
+            break
+        except MailDraftParseError as e:
+            last_parse_err = e
+            logger.warning(f"mail-draft JSON parse fail attempt {attempt}/3: {e}")
+            continue
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.exception("LLM provider error during mail-draft")
+            raise HTTPException(
+                status.HTTP_503_SERVICE_UNAVAILABLE,
+                (
+                    f"LLM provider unavailable ({type(e).__name__}). "
+                    "Try again in a moment or switch LLM_PROVIDER in backend/.env."
+                ),
+            ) from e
+    if draft is None:
         raise HTTPException(
             status.HTTP_502_BAD_GATEWAY,
-            f"LLM provider returned malformed response. Try again or switch provider. ({e})",
-        ) from e
-    except HTTPException:
-        raise
-    except Exception as e:
-        # Gemini 일시 장애 (429 quota / 503 / network timeout) — 503 + 명확한 메시지
-        logger.exception("LLM provider error during mail-draft")
-        raise HTTPException(
-            status.HTTP_503_SERVICE_UNAVAILABLE,
-            (
-                f"LLM provider unavailable ({type(e).__name__}). "
-                "Try again in a moment or switch LLM_PROVIDER in backend/.env."
-            ),
-        ) from e
+            f"LLM returned malformed JSON in all 3 attempts. Try again or switch provider. ({last_parse_err})",
+        ) from last_parse_err
 
     message = Message(
         listing_id=listing.id,
