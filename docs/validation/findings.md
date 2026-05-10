@@ -6,6 +6,30 @@
 
 ---
 
+## 🟢 #038 — 28국 관세 매트릭스 신설 (시연 narrative 강화)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 docs added — `docs/validation/tariff_matrix.md`
+
+이전: 각 country YAML 의 `notes:` 필드에 산발적 관세 정보 ("관세 25% +
+VAT 16% + 소비세 20%" 같은 한글 narrative). 멘토 "관세 얼마?" 질문 시
+정확한 답 어려움.
+
+신설 `docs/validation/tariff_matrix.md`:
+- 28국 × HS 8703.23 (가장 흔한 passenger gasoline 1.5-3L) 관세율 표
+- 통과 가능국 17국 / 자동 차단 6국 / 진입 어려움 5국 분류
+- Sonata 2020 $14,000 FOB 기준 도착 비용 시연 표
+  · UAE: ~$15,400 (10% 부담, 가장 저렴)
+  · MX: ~$18,000 / DO: $17-25k / KE: ~$22,500
+  · EG: ~$25,500 / DZ: ~$26,000+
+- 출처 cross-reference (32 PDFs)
+- Phase 2 후보 명시 (mail_writer prompt 강화 + FTA 자동 계산 + 환율 변동)
+
+→ 멘토 "DO 보내면 총 비용?" 즉답 가능. "왜 UAE 가 재수출 허브인가?" →
+   관세 5%+5% 만으로 narrative 강화.
+
+---
+
 ## 🔴 #037 — ICC Incoterms 2020 mirror URL 이 hijack 됨 (FIX 완료)
 
 **발견일:** 2026-05-10
