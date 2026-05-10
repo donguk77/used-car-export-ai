@@ -25,6 +25,10 @@ country:
     프랑스어가 비즈니스 표준 (식민 영향) — AI 메일 기본값 프랑스어 + 아랍어 병기.
     관세 + VAT 19% + 5~160% New/Used Vehicle Tax (차량 fiscal power 기반).
     PoC 권고: 직수출보다 리비아 거점 재수출 모니터링이 현실적.
+    findings #013 — IAM 2024-09 명시:
+    - 최대 fiscal HP 10 CV (chevaux fiscaux, 일반 가솔린 ~150-200 real HP 상당)
+    - 화물 + 차량 합산 CIF 가치 3,000,000 DZD 초과 금지
+    - 모든 서류 프랑스어 의무 (현지 통관 요건)
 
 rules:
   - body_type_filter: passenger

@@ -24,6 +24,9 @@ country:
     Durban 항은 잠비아·짐바브웨·모잠비크행 화물의 환적 허브로만 활용.
     ITAC (International Trade Administration Commission) 라이선스 사실상 불발급.
     PoC 권고: 직수출 대상 제외, 환승만 카운트.
+    findings #011 — FIDI 2024-09: returning resident / temp resident 는
+    DA 304/A + DTI Import Permit + LOA + 365일 이상 해외 소유 증빙 시 가능.
+    B2B commercial 채널은 사실상 불가 → is_blocked: true 유지.
 
 rules:
   - body_type_filter: passenger

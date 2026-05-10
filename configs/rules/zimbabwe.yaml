@@ -28,7 +28,11 @@ rules:
     age_limit_years: 10
     age_basis: manufacture_year
     steering_required: RHD_only
+    # findings #012 — CBRTA 2018 Handbook: 짐바브웨 정부 2015.3.16 부터 Bureau
+    # Veritas 와 4년 CBCA (Consignment-Based Conformity Assessment) 계약.
+    # 선적 전 Bureau Veritas 검사 + 도착 후 VID 검사 — 2단계.
     psi_required:
+      - Bureau_Veritas_CBCA
       - VID_Inspection
     doc_translation_lang: null
     consular_required: false
@@ -38,7 +42,8 @@ rules:
       - packing_list
       - bill_of_lading
       - certificate_of_origin
+      - bureau_veritas_cbca_certificate
       - vid_certificate
       - transit_permit  # 남아공/모잠비크 경유
     source_url: https://www.zimra.co.zw
-    last_verified_at: 2026-05-09
+    last_verified_at: 2026-05-10

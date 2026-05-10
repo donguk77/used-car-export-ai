@@ -6,6 +6,78 @@
 
 ---
 
+## 🟢 #013 — 알제리 fiscal HP 10 CV 한도 + CIF 3M DZD 한도 (notes 추가)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/algeria/IAM_Algeria_Country_Guide_2024-09.pdf`
+**상태:** 🟢 noted (PoC enforcement 외 — Phase 2 후보)
+
+IAM 명시:
+> "The maximum allowable engine power is 10 HP."
+> "The combined CIF value of the goods and vehicle must not exceed 3 000 000 DZD."
+
+10 HP 는 fiscal horsepower (chevaux fiscaux, CV) — 프랑스/알제리 세무 단위.
+일반 가솔린 차량 ~150-200 실 HP 상당. 한국 평균 중고차 (2.0L 가솔린) 는 fiscal CV
+약 8-9 라 통과. CIF 3M DZD ≈ USD 22,000 — 일부 고가 차량은 한도 초과 가능.
+
+YAML `algeria.yaml`: notes 에 명시. 룰엔진 enforcement 는 Phase 2 (실제 fiscal HP
+계산 공식 + 환율 변동 처리 필요).
+
+---
+
+## 🟢 #012 — 짐바브웨 Bureau Veritas CBCA + VID 2단계 검사 (FIX 완료)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/zimbabwe/CBRTA_Zimbabwe_Handbook_2018-05-17.pdf`
+**상태:** 🟢 fixed in YAML
+
+CBRTA 명시: "The Government of Zimbabwe has signed on 16/03/15 a 4-year
+Consignment-Based Conformity (CBCA) contract with a French global company,
+Bureau Veritas. This contract provides the pre-shipment services."
+
+우리 YAML `zimbabwe.yaml`: `psi_required: [VID_Inspection]` 만 있어 도착 후
+검사만 반영. 선적 전 Bureau Veritas CBCA 누락.
+
+수정: `psi_required: [Bureau_Veritas_CBCA, VID_Inspection]` 2단계 + required_documents
+에 `bureau_veritas_cbca_certificate` 추가.
+
+---
+
+## 🟡 #011 — 남아공 returning resident 예외 (notes 추가)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/south_africa/SOUTH_AFRICA_Import_FIDI_Customs_Guide_2024-09.pdf`
+**상태:** 🟡 noted (PoC narrative 보존)
+
+FIDI: returning/temp resident 는 DA 304/A + DTI Import Permit + LOA + "in the
+owner's use and possession abroad for more than 365 days" 증빙 시 import 가능.
+
+우리 YAML `is_blocked: true` 는 B2B commercial 채널 기준으로는 정확. 단 ZA 는
+완전 차단 국가가 아니라 narrowly conditional 채널만 열려있는 국가.
+
+수정: notes 에 명시. is_blocked: true 유지 (B2B 시연 narrative).
+
+---
+
+## 🟢 #010 — 멕시코 8-9년 window + NAFTA 원산지 (FIX 완료)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/mexico/SNICE_Decreto_Vehiculos_Usados_2024-07-04.pdf`
+**상태:** 🟢 fixed in YAML
+
+SNICE Decreto 2024-07-04 (DOF 2011-07-01, 최종 개정 2022-11-18):
+- 일반 권역: "vehículos cuyo año modelo sea de **ocho a nueve años** anteriores"
+  (8-9년 window, 10% 관세, NAFTA 원산지 필요)
+- 국경 권역 (Cananea/Caborca, Sonora): 5-9년 window
+- 5년 이내는 별도 import permit 필요 (Secretaría de Economía)
+
+우리 YAML `age_limit_years: 8` 는 "max 8" 의미라 부정확. 9년까지 허용 + 새 차량은
+permit 별도.
+
+수정: `age_limit_years: 9` (max 9) + notes 에 8-9 window + NAFTA 원산지 명시.
+
+---
+
 ## 🟢 #009 — 케냐 연식 cutoff 날짜 부정확 (FIX 완료)
 
 **발견일:** 2026-05-10

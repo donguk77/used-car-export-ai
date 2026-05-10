@@ -28,7 +28,9 @@ country:
 
 rules:
   - body_type_filter: passenger
-    age_limit_years: 8
+    # findings #010 — SNICE Decreto 2024-07: 일반 권역 8-9년 window (10% 관세,
+    # NAFTA 원산지 필요) / 국경 권역 5-9년. 우리는 max 9년으로 단순화.
+    age_limit_years: 9
     age_basis: manufacture_year
     steering_required: LHD_only
     psi_required:
