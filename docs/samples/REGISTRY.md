@@ -2,7 +2,7 @@
 
 이 파일은 `scripts/fetch_public_samples.py` 가 자동 생성합니다. 직접 편집하지 말고 `configs/samples_registry.yaml` 을 고치세요.
 
-총 58 항목 · 카테고리 24 개
+총 77 항목 · 카테고리 24 개
 
 
 ## algeria
@@ -21,11 +21,16 @@ configs/rules/algeria.yaml — 사실상 신차만 통과.
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
 | 🔗 ref | Azerbaijan Customs — Single Window | State Customs Committee of Azerbaijan | — | [열기](https://customs.gov.az/en/) |
+| 📄 PDF | Azerbaijan Import — FIDI Customs Guide (2022-01) | FIDI ADA Europe | 2022-01 | [원본](https://www.fidi.org/sites/default/files/public/2022-01/AZERBAIJAN%20Import%20%E2%80%93%20FIDI%20Customs%20Guide_0.pdf) · [로컬](docs/samples/azerbaijan/AZERBAIJAN_Import_FIDI_Customs_Guide.pdf) |
+| 🔗 ref | Azerbaijan — WTO TFA Article 10.4 Members' Practices | World Customs Organization (WCO) | — | [열기](https://www.wcoomd.org/-/media/wco/public/global/pdf/topics/wto-atf/members-practices/art-10_4/azerbaijan-art-104.pdf?la=en) |
+| 🔗 ref | Single Window in the Republic of Azerbaijan — UN/CEFACT Case Study | UNECE Centre for Trade Facilitation | — | [열기](https://unece.org/fileadmin/DAM/cefact/single_window/sw_cases/Download/Azerbaijan_eng.pdf) |
 
 **Notes:**
 
 - **Azerbaijan Customs — Single Window** — configs/rules/azerbaijan.yaml 의 pre_registration_system: Single_Window 출처.
 러시아어 비즈니스 표준. 코카서스 SUV 시장.
+- **Azerbaijan — WTO TFA Article 10.4 Members' Practices** — SSL local issuer cert 누락 (wcoomd.org). 브라우저 직접 다운로드 가능.
+- **Single Window in the Republic of Azerbaijan — UN/CEFACT Case Study** — HTTP 403 (UA 차단). 브라우저 직접 다운로드 가능.
 
 ## chile
 
@@ -33,6 +38,7 @@ configs/rules/algeria.yaml — 사실상 신차만 통과.
 |------|------|------|--------|------|
 | 🔗 ref | Chile Customs — 차량 수입 절차 | Servicio Nacional de Aduanas de Chile (SNA) | — | [열기](https://www.aduana.cl/aduana/site/edic/base/port/inicio.html) |
 | 🔗 ref | 한-칠레 FTA — C/O 양식 + 활용 가이드 | 한국-칠레 FTA 종합지원포털 | — | [열기](https://www.fta.go.kr/cl/) |
+| 📄 PDF | Tributación aplicable a importación de vehículos usados (v4) | BCN — Biblioteca del Congreso Nacional de Chile | — | [원본](https://obtienearchivo.bcn.cl/obtienearchivo?id=repositorio/10221/19957/5/Tributacion+Importacion+vehiculos+usados_v4.pdf) · [로컬](docs/samples/chile/BCN_Chile_Tributacion_Vehiculos_Usados_v4.pdf) |
 
 **Notes:**
 
@@ -40,6 +46,8 @@ configs/rules/algeria.yaml — 사실상 신차만 통과.
 스페인어 사이트 / 영문 일부.
 - **한-칠레 FTA — C/O 양식 + 활용 가이드** — FTA C/O 활용 시 차량 관세 우대. 양식이 일반 C/O 와 다름 — 별도 파일.
 configs/rules/chile.yaml 의 fta_certificate_of_origin 출처.
+- **Tributación aplicable a importación de vehículos usados (v4)** — 칠레 의회도서관 1차 자료. 1999년 이후 매년 reajustable (조정).
+$7,503.55 USD 최대 추가세 + 차량 연식별 10% 감가.
 
 ## costa_rica
 
@@ -47,6 +55,7 @@ configs/rules/chile.yaml 의 fta_certificate_of_origin 출처.
 |------|------|------|--------|------|
 | 🔗 ref | TICA — Sistema de Información para el Control Aduanero | Ministerio de Hacienda — TICA | — | [열기](https://www.hacienda.go.cr/contenido/12-tica) |
 | 🔗 ref | 한-중미 FTA (2019 발효) — C/O 양식 + 6개국 활용 가이드 | 한국-중미 FTA 종합지원포털 | — | [열기](https://www.fta.go.kr/centralamerica/) |
+| 📄 PDF | Costa Rica Import — FIDI Customs Guide (2024-01) | FIDI Latin America | 2024-01 | [원본](https://www.fidi.org/sites/default/files/public/2024-01/COSTA%20RICA%20Import%20-%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/costa_rica/COSTA_RICA_Import_FIDI_Customs_Guide.pdf) |
 
 **Notes:**
 
@@ -73,6 +82,7 @@ FTA C/O 활용 시 자동차 관세 우대 큼.
 | 🔗 ref | Nafeza Portal — Advance Cargo Information (ACI) entry | Nafeza (Egyptian Single Window for Foreign Trade) | — | [열기](https://www.nafeza.gov.eg/en/) |
 | 🔗 ref | Egyptian Customs Authority — Tariff & Procedures | Egyptian Customs Authority | — | [열기](https://www.customs.gov.eg/) |
 | 🔗 ref | GOEIC — 수입 사전 검사 인증 | GOEIC (General Organization for Export & Import Control) | — | [열기](https://www.goeic.gov.eg/) |
+| 📄 PDF | Egypt Import — FIDI Customs Guide (2024-01) | FIDI Middle East & North Africa | 2024-01 | [원본](https://www.fidi.org/sites/default/files/public/2024-01/EGYPT%20Import%20-%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/egypt/EGYPT_Import_FIDI_Customs_Guide.pdf) |
 
 **Notes:**
 
@@ -120,6 +130,7 @@ Pre-Arrival Assessment Reporting (PAAR) 포함.
 |------|------|------|--------|------|
 | 🔗 ref | Jordan Customs eForms — 공식 폼 페이지 | Jordan Customs | — | [열기](https://www.customs.gov.jo/en/eForms.aspx) |
 | 🔗 ref | Jordan Customs Tariff — HS Code 검색 | Jordan Customs | — | [열기](https://www.customs.gov.jo/en/Pages/CustomsTariff.aspx) |
+| 📄 PDF | Jordan Import — FIDI Customs Guide (2024-01) | FIDI Middle East & North Africa | 2024-01 | [원본](https://www.fidi.org/sites/default/files/public/2024-01/JORDAN%20Import%20-%20FIDI%20Customs%20Guides_0.pdf) · [로컬](docs/samples/jordan/JORDAN_Import_FIDI_Customs_Guide.pdf) |
 
 **Notes:**
 
@@ -132,6 +143,8 @@ Pre-Arrival Assessment Reporting (PAAR) 포함.
 |------|------|------|--------|------|
 | 🔗 ref | KGD — Customs procedures (English) | Kazakhstan State Revenue Committee (KGD) | — | [열기](https://kgd.gov.kz/en) |
 | 🔗 ref | EAEU — Customs Tariff & Non-Tariff Regulation | Eurasian Economic Commission (EAEU) | — | [열기](https://eec.eaeunion.org/en/comission/department/dotr/) |
+| 📄 PDF | Kazakhstan Import — FIDI Customs Guide (2024-07) | FIDI ADA (Asia) | 2024-07 | [원본](https://www.fidi.org/sites/default/files/public/2024-07/KAZAKHSTAN%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/kazakhstan/KAZAKHSTAN_Import_FIDI_Customs_Guide.pdf) |
+| 📄 PDF | Legal Provisions — Kazakhstan | Switzerland Global Enterprise | — | [원본](https://www.s-ge.com/sites/default/files/publication/free/legal-provisions-kazakhstan-s-ge-1703.pdf) · [로컬](docs/samples/kazakhstan/SGE_Legal_Provisions_Kazakhstan.pdf) |
 
 **Notes:**
 
@@ -195,11 +208,17 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 |------|------|------|--------|------|
 | 🔗 ref | VUCEM — Mexico Single Window for Foreign Trade | VUCEM (Ventanilla Única de Comercio Exterior Mexicana) | — | [열기](https://www.ventanillaunica.gob.mx/vucem/index.htm) |
 | 🔗 ref | SAT — Mexican Customs Procedures | SAT (Servicio de Administración Tributaria) — Aduanas | — | [열기](https://www.sat.gob.mx/aduanas) |
+| 🔗 ref | Manual para la Importación y/o Exportación (스페인어) | SAT — Administración General de Aduanas | — | [열기](http://omawww.sat.gob.mx/informacion_fiscal/normatividad/Documents/Manual_Aduanas_espanol.pdf) |
+| 🔗 ref | Manual de usuarios — trámite de internación temporal de vehículos | SAT — Administración General de Aduanas | — | [열기](http://omawww.sat.gob.mx/informacion_fiscal/normatividad/Documents/manual_importacion_vehiculos.pdf) |
+| 📄 PDF | Decreto que regula la importación definitiva de vehículos usados (2024-07-04) | SNICE — Sistema Nacional de Información de Comercio Exterior | 2024-07-04 | [원본](https://www.snice.gob.mx/~oracle/SNICE_DOCS/Decreto_vehiculosusados-Usados_20240704-20240704.pdf) · [로컬](docs/samples/mexico/SNICE_Decreto_Vehiculos_Usados_2024-07-04.pdf) |
 
 **Notes:**
 
 - **VUCEM — Mexico Single Window for Foreign Trade** — 차량 사전 등록 의무. 스페인어.
 - **SAT — Mexican Customs Procedures** — 일반 관세 적용 (한-멕시코 FTA 미체결).
+- **Manual para la Importación y/o Exportación (스페인어)** — 자동 다운로드 실패 (sat.gob.mx 서버 외국 IP 차단 가능성).
+브라우저로 직접 다운로드 후 docs/samples/mexico/ 에 저장 가능.
+- **Manual de usuarios — trámite de internación temporal de vehículos** — 자동 다운로드 실패 (10060 timeout) — 수동 다운로드 가능.
 
 ## nigeria
 
@@ -207,12 +226,14 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 |------|------|------|--------|------|
 | 🔗 ref | NCS — B'Odogwu 통관 시스템 | Nigeria Customs Service (NCS) | — | [열기](https://www.customs.gov.ng/) |
 | 🔗 ref | SONCAP — Standards Organisation of Nigeria Conformity Assessment Programme | Standards Organisation of Nigeria (SON) | — | [열기](https://son.gov.ng/soncap/) |
+| 🔗 ref | Import Profile — Nigeria (SONCAP / NCS / Form M 통합 가이드) | Government of Pakistan — Ministry of Commerce | — | [열기](https://www.commerce.gov.pk/wp-content/uploads/2020/07/Import-Profile-Nigeria.pdf) |
 
 **Notes:**
 
 - **NCS — B'Odogwu 통관 시스템** — configs/rules/nigeria.yaml 의 pre_registration_system: NCS_BOdogwu 출처.
 Form M (외환 송금 사전 신청) 의무.
 - **SONCAP — Standards Organisation of Nigeria Conformity Assessment Programme** — 선적 전 인증 의무. Intertek/SGS/Cotecna 발행.
+- **Import Profile — Nigeria (SONCAP / NCS / Form M 통합 가이드)** — HTTP 403 (UA 차단). 브라우저 직접 다운로드 가능.
 
 ## psi
 
@@ -259,11 +280,14 @@ configs/rules/{kenya, tanzania}.yaml 의 psi_required: JEVIC 출처.
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
 | 🔗 ref | OFAC — Sudan Sanctions Program | U.S. Treasury OFAC | — | [열기](https://ofac.treasury.gov/sanctions-programs-and-country-information/sudan-sanctions) |
+| 📄 PDF | OFAC FACRL-SU-01 — Sudan Sanctions Regulations | U.S. Treasury OFAC | — | [원본](https://ofac.treasury.gov/media/7246/download) · [로컬](docs/samples/sudan/OFAC_Sudan_FACRL_SU_01.pdf) |
 
 **Notes:**
 
 - **OFAC — Sudan Sanctions Program** — configs/rules/sudan.yaml 의 is_blocked + SANCTIONED_COUNTRIES 출처.
 2023~ 내전 + OFAC 제재 영향. 직수출 자동 차단 정당화.
+- **OFAC FACRL-SU-01 — Sudan Sanctions Regulations** — 2018.6.29 OFAC SSR 제거 후에도 Section 1245 NDAA 2012 + EAR 적용.
+U.S. persons 거래 가능하지만 BIS 라이선스 필요 가능성.
 
 ## tanzania
 
@@ -271,11 +295,18 @@ configs/rules/{kenya, tanzania}.yaml 의 psi_required: JEVIC 출처.
 |------|------|------|--------|------|
 | 🔗 ref | TRA — TANCIS 통관 시스템 | Tanzania Revenue Authority (TRA) | — | [열기](https://www.tra.go.tz/) |
 | 🔗 ref | TBS — 수입 차량 사전 신고 | Tanzania Bureau of Standards (TBS) | — | [열기](https://www.tbs.go.tz/) |
+| 🔗 ref | TBS Detailed Inspection — Used Vehicles (2020) | Tanzania Bureau of Standards (TBS) | 2020 | [열기](https://tbs.go.tz/uploads/files/DI_USED_VEHICLES_-_2020.pdf) |
+| 📄 PDF | Guideline for Pre-Shipment Verification of Conformity (PVoC) — 2025 | Tanzania Bureau of Standards (TBS) | 2025 | [원본](https://www.tbs.go.tz/uploads/files/GUIDELINE%20FOR%20PVOC%20PROGRAMME%20-%202025.pdf) · [로컬](docs/samples/tanzania/TBS_PVoC_Programme_Guideline_2025.pdf) |
+| 📄 PDF | PVoC Harmonised Procedure (Summarised) | Tanzania Trade Portal | — | [원본](https://trade.tanzania.go.tz/media/PVoC_HARMONISED_PR0CEDURE_(SUMMARISED)_1.pdf) · [로컬](docs/samples/tanzania/TBS_PVoC_Harmonised_Procedure_Summary.pdf) |
 
 **Notes:**
 
 - **TRA — TANCIS 통관 시스템** — configs/rules/tanzania.yaml 의 pre_registration_system: TANCIS 출처.
 - **TBS — 수입 차량 사전 신고** — TBS pre-shipment verification.
+- **TBS Detailed Inspection — Used Vehicles (2020)** — SSL 인증서 hostname mismatch (tbs.go.tz vs www.tbs.go.tz).
+중고차 specific 검사 매뉴얼 — RHD 의무 + roadworthiness 항목.
+브라우저 직접 다운로드 가능. 우리 fetch 한 PVoC Programme Guideline
+2025 + Harmonised Procedure 2종이 동일 내용 커버.
 
 ## uae
 
@@ -295,6 +326,8 @@ configs/rules/{kenya, tanzania}.yaml 의 psi_required: JEVIC 출처.
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
 | 🔗 ref | ZIMRA — Used Vehicle Import Procedures | Zimbabwe Revenue Authority (ZIMRA) | — | [열기](https://www.zimra.co.zw/) |
+| 📄 PDF | Guide to Importing in Zimbabwe (2023-06) | Trade Zimbabwe | 2023-06 | [원본](https://tradezimbabwe.com/wp-content/uploads/2023/06/Guide_to_Importing_in_Zimbabwe.pdf) · [로컬](docs/samples/zimbabwe/TradeZimbabwe_Guide_to_Importing.pdf) |
+| 📄 PDF | Zimbabwe Handbook (2018-05-17) — 환적·국경 절차 | Cross-Border Road Transport Agency (남아공) | 2018-05-17 | [원본](https://www.cbrta.co.za/uploads/files/2018-05-17-Zimbabwe-Handbook.pdf) · [로컬](docs/samples/zimbabwe/CBRTA_Zimbabwe_Handbook_2018-05-17.pdf) |
 
 **Notes:**
 

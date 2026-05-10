@@ -566,3 +566,210 @@ samples:
       해외경제정보드림 → 진출전략 → 국가 선택. 신규 13개국 모두 가이드 존재.
       각 국가 진출 시 시장 사이즈 + 규제 요약.
     verified_on: 2026-05-10
+
+  # ──────────────────────────────────────────────────────────────────────
+  # 직접 PDF — WebSearch (2026-05-10) 으로 발굴된 실제 다운로드 가능 자료
+  # FIDI Customs Guide 시리즈 (글로벌 표준) + 정부 직접 PDF + WCO/UNECE 등
+  # ──────────────────────────────────────────────────────────────────────
+
+  # ─────────────────────── FIDI 시리즈 (이주·통관 글로벌 표준 가이드)
+  - category: egypt
+    type: pdf
+    filename: EGYPT_Import_FIDI_Customs_Guide.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-01/EGYPT%20Import%20-%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Middle East & North Africa
+    title: Egypt Import — FIDI Customs Guide (2024-01)
+    issued: 2024-01
+    used_for: configs/rules/egypt.yaml — 통관 절차·서류 검증
+    verified_on: 2026-05-10
+
+  - category: jordan
+    type: pdf
+    filename: JORDAN_Import_FIDI_Customs_Guide.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-01/JORDAN%20Import%20-%20FIDI%20Customs%20Guides_0.pdf
+    source_org: FIDI Middle East & North Africa
+    title: Jordan Import — FIDI Customs Guide (2024-01)
+    issued: 2024-01
+    used_for: configs/rules/jordan.yaml — 5년 룰·ACID 검증
+    verified_on: 2026-05-10
+
+  - category: kazakhstan
+    type: pdf
+    filename: KAZAKHSTAN_Import_FIDI_Customs_Guide.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-07/KAZAKHSTAN%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI ADA (Asia)
+    title: Kazakhstan Import — FIDI Customs Guide (2024-07)
+    issued: 2024-07
+    used_for: configs/rules/kazakhstan.yaml — EAEU 통관 절차
+    verified_on: 2026-05-10
+
+  - category: costa_rica
+    type: pdf
+    filename: COSTA_RICA_Import_FIDI_Customs_Guide.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-01/COSTA%20RICA%20Import%20-%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Latin America
+    title: Costa Rica Import — FIDI Customs Guide (2024-01)
+    issued: 2024-01
+    used_for: configs/rules/costa_rica.yaml — TICA 절차 + 한-중미 FTA
+    verified_on: 2026-05-10
+
+  - category: azerbaijan
+    type: pdf
+    filename: AZERBAIJAN_Import_FIDI_Customs_Guide.pdf
+    url: https://www.fidi.org/sites/default/files/public/2022-01/AZERBAIJAN%20Import%20%E2%80%93%20FIDI%20Customs%20Guide_0.pdf
+    source_org: FIDI ADA Europe
+    title: Azerbaijan Import — FIDI Customs Guide (2022-01)
+    issued: 2022-01
+    used_for: configs/rules/azerbaijan.yaml — Single Window 절차
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 칠레 — 의회도서관 1차 자료 (vehiculos usados)
+  - category: chile
+    type: pdf
+    filename: BCN_Chile_Tributacion_Vehiculos_Usados_v4.pdf
+    url: https://obtienearchivo.bcn.cl/obtienearchivo?id=repositorio/10221/19957/5/Tributacion+Importacion+vehiculos+usados_v4.pdf
+    source_org: BCN — Biblioteca del Congreso Nacional de Chile
+    title: Tributación aplicable a importación de vehículos usados (v4)
+    used_for: configs/rules/chile.yaml — 5년 룰 + Additional Tax 산정
+    verified_on: 2026-05-10
+    notes: |
+      칠레 의회도서관 1차 자료. 1999년 이후 매년 reajustable (조정).
+      $7,503.55 USD 최대 추가세 + 차량 연식별 10% 감가.
+
+  # ─────────────────────── 멕시코 — SAT 직접 (스페인어 매뉴얼 3종)
+  - category: mexico
+    type: ref
+    url: http://omawww.sat.gob.mx/informacion_fiscal/normatividad/Documents/Manual_Aduanas_espanol.pdf
+    source_org: SAT — Administración General de Aduanas
+    title: Manual para la Importación y/o Exportación (스페인어)
+    used_for: configs/rules/mexico.yaml — VUCEM 절차 + 일반 통관
+    notes: |
+      자동 다운로드 실패 (sat.gob.mx 서버 외국 IP 차단 가능성).
+      브라우저로 직접 다운로드 후 docs/samples/mexico/ 에 저장 가능.
+    verified_on: 2026-05-10
+
+  - category: mexico
+    type: ref
+    url: http://omawww.sat.gob.mx/informacion_fiscal/normatividad/Documents/manual_importacion_vehiculos.pdf
+    source_org: SAT — Administración General de Aduanas
+    title: Manual de usuarios — trámite de internación temporal de vehículos
+    used_for: configs/rules/mexico.yaml — 차량 사용자 매뉴얼
+    notes: 자동 다운로드 실패 (10060 timeout) — 수동 다운로드 가능.
+    verified_on: 2026-05-10
+
+  - category: mexico
+    type: pdf
+    filename: SNICE_Decreto_Vehiculos_Usados_2024-07-04.pdf
+    url: https://www.snice.gob.mx/~oracle/SNICE_DOCS/Decreto_vehiculosusados-Usados_20240704-20240704.pdf
+    source_org: SNICE — Sistema Nacional de Información de Comercio Exterior
+    title: Decreto que regula la importación definitiva de vehículos usados (2024-07-04)
+    issued: 2024-07-04
+    used_for: configs/rules/mexico.yaml — 8~10년 연식 룰 + NOM 인증 1차 출처
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 나이지리아 — Pakistan Commerce 가 발간한 NG 프로필
+  - category: nigeria
+    type: ref
+    url: https://www.commerce.gov.pk/wp-content/uploads/2020/07/Import-Profile-Nigeria.pdf
+    source_org: Government of Pakistan — Ministry of Commerce
+    title: Import Profile — Nigeria (SONCAP / NCS / Form M 통합 가이드)
+    used_for: configs/rules/nigeria.yaml — SONCAP 인증 절차 + Form M
+    notes: HTTP 403 (UA 차단). 브라우저 직접 다운로드 가능.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 탄자니아 — TBS 직접 (PVoC + 중고차 specific)
+  - category: tanzania
+    type: ref
+    url: https://tbs.go.tz/uploads/files/DI_USED_VEHICLES_-_2020.pdf
+    source_org: Tanzania Bureau of Standards (TBS)
+    title: TBS Detailed Inspection — Used Vehicles (2020)
+    issued: 2020
+    used_for: configs/rules/tanzania.yaml — 8년 first_registration + 검사 항목
+    notes: |
+      SSL 인증서 hostname mismatch (tbs.go.tz vs www.tbs.go.tz).
+      중고차 specific 검사 매뉴얼 — RHD 의무 + roadworthiness 항목.
+      브라우저 직접 다운로드 가능. 우리 fetch 한 PVoC Programme Guideline
+      2025 + Harmonised Procedure 2종이 동일 내용 커버.
+    verified_on: 2026-05-10
+
+  - category: tanzania
+    type: pdf
+    filename: TBS_PVoC_Programme_Guideline_2025.pdf
+    url: https://www.tbs.go.tz/uploads/files/GUIDELINE%20FOR%20PVOC%20PROGRAMME%20-%202025.pdf
+    source_org: Tanzania Bureau of Standards (TBS)
+    title: Guideline for Pre-Shipment Verification of Conformity (PVoC) — 2025
+    issued: 2025
+    used_for: configs/rules/tanzania.yaml — JEVIC + TBS 인증 절차
+    verified_on: 2026-05-10
+
+  - category: tanzania
+    type: pdf
+    filename: TBS_PVoC_Harmonised_Procedure_Summary.pdf
+    url: https://trade.tanzania.go.tz/media/PVoC_HARMONISED_PR0CEDURE_(SUMMARISED)_1.pdf
+    source_org: Tanzania Trade Portal
+    title: PVoC Harmonised Procedure (Summarised)
+    used_for: configs/rules/tanzania.yaml — 5단계 검증 프로세스
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 짐바브웨 — 종합 가이드
+  - category: zimbabwe
+    type: pdf
+    filename: TradeZimbabwe_Guide_to_Importing.pdf
+    url: https://tradezimbabwe.com/wp-content/uploads/2023/06/Guide_to_Importing_in_Zimbabwe.pdf
+    source_org: Trade Zimbabwe
+    title: Guide to Importing in Zimbabwe (2023-06)
+    issued: 2023-06
+    used_for: configs/rules/zimbabwe.yaml — ASYCUDA + 80%+ 세금 산정
+    verified_on: 2026-05-10
+
+  - category: zimbabwe
+    type: pdf
+    filename: CBRTA_Zimbabwe_Handbook_2018-05-17.pdf
+    url: https://www.cbrta.co.za/uploads/files/2018-05-17-Zimbabwe-Handbook.pdf
+    source_org: Cross-Border Road Transport Agency (남아공)
+    title: Zimbabwe Handbook (2018-05-17) — 환적·국경 절차
+    issued: 2018-05-17
+    used_for: configs/rules/zimbabwe.yaml — Durban·Beira 환적 정보
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 아제르바이잔 — WCO/UNECE 권위 자료
+  - category: azerbaijan
+    type: ref
+    url: https://www.wcoomd.org/-/media/wco/public/global/pdf/topics/wto-atf/members-practices/art-10_4/azerbaijan-art-104.pdf?la=en
+    source_org: World Customs Organization (WCO)
+    title: Azerbaijan — WTO TFA Article 10.4 Members' Practices
+    used_for: configs/rules/azerbaijan.yaml — WTO 무역원활화협정 준수 출처
+    notes: SSL local issuer cert 누락 (wcoomd.org). 브라우저 직접 다운로드 가능.
+    verified_on: 2026-05-10
+
+  - category: azerbaijan
+    type: ref
+    url: https://unece.org/fileadmin/DAM/cefact/single_window/sw_cases/Download/Azerbaijan_eng.pdf
+    source_org: UNECE Centre for Trade Facilitation
+    title: "Single Window in the Republic of Azerbaijan — UN/CEFACT Case Study"
+    used_for: configs/rules/azerbaijan.yaml — Single Window 시스템 1차 출처
+    notes: HTTP 403 (UA 차단). 브라우저 직접 다운로드 가능.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 수단 — OFAC 직접
+  - category: sudan
+    type: pdf
+    filename: OFAC_Sudan_FACRL_SU_01.pdf
+    url: https://ofac.treasury.gov/media/7246/download
+    source_org: U.S. Treasury OFAC
+    title: OFAC FACRL-SU-01 — Sudan Sanctions Regulations
+    used_for: configs/rules/sudan.yaml — is_blocked + SANCTIONED_COUNTRIES 1차 근거
+    verified_on: 2026-05-10
+    notes: |
+      2018.6.29 OFAC SSR 제거 후에도 Section 1245 NDAA 2012 + EAR 적용.
+      U.S. persons 거래 가능하지만 BIS 라이선스 필요 가능성.
+
+  # ─────────────────────── 카자흐스탄 — Switzerland Global Enterprise
+  - category: kazakhstan
+    type: pdf
+    filename: SGE_Legal_Provisions_Kazakhstan.pdf
+    url: https://www.s-ge.com/sites/default/files/publication/free/legal-provisions-kazakhstan-s-ge-1703.pdf
+    source_org: Switzerland Global Enterprise
+    title: Legal Provisions — Kazakhstan
+    used_for: configs/rules/kazakhstan.yaml — EAEU 적용 법령 영문 요약
+    verified_on: 2026-05-10
