@@ -2,7 +2,7 @@
 
 이 파일은 `scripts/fetch_public_samples.py` 가 자동 생성합니다. 직접 편집하지 말고 `configs/samples_registry.yaml` 을 고치세요.
 
-총 77 항목 · 카테고리 24 개
+총 87 항목 · 카테고리 27 개
 
 
 ## algeria
@@ -10,6 +10,8 @@
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
 | 🔗 ref | Algeria Customs — 차량 수입 절차 | Direction Générale des Douanes (Algeria) | — | [열기](https://www.douane.gov.dz/) |
+| 📄 PDF | Algeria Import — FIDI Customs Guide (2024-01) | FIDI Middle East & North Africa | 2024-01 | [원본](https://www.fidi.org/sites/default/files/public/2024-01/ALGERIA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/algeria/ALGERIA_Import_FIDI_Customs_Guide_2024-01.pdf) |
+| 📄 PDF | Algeria Country Guide (2024-09) | IAM (International Association of Movers) | 2024-09 | [원본](https://iamovers.org/wp-content/uploads/2024/09/Algeria-Country-Guide-IAM.pdf) · [로컬](docs/samples/algeria/IAM_Algeria_Country_Guide_2024-09.pdf) |
 
 **Notes:**
 
@@ -69,11 +71,13 @@ FTA C/O 활용 시 자동차 관세 우대 큼.
 |------|------|------|--------|------|
 | 🔗 ref | Dominican Republic — Prohibited & Restricted Imports | U.S. Department of Commerce (Trade.gov) | — | [열기](https://www.trade.gov/country-commercial-guides/dominican-republic-prohibited-restricted-imports) |
 | 🔗 ref | Requirements for Importing Vehicles to the Dominican Republic | Contadores Dominicanos (현지 회계법인) | — | [열기](https://contadoresdominicanos.com/en/post/customs/requirements-for-importing-vehicles-to-the-dominican-republic/) |
+| 📄 PDF | Dominican Republic Import — FIDI Customs Guide (2024-10) | FIDI Latin America | 2024-10 | [원본](https://www.fidi.org/sites/default/files/public/2024-10/DOMINICAN%20REPUBLIC%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/dominican_republic/DOMINICAN_REPUBLIC_Import_FIDI_Customs_Guide_2024-10.pdf) |
 
 **Notes:**
 
 - **Requirements for Importing Vehicles to the Dominican Republic** — Law 04-07 (2007.01.05) + Decree 671 (2002.08.27) 명시.
 승용 5년 / 트럭 15년 / 엔진 200,000cc 한도.
+- **Dominican Republic Import — FIDI Customs Guide (2024-10)** — docs/validation/findings.md
 
 ## egypt
 
@@ -105,6 +109,7 @@ configs/rules/egypt.yaml 의 pre_registration_system: Nafeza_ACI 1차 출처.
 | 🔗 ref | ICUMS — Ghana 통관 단일 시스템 | ICUMS (Integrated Customs Management System) | — | [열기](https://icums.gov.gh/) |
 | 🔗 ref | GSA — Conformity Assessment for Imports | Ghana Standards Authority (GSA) | — | [열기](https://www.gsa.gov.gh/) |
 | 🔗 ref | Ghana DVLA — 차량 등록·검사 | DVLA Ghana (Driver & Vehicle Licensing Authority) | — | [열기](https://www.dvla.gov.gh/) |
+| 📄 PDF | Ghana Import — FIDI Customs Guide (2023-09) | FIDI Africa | 2023-09 | [원본](https://www.fidi.org/sites/default/files/public/2023-09/GHANA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide_0.pdf) · [로컬](docs/samples/ghana/GHANA_Import_FIDI_Customs_Guide_2023-09.pdf) |
 
 **Notes:**
 
@@ -194,6 +199,12 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 - **KOTRA — 국가별 진출전략 (요르단·UAE·이집트·카자흐 등)** — 해외경제정보드림 → 진출전략 → 국가 선택. 신규 13개국 모두 가이드 존재.
 각 국가 진출 시 시장 사이즈 + 규제 요약.
 
+## kyrgyzstan
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Kyrgyz Republic — Country Commercial Guide (2020) | U.S. Department of Commerce — Country Commercial Guides | 2020 | [원본](https://www.export-u.com/CCGs/2020/Kyrgyz-Republic-2020-CCG.pdf) · [로컬](docs/samples/kyrgyzstan/USDoC_CCG_Kyrgyz_Republic_2020.pdf) |
+
 ## libya
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
@@ -275,6 +286,19 @@ configs/rules/{kenya, tanzania}.yaml 의 psi_required: JEVIC 출처.
 - **CMA CGM Shipping Instructions Format** — 404 (URL 만료). cma-cgm.com 사이트에서 "Shipping Instructions" 검색해서 새 URL 확인 필요.
 대체로 Maersk_BL_example.pdf 와 CMA_CGM_paperless_BL.pdf 로 SI 양식 추정 가능.
 
+## south_africa
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | ITAC — Import Control Application Forms (IE462 등) | ITAC — International Trade Administration Commission of South Africa | — | [열기](https://www.itac.org.za/pages/services/import--export-control/import-control/application-forms) |
+| 📄 PDF | Importation of Motor Vehicles — Temporary Residents (1년 이상) | South African Embassy in Belgium | 2012-09 | [원본](http://www.southafrica.be/wp-content/uploads/2012/09/Importation-of-motor-vehicles-temporary-residents-longer-than-one-year.pdf) · [로컬](docs/samples/south_africa/SA_Embassy_Belgium_Vehicle_Import_Temporary_Residents.pdf) |
+| 📄 PDF | South Africa Import — FIDI Customs Guide (2024-09) | FIDI South Africa | 2024-09 | [원본](https://www.fidi.org/sites/default/files/public/2024-09/SOUTH%20AFRICA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/south_africa/SOUTH_AFRICA_Import_FIDI_Customs_Guide_2024-09.pdf) |
+
+**Notes:**
+
+- **ITAC — Import Control Application Forms (IE462 등)** — 개별 IE462/IE362 PDF 직접 URL 은 404 (사이트 리뉴얼). Application Forms
+페이지에서 최신 파일 다운로드 가능. LoA 첨부 없이 승인 안 됨.
+
 ## sudan
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
@@ -288,6 +312,17 @@ configs/rules/{kenya, tanzania}.yaml 의 psi_required: JEVIC 출처.
 2023~ 내전 + OFAC 제재 영향. 직수출 자동 차단 정당화.
 - **OFAC FACRL-SU-01 — Sudan Sanctions Regulations** — 2018.6.29 OFAC SSR 제거 후에도 Section 1245 NDAA 2012 + EAR 적용.
 U.S. persons 거래 가능하지만 BIS 라이선스 필요 가능성.
+
+## syria
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | Syria — Customs Laws & Import Regulations | ICRIC International (Federation of Removers) | — | [열기](https://icricinternational.org/wp-content/uploads/countries/syria/custom%20laws.pdf) |
+
+**Notes:**
+
+- **Syria — Customs Laws & Import Regulations** — 자동 fetch timeout — 브라우저 직접 다운로드 가능.
+2025년 신규: 15년 이내 차량 허용, 디젤 금지, 외교관·외국인만 수입 가능.
 
 ## tanzania
 
@@ -315,6 +350,7 @@ U.S. persons 거래 가능하지만 BIS 라이선스 필요 가능성.
 | 📄 PDF | Dubai Customs — Customer Guide Booklet (English) | Dubai Customs | — | [원본](https://www.dubaicustoms.gov.ae/en/OpenData/Publications/Customer_Guide_Booklet_EN.pdf) · [로컬](docs/samples/uae/Dubai_Customs_customer_guide_EN.pdf) |
 | 🔗 ref | Dubai Trade — Forms section | Dubai Trade | — | [열기](https://www.dubaitrade.ae/en/help/support-document/category/150-forms) |
 | 🔗 ref | UAE FTA — VAT on Used Vehicles | UAE Federal Tax Authority | — | [열기](https://www.fta.gov.ae/en/) |
+| 📄 PDF | United Arab Emirates Import — FIDI Customs Guide (2024-07) | FIDI UAE | 2024-07 | [원본](https://www.fidi.org/sites/default/files/public/2024-07/UNITED%20ARAB%20EMIRATES%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/uae/UAE_Import_FIDI_Customs_Guide_2024-07.pdf) |
 
 **Notes:**
 

@@ -773,3 +773,112 @@ samples:
     title: Legal Provisions — Kazakhstan
     used_for: configs/rules/kazakhstan.yaml — EAEU 적용 법령 영문 요약
     verified_on: 2026-05-10
+
+  # ──────────────────────────────────────────────────────────────────────
+  # WebSearch round 3 — 5개국 (KG/SY/GH/ZA/DZ) 0건 → 모두 보강
+  # ──────────────────────────────────────────────────────────────────────
+
+  - category: kyrgyzstan
+    type: pdf
+    filename: USDoC_CCG_Kyrgyz_Republic_2020.pdf
+    url: https://www.export-u.com/CCGs/2020/Kyrgyz-Republic-2020-CCG.pdf
+    source_org: U.S. Department of Commerce — Country Commercial Guides
+    title: Kyrgyz Republic — Country Commercial Guide (2020)
+    issued: 2020
+    used_for: configs/rules/kyrgyzstan.yaml — EAEU 가입 후 룰 + 영문 요약
+    verified_on: 2026-05-10
+
+  - category: syria
+    type: ref
+    url: https://icricinternational.org/wp-content/uploads/countries/syria/custom%20laws.pdf
+    source_org: ICRIC International (Federation of Removers)
+    title: Syria — Customs Laws & Import Regulations
+    used_for: configs/rules/syria.yaml — 정세 변동 + 차량 통관 절차
+    notes: |
+      자동 fetch timeout — 브라우저 직접 다운로드 가능.
+      2025년 신규: 15년 이내 차량 허용, 디젤 금지, 외교관·외국인만 수입 가능.
+    verified_on: 2026-05-10
+
+  - category: ghana
+    type: pdf
+    filename: GHANA_Import_FIDI_Customs_Guide_2023-09.pdf
+    url: https://www.fidi.org/sites/default/files/public/2023-09/GHANA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide_0.pdf
+    source_org: FIDI Africa
+    title: Ghana Import — FIDI Customs Guide (2023-09)
+    issued: 2023-09
+    used_for: configs/rules/ghana.yaml — 10년 한계 + ICUMS + DVLA 절차
+    verified_on: 2026-05-10
+
+  - category: south_africa
+    type: ref
+    url: https://www.itac.org.za/pages/services/import--export-control/import-control/application-forms
+    source_org: ITAC — International Trade Administration Commission of South Africa
+    title: ITAC — Import Control Application Forms (IE462 등)
+    used_for: configs/rules/south_africa.yaml — is_blocked 정당화 (사실상 미발급)
+    notes: |
+      개별 IE462/IE362 PDF 직접 URL 은 404 (사이트 리뉴얼). Application Forms
+      페이지에서 최신 파일 다운로드 가능. LoA 첨부 없이 승인 안 됨.
+    verified_on: 2026-05-10
+
+  - category: south_africa
+    type: pdf
+    filename: SA_Embassy_Belgium_Vehicle_Import_Temporary_Residents.pdf
+    url: http://www.southafrica.be/wp-content/uploads/2012/09/Importation-of-motor-vehicles-temporary-residents-longer-than-one-year.pdf
+    source_org: South African Embassy in Belgium
+    title: Importation of Motor Vehicles — Temporary Residents (1년 이상)
+    issued: 2012-09
+    used_for: configs/rules/south_africa.yaml — 임시거주자 케이스 절차 (사실상 유일 채널)
+    verified_on: 2026-05-10
+
+  - category: algeria
+    type: pdf
+    filename: ALGERIA_Import_FIDI_Customs_Guide_2024-01.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-01/ALGERIA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Middle East & North Africa
+    title: Algeria Import — FIDI Customs Guide (2024-01)
+    issued: 2024-01
+    used_for: configs/rules/algeria.yaml — 3년 룰 + ECTN + COC + 아랍어/프랑스어
+    verified_on: 2026-05-10
+
+  - category: algeria
+    type: pdf
+    filename: IAM_Algeria_Country_Guide_2024-09.pdf
+    url: https://iamovers.org/wp-content/uploads/2024/09/Algeria-Country-Guide-IAM.pdf
+    source_org: IAM (International Association of Movers)
+    title: Algeria Country Guide (2024-09)
+    issued: 2024-09
+    used_for: configs/rules/algeria.yaml — 보충 자료 (FIDI 와 cross-check)
+    verified_on: 2026-05-10
+
+  # ─────────────────────── UAE 추가 (FIDI 최신)
+  - category: uae
+    type: pdf
+    filename: UAE_Import_FIDI_Customs_Guide_2024-07.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-07/UNITED%20ARAB%20EMIRATES%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI UAE
+    title: United Arab Emirates Import — FIDI Customs Guide (2024-07)
+    issued: 2024-07
+    used_for: configs/rules/uae.yaml — Free Zone 거래 + GCC 통관 + Notify Party 추적
+    verified_on: 2026-05-10
+
+  # ─────────────────────── DO + ZA FIDI 최신 (2024-10, 2024-09)
+  - category: dominican_republic
+    type: pdf
+    filename: DOMINICAN_REPUBLIC_Import_FIDI_Customs_Guide_2024-10.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-10/DOMINICAN%20REPUBLIC%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Latin America
+    title: Dominican Republic Import — FIDI Customs Guide (2024-10)
+    issued: 2024-10
+    used_for: configs/rules/dominican_republic.yaml — DGA + 영사관 인증 + 5/10/15년 룰 cross-check (#001)
+    verified_on: 2026-05-10
+    notes: docs/validation/findings.md #001 의 5 vs 10 년 룰 분쟁 해소 자료.
+
+  - category: south_africa
+    type: pdf
+    filename: SOUTH_AFRICA_Import_FIDI_Customs_Guide_2024-09.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-09/SOUTH%20AFRICA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI South Africa
+    title: South Africa Import — FIDI Customs Guide (2024-09)
+    issued: 2024-09
+    used_for: configs/rules/south_africa.yaml — is_blocked 정당화 (LoA 사실상 미발급 1차 출처)
+    verified_on: 2026-05-10
