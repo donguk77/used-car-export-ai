@@ -21,7 +21,7 @@ class GeminiProvider:
         *,
         system: str,
         user: str,
-        max_tokens: int = 2048,
+        max_tokens: int = 4096,  # 2048 → 4096: AR/long quote 응답 truncate 방지
         temperature: float = 0.4,
     ) -> LLMResponse:
         config = self._types.GenerateContentConfig(

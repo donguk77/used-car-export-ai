@@ -6,6 +6,51 @@
 
 ---
 
+## 🟢 #040 — mail_writer prompt 강화 (관세 + 운임 자동 주입) (FIX 완료)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 fixed in backend
+
+이전: AI 메일 prompt 에 차량 spec + buyer + Incoterm 만 포함. 견적 메일이
+실제 비용 명시 없이 "Contact us for pricing" 같은 일반 문구.
+
+수정 (`backend/app/services/mail_writer.py`):
+
+1. **COUNTRY_TARIFFS dict** (28국 관세 데이터, tariff_matrix.md 기반):
+   - duty_pct + vat_pct + addl + total_pct_est + source
+   - 예: AE = 5%/5%/+처리수수료/10%+/Dubai Customs Guide
+
+2. **COUNTRY_SHIPPING dict** (28국 운임 + ETA, shipping_matrix.md 기반):
+   - transit_min/max + roro_min/max + container_min/max + port + note
+   - 예: DO = 28-35일 / RoRo $2k-2.8k / Container $3.5k-4.5k / Rio Haina
+
+3. **`_landing_cost_block()` helper** — quote 시나리오용 비용 분해:
+   - FOB Incheon + Freight + Insurance (CIF 1%) + Duty/VAT/Addl + Total
+   - 출처 명시 (FIDI / KEBS / Trade.gov 등)
+
+4. **`_shipping_block()` helper** — shipping 시나리오용 일정:
+   - Port of loading/discharge + Transit days + RoRo/Container 운임
+   - Vessel/Voyage TBA placeholder
+
+5. **SCENARIO_BRIEFS 강화** — quote/negotiate/shipping 모두 위 데이터 인용
+   하도록 명시.
+
+6. **System prompt 길이 제한** — "Body MUST be 250-400 words maximum
+   (longer responses get truncated)" + tabular format 유도.
+
+7. **Gemini max_output_tokens** 2048 → 4096 (긴 견적서 + 아랍어 unicode).
+
+라이브 검증:
+- ES (DO quote): "FOB $14,000 + Freight $2,400 + Insurance $140 = CIF
+  Rio Haina $16,540" + "Landing cost 40-100% of CIF" + 28-35일 transit +
+  영사관 인증 + DGA + 스페인어 번역 모두 정확.
+- AR (LY shipping): "ميناء التحميل: إنتشون / ميناء التفريغ: مصراتة /
+  مدة العبور: 32-40 يومًا" — 우리 데이터 정확 인용.
+
+→ 멘토 시연 시 AI 가 진짜 견적서 같은 상세 메일 자동 생성.
+
+---
+
 ## 🟢 #039 — 28국 항구 물류 매트릭스 신설 (Korea → 도착항 ETA + 운임)
 
 **발견일:** 2026-05-10
