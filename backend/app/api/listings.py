@@ -533,11 +533,20 @@ def generate_documents(
             final_path.unlink()
         tmp_path.rename(final_path)
 
-    # 5. DB 트랜잭션 — 기존 Document 행 삭제 + 새 행 insert (한 transaction)
-    db.execute(delete(Document).where(Document.listing_id == listing.id))
+    # 5. DB 트랜잭션 — 기존 Document version 추적 후 새 행 insert
+    # findings #048 — 이전엔 모든 row delete + v=1 hardcoded → regen 추적 불가.
+    # 이제 같은 (listing, doc_type) 의 MAX(version)+1 로 증가, 기존 row 는 유지.
+    # 파일은 여전히 latest 만 disk 에 남음 (invoice.pdf overwrite). DB row 만
+    # version 별 누적 — Phase 2: filename 에 version suffix 붙여서 history 보존.
+    from sqlalchemy import func
     documents: list[Document] = []
     for doc_type, _, _ in tmp_pairs:
         rel_url = f"/api/listings/{listing.id}/documents/{doc_type}.pdf"
+        max_v = db.execute(
+            select(func.coalesce(func.max(Document.version), 0))
+            .where(Document.listing_id == listing.id)
+            .where(Document.doc_type == doc_type)
+        ).scalar_one()
         doc = Document(
             listing_id=listing.id,
             doc_type=doc_type,
@@ -545,7 +554,7 @@ def generate_documents(
             pdf_url=rel_url,
             data_json={"invoice_no": doc_input.invoice_no},
             generated_by="ai",
-            version=1,
+            version=max_v + 1,  # MAX+1 증가
         )
         db.add(doc)
         documents.append(doc)
@@ -591,9 +600,24 @@ def list_documents(
     db: Annotated[Session, Depends(get_db)],
     user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],
 ) -> list[Document]:
+    """findings #048 — 각 doc_type 의 latest version 만 반환 (frontend 카드 중복 방지).
+    이전 모든 version 은 audit 용으로 DB 에는 보존."""
     _get_owned(db, listing_id, user_id)
+    from sqlalchemy import func
+    # subquery: 각 doc_type 의 MAX(version)
+    latest_subq = (
+        select(Document.doc_type, func.max(Document.version).label("max_v"))
+        .where(Document.listing_id == listing_id)
+        .group_by(Document.doc_type)
+        .subquery()
+    )
     return list(db.execute(
-        select(Document).where(Document.listing_id == listing_id).order_by(Document.doc_type)
+        select(Document)
+        .join(latest_subq,
+              (Document.doc_type == latest_subq.c.doc_type)
+              & (Document.version == latest_subq.c.max_v))
+        .where(Document.listing_id == listing_id)
+        .order_by(Document.doc_type)
     ).scalars())
 
 

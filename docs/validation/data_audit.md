@@ -17,7 +17,7 @@
 | 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
 | 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
 | Cross-validate 검증 | **32개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **41개** | #001 + #006~#047 |
+| 발견된 finding | **44개** | #001 + #006~#050 |
 | 신규 분석 문서 | **4건** | findings.md (34) · data_audit.md · tariff_matrix.md · shipping_matrix.md |
 | 관세 매트릭스 | **28/28 국가** | duty + VAT + 추가세 + 총 부담 + Sonata 도착 비용 (#038) |
 | 항구 물류 매트릭스 | **28/28 국가** | ETA + RoRo/Container 운임 + 운송 빈도 + Sonata DDP 기간 (#039) |
@@ -28,7 +28,11 @@
 | 시드 fresh 정리 fix | messages 0 (이전 14 orphan) | seed_demo_data.py 명시 delete (#044) |
 | 5 listings E2E 라이브 | 20/20 SUCCESS | mail (4 lang) + 4 PDFs/거래 모두 100% (#045) |
 | **Multi-finding stacking** | **6/6 케이스** | RU+OFAC / KG+strat 3-layer / SY warning / edge / XSS 안전 (#046) |
-| **Compliance perf** | **0.01 ms/buyer** | OFAC 18,947 entries 통합 후도 dict O(1), throughput 100k/sec (#047) |
+| Compliance perf | 0.01 ms/buyer | OFAC 18,947 entries 통합 후도 dict O(1), throughput 100k/sec (#047) |
+| Document.version 증가 fix | 1 → MAX+1 동작 | 이전 hardcoded v=1 bug 정정, GET 은 latest 만 (#048) |
+| Status FSM transition | **5/5 정방향 + 역방향 거부** | inquiry→quoted→negotiating→agreed→documenting→shipping (#049) |
+| **PDF 바이너리 무결성** | **20/20 valid PDF** | %PDF- 매직바이트 + 95-156KB (#045) |
+| Message + Doc DB persistence | 5 messages · 28 doc rows | ai_generated=True · content_text 정확 · audit trail 유지 (#050) |
 | YAML 수정 적용 | **9개국** | DO·KE·JO·GH·MX·ZW·KH + NG·AE (룰 변경 또는 docs 추가) |
 | YAML notes 추가 | **10개국** | KZ·DZ·ZA + PH·BD·LK + NG·AE·LK·ZW 보강 |
 | Backend 코드 fix | **3건** | mail-draft 언어 fallback (#026) + HS 분류기 (#034) + LLM 자동 retry (#035) |

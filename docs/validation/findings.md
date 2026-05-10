@@ -6,6 +6,94 @@
 
 ---
 
+## 🟢 #050 — Message + Document persistence 검증 (DB 무결성)
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+라이브 DB 점검:
+
+**Messages (5건 — Round 11 E2E 직후):**
+- 5 listings × 1 mail-draft 모두 저장
+- `ai_generated=True`, `ai_model='gemini-2.5-flash'` 표시
+- `content_text` 에 "Subject: ...\n\n<body>" 형식 저장
+- `language` / `scenario` 정확
+- 5 언어 모두 (es/ar×2/ru/en) 저장 + RTL 텍스트 무결성
+
+**Documents (총 28 rows after #048 fix):**
+- 4 listings × 4 doc_types × v1 = 16 rows (1회 생성)
+- DO listing × 4 doc_types × v1+v2+v3 = 12 rows (3회 regen)
+- Total: **28 rows**
+- GET endpoint 가 latest 만 반환 → frontend 4 cards 정상
+
+→ DB persistence 정상. mail/PDF 데이터 모두 audit trail 유지.
+
+---
+
+## 🟢 #049 — Status FSM transition 라이브 검증 (5 정방향 + 1 역방향 거부)
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+KE listing 으로 FSM 전환 시퀀스 검증:
+
+**정방향 5/5 OK:**
+- `inquiry` → `quoted` → `negotiating` → `agreed` → `documenting` → `shipping`
+
+**역방향 거부 OK:**
+- `shipping` → `inquiry` 시도:
+  - 거부 메시지: `"invalid status transition: 'shipping' → 'inquiry'.
+    Allowed from 'shipping': ['arrived', 'disputed', ...]"`
+  - 백엔드 `_FSM_TRANSITIONS` 표 정확 enforce
+
+→ FSM 정합성 100%. 멘토 시연 시 status 변경 demo 안전.
+
+---
+
+## 🐛 #048 — Document.version 항상 1 hardcoded 였음 (FIX)
+
+**발견일:** 2026-05-11
+**상태:** 🔴 bug → 🟢 fixed
+
+이전 `listings.py:548`:
+```python
+db.execute(delete(Document).where(Document.listing_id == listing.id))
+...
+doc = Document(..., version=1)  # hardcoded
+```
+
+regen 시 모든 Document row 삭제 + v=1 hard-default → version 컬럼 의미 없음.
+
+**수정:**
+```python
+# 기존 row 유지 + MAX(version)+1 로 새 row insert
+max_v = db.execute(
+    select(func.coalesce(func.max(Document.version), 0))
+    .where(Document.listing_id == listing.id)
+    .where(Document.doc_type == doc_type)
+).scalar_one()
+doc = Document(..., version=max_v + 1)
+```
+
+또한 `GET /api/listings/{id}/documents` 가 latest version 만 반환하도록
+subquery 추가 (frontend 카드 중복 방지):
+```python
+latest_subq = (select(doc_type, func.max(version)).group_by(doc_type)).subquery()
+return ... join(latest_subq) ...
+```
+
+라이브 검증:
+- 1차 생성: v1 (4종) ✓
+- 2차 regen: v2 (4종) ✓
+- 3차 regen: v3 (4종) ✓
+- DB total: 12 rows (v1+v2+v3 × 4 doc_types)
+- GET: v3 (4종, latest 만) ✓
+
+⚠️ 한계 (Phase 2): 파일 시스템은 여전히 `invoice.pdf` overwrite — old version
+PDF 파일 보존 안 됨. 파일명에 `_v{N}.pdf` suffix 붙이는 변경 필요.
+
+---
+
 ## 🟢 #047 — Compliance perf: OFAC 18,947 entries 도 0.01ms/buyer
 
 **발견일:** 2026-05-11
