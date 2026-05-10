@@ -1,0 +1,47 @@
+# 멕시코 — NOM 인증 + 까다로운 절차. 한-멕시코 FTA 미체결.
+# 출처: docs/used_car_export_top20_countries.md §15
+
+country:
+  code: MX
+  name_en: Mexico
+  name_ko: 멕시코
+  name_local: México
+  region: latin_america
+  primary_language: es
+  business_language: es
+  steering: LHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Manzanillo
+    - Veracruz
+    - Lázaro Cárdenas
+  pre_registration_system: VUCEM
+  consular_legalization: false
+  notes: |
+    한-멕시코 FTA 미체결 — 일반 관세.
+    NOM (Norma Oficial Mexicana) 인증 의무.
+    지역별 연식 제한 변동 (8~10년).
+    한국 직수출 비중 낮음 — 우선순위 낮음.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 8
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required:
+      - NOM
+    doc_translation_lang: es
+    consular_required: false
+    pre_registration: VUCEM
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - nom_certification
+      - translation_es
+    source_url: https://www.ventanillaunica.gob.mx
+    last_verified_at: 2026-05-09

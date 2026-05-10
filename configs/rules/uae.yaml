@@ -1,0 +1,44 @@
+# UAE — 가장 자유로운 재수출 허브, 영어 비즈니스 100%
+# 출처: docs/used_car_export_top20_countries.md §7
+
+country:
+  code: AE
+  name_en: United Arab Emirates
+  name_ko: 아랍에미리트
+  name_local: الإمارات العربية المتحدة
+  region: middle_east
+  primary_language: ar
+  business_language: en
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Jebel Ali
+    - Sharjah
+    - Khor Fakkan
+  pre_registration_system: Dubai_Trade
+  consular_legalization: false
+  notes: |
+    영어 비즈니스 100% — AI 메일 기본값 영어.
+    UAE 는 "최종 시장" 이 아니라 재수출 허브 — 시리아/이라크/예멘/아프리카로 재수출.
+    Notify Party 확인이 진짜 최종 목적지 추적의 핵심.
+    Free Zone (Jebel Ali Free Zone 등) 거래는 일반 통관과 다른 절차.
+
+rules:
+  - body_type_filter: null  # 전 차종 자유
+    age_limit_years: 10
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required: []
+    doc_translation_lang: null  # 영문 OK
+    consular_required: false
+    pre_registration: Dubai_Trade
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+    source_url: https://www.dubaitrade.ae
+    last_verified_at: 2026-05-09

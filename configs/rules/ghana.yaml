@@ -1,0 +1,47 @@
+# 가나 — 서아프리카 안정 시장. ICUMS + DVLA + Ghana Standards.
+# 출처: docs/used_car_export_top20_countries.md §12
+
+country:
+  code: GH
+  name_en: Ghana
+  name_ko: 가나
+  name_local: Ghana
+  region: africa
+  primary_language: en
+  business_language: en
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Tema
+  pre_registration_system: ICUMS
+  consular_legalization: false
+  notes: |
+    10년 초과 시 추징금(Penalty Tax) 부과 — 사실상 10년 한계.
+    DVLA + Ghana Standards Authority 검사.
+    Pre-Arrival Assessment Reporting (PAAR) 의무.
+    관세+VAT+NHIL+ECOWAS Levy 다층 세금.
+    영어 비즈니스.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 10
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required:
+      - DVLA_Inspection
+      - Ghana_Standards
+    doc_translation_lang: null
+    consular_required: false
+    pre_registration: ICUMS
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - dvla_certificate
+      - paar_report
+    source_url: https://www.icums.gov.gh
+    last_verified_at: 2026-05-09

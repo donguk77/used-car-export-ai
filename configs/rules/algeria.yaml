@@ -1,0 +1,49 @@
+# 알제리 — 사실상 신차만. 직수출 어려움 (리비아 경유 재수출 위주).
+# 출처: docs/used_car_export_top20_countries.md §14
+
+country:
+  code: DZ
+  name_en: Algeria
+  name_ko: 알제리
+  name_local: الجزائر
+  region: north_africa
+  primary_language: ar
+  business_language: fr
+  steering: LHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Algiers
+    - Oran
+  pre_registration_system: ECTN
+  consular_legalization: false
+  notes: |
+    일반 중고차 수입 거의 닫혀 있음 — 한국 중고차 알제리행은 대부분 리비아 경유 재수출.
+    직수출 시 ECTN 의무 + Certificate of Conformity (COC) + 인보이스 아랍어+프랑스어 병기.
+    프랑스어가 비즈니스 표준 (식민 영향) — AI 메일 기본값 프랑스어 + 아랍어 병기.
+    관세 + VAT 19% + 5~160% New/Used Vehicle Tax (차량 fiscal power 기반).
+    PoC 권고: 직수출보다 리비아 거점 재수출 모니터링이 현실적.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 3  # 사실상 신차만
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required:
+      - COC
+    doc_translation_lang: ar  # + fr 병기 권장
+    consular_required: false
+    pre_registration: ECTN
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - certificate_of_conformity
+      - ectn_certificate
+      - arabic_translation
+      - french_translation
+    source_url: https://www.douane.gov.dz
+    last_verified_at: 2026-05-09

@@ -73,12 +73,34 @@ export const RUSSIA_PROXY_COUNTRIES: ReadonlySet<string> = new Set([
   "KG", "KZ", "TJ", "AM", "UZ",
 ]);
 
+// 시드된 20개국 (configs/rules/*.yaml) + 참고용 KR/US/JP/RU
 export const COUNTRY_FLAG: Record<string, string> = {
+  // 라틴 아메리카
   DO: "🇩🇴",
+  CL: "🇨🇱",
+  MX: "🇲🇽",
+  CR: "🇨🇷",
+  // 아프리카
   KE: "🇰🇪",
-  KG: "🇰🇬",
+  NG: "🇳🇬",
+  GH: "🇬🇭",
+  TZ: "🇹🇿",
+  ZA: "🇿🇦",
+  ZW: "🇿🇼",
+  SD: "🇸🇩",
+  // 북아프리카
   LY: "🇱🇾",
+  EG: "🇪🇬",
+  DZ: "🇩🇿",
+  // 중동
+  JO: "🇯🇴",
+  AE: "🇦🇪",
   SY: "🇸🇾",
+  // 중앙아시아 / 코카서스
+  KG: "🇰🇬",
+  KZ: "🇰🇿",
+  AZ: "🇦🇿",
+  // 참고용 (시드 안 됨)
   RU: "🇷🇺",
   KR: "🇰🇷",
   US: "🇺🇸",

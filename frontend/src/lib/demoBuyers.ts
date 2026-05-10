@@ -140,18 +140,35 @@ export const DEMO_BUYER_PRESETS: BuyerFormPreset[] = [
 ];
 
 // ── 랜덤 바이어 생성기 ─────────────────────────────────────
-// import_rules 시드된 5개국으로 제한 — 미시드 국가는 거래 생성 시 404 유발.
-// (Phase 2 에서 시드 확장하면 풀도 자연스럽게 늘어남)
+// import_rules 시드된 20개국. SD/ZA 는 자동차단 카테고리 (PoC narrative 보존)
 const RANDOM_POOL = {
   countries: [
+    // 라틴 아메리카
     { code: "DO", names: ["Garcia Auto", "Hernandez Motors", "Lopez Trading"] },
+    { code: "CL", names: ["Santiago Motors", "Valparaíso Auto", "Andes Trading"] },
+    { code: "MX", names: ["Manzanillo Auto", "Veracruz Motors", "Yucatán Trading"] },
+    { code: "CR", names: ["San José Auto", "Limón Motors", "Pacífico Trading"] },
+    // 아프리카
     { code: "KE", names: ["Nairobi Auto", "Mombasa Motors", "Kamau Trading"] },
+    { code: "NG", names: ["Lagos Auto", "Apapa Trading", "Tinubu Motors"] },
+    { code: "GH", names: ["Tema Auto", "Accra Motors", "Kotoka Trading"] },
+    { code: "TZ", names: ["Dar es Salaam Auto", "Kilimanjaro Motors", "Zanzibar Trading"] },
+    { code: "ZW", names: ["Harare Auto", "Bulawayo Motors", "Victoria Trading"] },
+    // 북아프리카
     { code: "LY", names: ["Tripoli Auto", "Benghazi Trading", "Sahara Motors"] },
-    { code: "KG", names: ["Bishkek Auto", "Osh Trading", "Tian Shan Motors"] },
+    { code: "EG", names: ["Cairo Auto", "Alexandria Motors", "Nile Trading"] },
+    { code: "DZ", names: ["Algiers Auto", "Oran Motors", "Constantine Trading"] },
+    // 중동
+    { code: "JO", names: ["Aqaba Trading", "Amman Motors", "Petra Auto"] },
+    { code: "AE", names: ["Dubai Auto FZE", "Sharjah Motors", "Jebel Ali Trading"] },
     { code: "SY", names: ["Aleppo Trading", "Latakia Motors", "Homs Auto"] },
+    // 중앙아시아 / 코카서스
+    { code: "KG", names: ["Bishkek Auto", "Osh Trading", "Tian Shan Motors"] },
+    { code: "KZ", names: ["Almaty Auto", "Astana Motors", "Caspian Trading"] },
+    { code: "AZ", names: ["Baku Auto", "Ganja Motors", "Caspian Trading"] },
   ] as const,
-  contactFirstNames: ["Carlos", "Ahmed", "James", "Mohammed", "Daniel", "Khalid", "Adebayo"],
-  contactLastNames: ["Rodriguez", "Hassan", "Smith", "Al-Mansouri", "Kamau", "Okonkwo"],
+  contactFirstNames: ["Carlos", "Ahmed", "James", "Mohammed", "Daniel", "Khalid", "Adebayo", "Aibek", "Karim", "Pedro"],
+  contactLastNames: ["Rodriguez", "Hassan", "Smith", "Al-Mansouri", "Kamau", "Okonkwo", "Ibragimov", "Hadi", "García", "Mensah"],
 };
 
 function pick<T>(arr: readonly T[]): T {

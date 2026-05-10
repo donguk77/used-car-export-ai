@@ -1,0 +1,44 @@
+# 코스타리카 — 중미 SUV 강세. 한-중미 FTA (2019 발효).
+# 출처: docs/used_car_export_top20_countries.md §16
+
+country:
+  code: CR
+  name_en: Costa Rica
+  name_ko: 코스타리카
+  name_local: Costa Rica
+  region: latin_america
+  primary_language: es
+  business_language: es
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Limón
+    - Caldera
+  pre_registration_system: TICA
+  consular_legalization: false
+  notes: |
+    한-중미 FTA (2019 발효) — 코스타리카·엘살바도르·온두라스·니카라과·파나마 모두 포함.
+    FTA C/O 발급 시 관세 우대 큼.
+    연식 제한 미미 — 비교적 자유.
+    RTV (Revisión Técnica Vehicular) 도착 후 검사.
+
+rules:
+  - body_type_filter: null
+    age_limit_years: null  # 자유
+    steering_required: LHD_only
+    psi_required: []
+    doc_translation_lang: es
+    consular_required: false
+    pre_registration: TICA
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - fta_certificate_of_origin  # 한-중미 FTA 활용
+      - translation_es
+    source_url: https://www.hacienda.go.cr
+    last_verified_at: 2026-05-09

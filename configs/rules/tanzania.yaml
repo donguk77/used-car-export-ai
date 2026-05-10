@@ -1,0 +1,48 @@
+# 탄자니아 — JEVIC 의무. 우간다·르완다·부룬디 환적 허브.
+# 출처: docs/used_car_export_top20_countries.md §13
+
+country:
+  code: TZ
+  name_en: Tanzania
+  name_ko: 탄자니아
+  name_local: Tanzania
+  region: africa
+  primary_language: sw
+  business_language: en
+  steering: RHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Dar es Salaam
+  pre_registration_system: TANCIS
+  consular_legalization: false
+  notes: |
+    개인차 8년 — 8년 초과 시 추가 소비세.
+    JEVIC 선적 전 검사 필수.
+    TANCIS (Tanzania Customs Integrated System) 사전 등록.
+    TBS (Tanzania Bureau of Standards) 사전 신고.
+    Dar es Salaam 항은 우간다·르완다·부룬디 화물 환적 허브.
+    스와힐리어 공식이지만 비즈니스는 영어.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 8
+    age_basis: first_registration
+    steering_required: RHD_only
+    psi_required:
+      - JEVIC
+      - TBS
+    doc_translation_lang: null  # 영문 OK
+    consular_required: false
+    pre_registration: TANCIS
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - jevic_certificate
+      - tbs_certificate
+    source_url: https://www.tra.go.tz
+    last_verified_at: 2026-05-09

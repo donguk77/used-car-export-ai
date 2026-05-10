@@ -1,0 +1,44 @@
+# 짐바브웨 — RHD + Durban/Beira 경유. 10년 + 80%+ 세금.
+# 출처: docs/used_car_export_top20_countries.md §18
+
+country:
+  code: ZW
+  name_en: Zimbabwe
+  name_ko: 짐바브웨
+  name_local: Zimbabwe
+  region: africa
+  primary_language: en
+  business_language: en
+  steering: RHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports: []  # Durban(남아공) 또는 Beira(모잠비크) 경유
+  pre_registration_system: ASYCUDA_World
+  consular_legalization: false
+  notes: |
+    내륙국 — 모든 화물이 Durban (남아공) 또는 Beira (모잠비크) 환적.
+    ZIMRA (Zimbabwe Revenue Authority) 신고.
+    VID (Vehicle Inspection Department) 검사.
+    관세+VAT+추가세 80%+.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 10
+    age_basis: manufacture_year
+    steering_required: RHD_only
+    psi_required:
+      - VID_Inspection
+    doc_translation_lang: null
+    consular_required: false
+    pre_registration: ASYCUDA_World
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - vid_certificate
+      - transit_permit  # 남아공/모잠비크 경유
+    source_url: https://www.zimra.co.zw
+    last_verified_at: 2026-05-09

@@ -1,0 +1,47 @@
+# 이집트 — 양 5위, 사실상 신차만 (Nafeza ACI + GOEIC + 아랍어 의무)
+# 출처: docs/used_car_export_top20_countries.md §5
+
+country:
+  code: EG
+  name_en: Egypt
+  name_ko: 이집트
+  name_local: مصر
+  region: north_africa
+  primary_language: ar
+  business_language: en
+  steering: LHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Alexandria
+    - Damietta
+  pre_registration_system: Nafeza_ACI
+  consular_legalization: false
+  notes: |
+    이집트는 중고차 일반 수입이 사실상 어려움 — 개인 이주차 / 외교관 / 특수 분류 위주.
+    Nafeza(ACI) 사전 등록 의무 + GOEIC 사전 검사 + 인보이스·서류 아랍어 필수.
+    이집트상공회의소 인증 추가 필요.
+    PoC 권고: 직수출 대상 제외, 신차 위주 채널만 시도.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 1  # 사실상 신차만
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required:
+      - GOEIC
+    doc_translation_lang: ar
+    consular_required: true  # 이집트상공회의소 인증
+    pre_registration: Nafeza_ACI
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - goeic_inspection
+      - arabic_translation
+      - chamber_of_commerce_authentication
+    source_url: https://www.nafeza.gov.eg
+    last_verified_at: 2026-05-09

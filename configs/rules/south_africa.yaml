@@ -1,0 +1,49 @@
+# 남아공 — 신차만 허용 (사실상 진입 불가). 환승 허브로만 활용.
+# 출처: docs/used_car_export_top20_countries.md §17
+
+country:
+  code: ZA
+  name_en: South Africa
+  name_ko: 남아프리카공화국
+  name_local: South Africa
+  region: africa
+  primary_language: en
+  business_language: en
+  steering: RHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: true  # 일반 중고차 수입 사실상 전면 금지
+  main_ports:
+    - Durban
+  pre_registration_system: SARS
+  consular_legalization: false
+  notes: |
+    중고차 수입 사실상 전면 금지 (특수 케이스 제외).
+    한국 중고차의 남아공 직수출은 거의 없음.
+    Durban 항은 잠비아·짐바브웨·모잠비크행 화물의 환적 허브로만 활용.
+    ITAC (International Trade Administration Commission) 라이선스 사실상 불발급.
+    PoC 권고: 직수출 대상 제외, 환승만 카운트.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 0  # 사실상 신차만
+    age_basis: manufacture_year
+    steering_required: RHD_only
+    psi_required: []
+    doc_translation_lang: null
+    consular_required: false
+    pre_registration: SARS
+    blocked_conditions:
+      - field: vehicle_age_years
+        op: gt
+        value: 0
+        reason: "ITAC 라이선스 미발급 — 중고차 일반 수입 사실상 전면 금지"
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - itac_import_permit  # 사실상 발급 안 됨
+    source_url: https://www.sars.gov.za
+    last_verified_at: 2026-05-09

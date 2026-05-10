@@ -1,0 +1,41 @@
+# 아제르바이잔 — 코카서스 SUV 시장. 디젤 강세 + 4WD 수요.
+# 출처: docs/used_car_export_top20_countries.md §20
+
+country:
+  code: AZ
+  name_en: Azerbaijan
+  name_ko: 아제르바이잔
+  name_local: Azərbaycan
+  region: caucasus
+  primary_language: az
+  business_language: ru
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: true  # 러시아 인접 — 모니터링 권장
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Baku
+  pre_registration_system: Single_Window
+  consular_legalization: false
+  notes: |
+    산타페·쏘렌토 등 디젤 SUV 강세. 도로 사정으로 4WD 수요 큼.
+    러시아어가 비즈니스 표준 (아제리어 공식, 영어 일부).
+    KG/KZ 급은 아니지만 러시아 우회 의심 모니터링 권장.
+    위치상 해상 + 육로/철도 혼합 운송.
+
+rules:
+  - body_type_filter: null
+    age_limit_years: null  # 비교적 자유
+    steering_required: LHD_only
+    psi_required: []
+    doc_translation_lang: ru
+    consular_required: false
+    pre_registration: Single_Window
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+    source_url: https://www.customs.gov.az
+    last_verified_at: 2026-05-09

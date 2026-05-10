@@ -1,0 +1,46 @@
+# 칠레 — 양 9위. 산타페·쏘렌토 SUV 강세. 영사관 인증 필수.
+# 출처: docs/used_car_export_top20_countries.md §9
+
+country:
+  code: CL
+  name_en: Chile
+  name_ko: 칠레
+  name_local: Chile
+  region: latin_america
+  primary_language: es
+  business_language: es
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - San Antonio
+    - Valparaíso
+  pre_registration_system: SNA
+  consular_legalization: true
+  notes: |
+    한-칠레 FTA — C/O 활용 시 관세 우대 (양식이 일반 C/O 와 다름).
+    중고차는 사실상 5년 미만 + 영사관 사전 승인.
+    영어 비즈니스 거의 안 됨 — 스페인어 필수.
+    이주차 케이스 5년 완화.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 5
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required: []
+    doc_translation_lang: es
+    consular_required: true
+    pre_registration: SNA
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - consular_legalization
+      - translation_es
+      - fta_certificate_of_origin  # 한-칠레 FTA 활용 시
+    source_url: https://www.aduana.cl
+    last_verified_at: 2026-05-09

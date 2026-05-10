@@ -22,8 +22,9 @@ DIRECT_BLOCKED_COUNTRIES: set[str] = {"RU", "BY", "KP", "IR"}
 RUSSIA_PROXY_COUNTRIES: set[str] = {"KG", "KZ", "TJ", "AM", "UZ"}
 
 # OFAC/EU 제재 적용국 — direct_blocked 까진 아니지만 사전 조회·문서 추가 필요
-# (시리아: 2024.5 OFAC 부분 완화, 여전히 SDN 다수; 쿠바·미얀마 동일 카테고리)
-SANCTIONED_COUNTRIES: set[str] = {"SY", "CU", "MM"}
+# (시리아: 2024.5 OFAC 부분 완화, 여전히 SDN 다수; 수단: 2023~ 내전 + OFAC;
+#  쿠바·미얀마 동일 카테고리)
+SANCTIONED_COUNTRIES: set[str] = {"SY", "SD", "CU", "MM"}
 
 # 우회수출 의심 차량 속성 — 「전략물자 수출입고시」 별표 2의2 (2024.2.24 개정)
 RUSSIA_PROXY_ENGINE_CC_LIMIT: int = 2000

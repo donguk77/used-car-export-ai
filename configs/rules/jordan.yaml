@@ -1,0 +1,44 @@
+# 요르단 — 양 4위, 영어 비즈니스 강함, 친환경차 1위 (3,321대 / 2024)
+# 출처: docs/used_car_export_top20_countries.md §4
+
+country:
+  code: JO
+  name_en: Jordan
+  name_ko: 요르단
+  name_local: الأردن
+  region: middle_east
+  primary_language: ar
+  business_language: en
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Aqaba
+  pre_registration_system: ACID
+  consular_legalization: false
+  notes: |
+    정세 안정 + 영어 비즈니스 + 시리아 재수출 통로.
+    ACID 사전 등록은 출발 48시간 전 의무.
+    배기량 기반 누진세 영향 큼 — 1500cc 이하 인기.
+    친환경차(HEV/EV) 인보이스 명시 시 관세 우대 가능.
+    시리아 재수출 의심 패턴 모니터링 (큰 볼륨 + 짧은 기간 + 신규 바이어).
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 5
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required: []
+    doc_translation_lang: null  # 영문 OK
+    consular_required: false
+    pre_registration: ACID
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - export_declaration
+    source_url: https://www.customs.gov.jo
+    last_verified_at: 2026-05-09

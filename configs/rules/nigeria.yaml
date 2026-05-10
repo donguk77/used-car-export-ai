@@ -1,0 +1,47 @@
+# 나이지리아 — 서아프리카 1위, SONCAP 의무. 인구 2억+.
+# 출처: docs/used_car_export_top20_countries.md §11
+
+country:
+  code: NG
+  name_en: Nigeria
+  name_ko: 나이지리아
+  name_local: Nigeria
+  region: africa
+  primary_language: en
+  business_language: en
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Lagos (Apapa)
+    - Lagos (Tin Can Island)
+  pre_registration_system: NCS_BOdogwu
+  consular_legalization: false
+  notes: |
+    SONCAP (Standards Organisation of Nigeria Conformity Assessment Programme) 선적 전 필수.
+    NCS B'Odogwu 시스템 사전 등록.
+    Form M (Foreign Exchange Form M) — 외환 송금 사전 신청.
+    항만 혼잡으로 통관 지연 빈번 — 도착 예상일 +14일 버퍼 권장.
+    관세 + VAT + 레비 35~70%.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 15  # 사실상 정부 권장 10년
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required:
+      - SONCAP
+    doc_translation_lang: null  # 영문 OK
+    consular_required: false
+    pre_registration: NCS_BOdogwu
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - soncap_certificate
+      - form_m
+    source_url: https://www.son.gov.ng
+    last_verified_at: 2026-05-09

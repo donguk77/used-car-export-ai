@@ -1,0 +1,47 @@
+# 수단 — 미국·EU 제재 + 2023~ 내전. 직수출 자동 차단 권장.
+# 출처: docs/used_car_export_top20_countries.md §19
+
+country:
+  code: SD
+  name_en: Sudan
+  name_ko: 수단
+  name_local: السودان
+  region: africa
+  primary_language: ar
+  business_language: en
+  steering: LHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: true  # OFAC 제재 영향
+  is_blocked: true     # 정세 불안 + 제재
+  main_ports:
+    - Port Sudan
+  pre_registration_system: null
+  consular_legalization: false
+  notes: |
+    미국·EU 제재 영향 + 2023~ 내전.
+    한국 중고차의 수단행은 대부분 리비아·이집트 경유 재수출.
+    PoC 권고: 직수출 자동 차단 (OFAC + 정세 위험).
+    Notify Party 가 SD 인 경우 자동 검토 필요.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: null
+    steering_required: LHD_only
+    psi_required: []
+    doc_translation_lang: ar
+    consular_required: false
+    pre_registration: null
+    blocked_conditions:
+      - field: destination_country
+        op: eq
+        value: SD
+        reason: "OFAC 제재 + 내전 — 직수출 자동 차단. 재수출 케이스만 별도 검토."
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - ofac_compliance_check
+    source_url: https://sanctionssearch.ofac.treas.gov
+    last_verified_at: 2026-05-09

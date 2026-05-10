@@ -1,0 +1,56 @@
+# 카자흐스탄 — KG 와 동일 위험 + 시장 더 큼. EAEU 통합.
+# 출처: docs/used_car_export_top20_countries.md §6
+
+country:
+  code: KZ
+  name_en: Kazakhstan
+  name_ko: 카자흐스탄
+  name_local: Қазақстан
+  region: central_asia
+  primary_language: kk
+  business_language: ru
+  steering: LHD
+  is_high_risk: true
+  is_russia_proxy_risk: true
+  is_sanctioned: false
+  is_blocked: false
+  main_ports: []  # 육로 / 철도 위주 (블라디보스토크 → 시베리아 횡단)
+  pre_registration_system: EAEU
+  consular_legalization: false
+  notes: |
+    EAEU 회원국 — 러시아·키르기스스탄과 통합 통관.
+    2024 신차 +6.5%, 중고차 +248% 폭증 — 우회수출 위험 카테고리.
+    2023.1~ 외국 차량 등록 합법화 절차 강화.
+    러시아어가 비즈니스 표준 (영어 가능 인구 제한적).
+    육상 운송 비중 큼 (한국→블라디보스토크→철도).
+
+rules:
+  - body_type_filter: null
+    age_limit_years: null
+    steering_required: LHD_only
+    doc_translation_lang: ru
+    consular_required: false
+    pre_registration: EAEU
+    blocked_conditions:
+      - field: engine_cc
+        op: gt
+        value: 2000
+        unless: has_situational_license
+        reason: "내연 2,000cc 초과 — 산업통상자원부 상황허가 필요 (전략물자고시 2024.2.24)"
+      - field: fuel_type
+        op: in
+        value: [HEV, PHEV, BEV, EV, Hybrid]
+        unless: has_situational_license
+        reason: "하이브리드/EV 는 배기량 무관 전체 상황허가 대상"
+      - field: list_price_usd
+        op: gt
+        value: 50000
+        reason: "USD 50,000 초과 승용차는 수출금지 품목 (러시아 우회 차단)"
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - end_user_certificate
+      - situational_license
+    last_verified_at: 2026-05-09
