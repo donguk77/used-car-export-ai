@@ -179,7 +179,7 @@ export function VehicleNewPage() {
           {showPresets && (
             <div
               role="menu"
-              className="absolute right-0 top-full z-10 mt-1 w-80 rounded-md border bg-card shadow-lg"
+              className="absolute right-0 top-full z-50 mt-1 w-80 rounded-md border bg-card shadow-lg"
             >
               <div className="border-b px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 시연 시나리오 프리셋

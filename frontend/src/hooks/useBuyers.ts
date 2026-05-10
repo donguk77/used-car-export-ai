@@ -18,6 +18,10 @@ export function useBuyers(params?: { sanctions_status?: string }) {
   });
 }
 
+// 모든 mutation 은 ["buyers"] prefix 로 invalidate → 모든 필터 변형
+// (["buyers", "all"], ["buyers", "clean"], ...) 가 동시 갱신됨.
+// TanStack v5 partial-key 매칭으로 의도된 동작.
+
 export function useBuyer(id: string | undefined) {
   return useQuery({
     queryKey: ["buyer", id],

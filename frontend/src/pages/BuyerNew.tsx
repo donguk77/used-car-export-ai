@@ -20,7 +20,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useCreateBuyer } from "@/hooks/useBuyers";
-import { COUNTRY_FLAG } from "@/lib/constants";
+import {
+  COUNTRY_FLAG,
+  DIRECT_BLOCKED_COUNTRIES,
+  RUSSIA_PROXY_COUNTRIES,
+} from "@/lib/constants";
 import {
   DEMO_BUYER_PRESETS,
   EMPTY_BUYER_FORM,
@@ -47,6 +51,7 @@ export function BuyerNewPage() {
     setForm(data);
     setResult(null);
     setCreatedId(null);
+    createMutation.reset(); // 이전 에러 잔존 방지
     setShowPresets(false);
   };
 
@@ -54,6 +59,7 @@ export function BuyerNewPage() {
     setForm(generateRandomBuyer());
     setResult(null);
     setCreatedId(null);
+    createMutation.reset();
     setShowPresets(false);
   };
 
@@ -77,17 +83,23 @@ export function BuyerNewPage() {
     };
   }, [showPresets]);
 
-  const canSubmit = Boolean(form.company_name && form.country_code);
+  // 회사명 + 국가코드 정확히 2자리 (ISO 3166-1)
+  const canSubmit = Boolean(form.company_name && form.country_code.length === 2);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
     try {
-      // 빈 string 들 제거 — 백엔드가 null 처리
-      const payload = Object.fromEntries(
+      // 빈 string 들 제거 — 백엔드가 null 처리.
+      // 결과는 Partial<BuyerFormData> — useCreateBuyer 의 CreateBuyerInput 타입과 호환.
+      const payload: Partial<BuyerFormData> = Object.fromEntries(
         Object.entries(form).filter(([, v]) => v !== ""),
-      ) as BuyerFormData;
-      const r = await createMutation.mutateAsync(payload);
+      );
+      // country_code 는 필수 (위 canSubmit 가드)
+      const r = await createMutation.mutateAsync({
+        ...payload,
+        country_code: form.country_code,
+      });
       setResult(r.compliance);
       setCreatedId(r.buyer.id);
     } catch {
@@ -127,7 +139,7 @@ export function BuyerNewPage() {
           {showPresets && (
             <div
               role="menu"
-              className="absolute right-0 top-full z-10 mt-1 w-96 rounded-md border bg-card shadow-lg"
+              className="absolute right-0 top-full z-50 mt-1 w-96 rounded-md border bg-card shadow-lg"
             >
               <div className="border-b px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 시연 시나리오 프리셋 (compliance 결과 미리보기)
@@ -184,6 +196,7 @@ export function BuyerNewPage() {
                 onChange={(v) => set("country_code", v.toUpperCase().slice(0, 2))}
                 placeholder="DO"
                 className="font-mono uppercase"
+                maxLength={2}
               />
               <Field
                 label="도시"
@@ -336,10 +349,10 @@ function ComplianceResultCard({
             <div className="flex items-center gap-2 text-xs">
               <span className="text-base">{COUNTRY_FLAG[country] ?? "🌐"}</span>
               <span className="font-mono">{country}</span>
-              {country === "RU" && (
+              {DIRECT_BLOCKED_COUNTRIES.has(country) && (
                 <Badge variant="destructive" className="ml-auto">미리보기: 직접 차단</Badge>
               )}
-              {["KG", "KZ", "TJ", "AM", "UZ"].includes(country) && (
+              {RUSSIA_PROXY_COUNTRIES.has(country) && (
                 <Badge variant="warning" className="ml-auto">미리보기: 경고</Badge>
               )}
             </div>
@@ -420,6 +433,7 @@ function Field({
   type = "text",
   placeholder,
   className,
+  maxLength,
 }: {
   label: string;
   value: string;
@@ -427,6 +441,7 @@ function Field({
   type?: string;
   placeholder?: string;
   className?: string;
+  maxLength?: number;
 }) {
   return (
     <div className="space-y-1.5">
@@ -437,6 +452,7 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={className}
+        maxLength={maxLength}
       />
     </div>
   );

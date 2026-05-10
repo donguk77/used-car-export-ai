@@ -124,7 +124,10 @@ export function BuyerDetailPage() {
 
       {recheckMutation.isError && (
         <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-          재검사 실패: {(recheckMutation.error as Error)?.message}
+          재검사 실패:{" "}
+          {recheckMutation.error instanceof AxiosError
+            ? (recheckMutation.error.response?.data?.detail ?? recheckMutation.error.message)
+            : (recheckMutation.error as Error)?.message}
         </div>
       )}
 

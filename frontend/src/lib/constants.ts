@@ -60,6 +60,19 @@ export const FUEL_LABEL: Record<string, string> = {
   CNG: "CNG",
 };
 
+/**
+ * 백엔드 backend/app/core/compliance.py 와 동기화 유지.
+ * - DIRECT_BLOCKED_COUNTRIES: 직접 수출 차단 (대외무역법/제재)
+ * - RUSSIA_PROXY_COUNTRIES: EAEU/CIS — 우회수출 위험 카테고리
+ */
+export const DIRECT_BLOCKED_COUNTRIES: ReadonlySet<string> = new Set([
+  "RU", "BY", "KP", "IR",
+]);
+
+export const RUSSIA_PROXY_COUNTRIES: ReadonlySet<string> = new Set([
+  "KG", "KZ", "TJ", "AM", "UZ",
+]);
+
 export const COUNTRY_FLAG: Record<string, string> = {
   DO: "🇩🇴",
   KE: "🇰🇪",

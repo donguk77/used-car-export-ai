@@ -75,7 +75,12 @@ export function MarketplaceLanding() {
               >
                 Browse Inventory <ArrowRight className="h-4 w-4" />
               </Link>
-              <button className="inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
+              <button
+                type="button"
+                aria-disabled
+                title="Auction module — Phase 2"
+                className="inline-flex cursor-not-allowed items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white/60"
+              >
                 <Gavel className="h-4 w-4" /> Next Auction
               </button>
             </div>
@@ -237,7 +242,7 @@ export function MarketplaceLanding() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-            <StatCard value={(vehicles?.length ?? 0).toString()} label="Vehicles in stock" hint="Updated daily" />
+            <StatCard value={(vehicles?.length ?? 0).toString()} suffix="+" label="Vehicles in stock" hint="Updated daily" />
             <StatCard value="5" label="Destination countries" hint="DO · KE · LY · KG · SY" />
             <StatCard value="5" label="Languages supported" hint="EN · ES · AR · RU · KR" />
             <StatCard value="4" label="Auto-generated docs" hint="Invoice · PL · SI · C/O" />
@@ -257,7 +262,12 @@ export function MarketplaceLanding() {
               Live bidding every Wednesday · Reserve your seat with one click.
             </p>
           </div>
-          <button type="button" className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100">
+          <button
+            type="button"
+            aria-disabled
+            title="Auction module — Phase 2"
+            className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-white/30 px-6 py-3 text-sm font-semibold text-slate-200"
+          >
             <Gavel className="h-4 w-4" /> Check the next Auction
           </button>
         </div>
@@ -266,12 +276,22 @@ export function MarketplaceLanding() {
   );
 }
 
-function StatCard({ value, label, hint }: { value: string; label: string; hint: string }) {
+function StatCard({
+  value,
+  suffix,
+  label,
+  hint,
+}: {
+  value: string;
+  suffix?: string; // "+" 같은 trailing — 정확한 숫자엔 생략
+  label: string;
+  hint: string;
+}) {
   return (
     <div className="text-center">
       <p className="text-4xl font-extrabold tracking-tight text-slate-900 tabular-nums sm:text-5xl">
         {value}
-        <span className="text-2xl font-bold text-amber-500">+</span>
+        {suffix && <span className="text-2xl font-bold text-amber-500">{suffix}</span>}
       </p>
       <p className="mt-2 text-sm font-semibold text-slate-700">{label}</p>
       <p className="mt-0.5 text-[11px] text-slate-500">{hint}</p>
