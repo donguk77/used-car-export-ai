@@ -2,8 +2,57 @@
 
 이 파일은 `scripts/fetch_public_samples.py` 가 자동 생성합니다. 직접 편집하지 말고 `configs/samples_registry.yaml` 을 고치세요.
 
-총 31 항목 · 카테고리 12 개
+총 58 항목 · 카테고리 24 개
 
+
+## algeria
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | Algeria Customs — 차량 수입 절차 | Direction Générale des Douanes (Algeria) | — | [열기](https://www.douane.gov.dz/) |
+
+**Notes:**
+
+- **Algeria Customs — 차량 수입 절차** — 아랍어/프랑스어 사이트. ECTN 사전 등록 의무.
+configs/rules/algeria.yaml — 사실상 신차만 통과.
+
+## azerbaijan
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | Azerbaijan Customs — Single Window | State Customs Committee of Azerbaijan | — | [열기](https://customs.gov.az/en/) |
+
+**Notes:**
+
+- **Azerbaijan Customs — Single Window** — configs/rules/azerbaijan.yaml 의 pre_registration_system: Single_Window 출처.
+러시아어 비즈니스 표준. 코카서스 SUV 시장.
+
+## chile
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | Chile Customs — 차량 수입 절차 | Servicio Nacional de Aduanas de Chile (SNA) | — | [열기](https://www.aduana.cl/aduana/site/edic/base/port/inicio.html) |
+| 🔗 ref | 한-칠레 FTA — C/O 양식 + 활용 가이드 | 한국-칠레 FTA 종합지원포털 | — | [열기](https://www.fta.go.kr/cl/) |
+
+**Notes:**
+
+- **Chile Customs — 차량 수입 절차** — configs/rules/chile.yaml 의 pre_registration_system: SNA 출처.
+스페인어 사이트 / 영문 일부.
+- **한-칠레 FTA — C/O 양식 + 활용 가이드** — FTA C/O 활용 시 차량 관세 우대. 양식이 일반 C/O 와 다름 — 별도 파일.
+configs/rules/chile.yaml 의 fta_certificate_of_origin 출처.
+
+## costa_rica
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | TICA — Sistema de Información para el Control Aduanero | Ministerio de Hacienda — TICA | — | [열기](https://www.hacienda.go.cr/contenido/12-tica) |
+| 🔗 ref | 한-중미 FTA (2019 발효) — C/O 양식 + 6개국 활용 가이드 | 한국-중미 FTA 종합지원포털 | — | [열기](https://www.fta.go.kr/centralamerica/) |
+
+**Notes:**
+
+- **TICA — Sistema de Información para el Control Aduanero** — 코스타리카 통관 시스템.
+- **한-중미 FTA (2019 발효) — C/O 양식 + 6개국 활용 가이드** — 코스타리카·엘살바도르·온두라스·니카라과·파나마 + 과테말라.
+FTA C/O 활용 시 자동차 관세 우대 큼.
 
 ## dominican_republic
 
@@ -17,12 +66,42 @@
 - **Requirements for Importing Vehicles to the Dominican Republic** — Law 04-07 (2007.01.05) + Decree 671 (2002.08.27) 명시.
 승용 5년 / 트럭 15년 / 엔진 200,000cc 한도.
 
+## egypt
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | Nafeza Portal — Advance Cargo Information (ACI) entry | Nafeza (Egyptian Single Window for Foreign Trade) | — | [열기](https://www.nafeza.gov.eg/en/) |
+| 🔗 ref | Egyptian Customs Authority — Tariff & Procedures | Egyptian Customs Authority | — | [열기](https://www.customs.gov.eg/) |
+| 🔗 ref | GOEIC — 수입 사전 검사 인증 | GOEIC (General Organization for Export & Import Control) | — | [열기](https://www.goeic.gov.eg/) |
+
+**Notes:**
+
+- **Nafeza Portal — Advance Cargo Information (ACI) entry** — ACI 사전 등록 의무. 이집트 도착 모든 화물 적용. 직접 PDF 적고 JS 렌더링.
+configs/rules/egypt.yaml 의 pre_registration_system: Nafeza_ACI 1차 출처.
+- **Egyptian Customs Authority — Tariff & Procedures** — 차량 HS 분류 + 관세율 검색. 아랍어 우선 / 영어 일부.
+- **GOEIC — 수입 사전 검사 인증** — 차량 인증 사전 검사 의무. 아랍어 사이트.
+
 ## fta_co
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
 | 📄 PDF | AK FTA Certificate of Origin Form | ASEAN Secretariat (Korea-ASEAN FTA) | — | [원본](https://akfta.asean.org/uploads/docs/akfta-certificate-of-origin-form.pdf) · [로컬](docs/samples/fta_co/AKFTA_certificate_of_origin_form.pdf) |
 | 📄 PDF | ANNEX 5B — Format of the Certificate of Origin issued by Korea | KOTRA / fta.motir.go.kr | — | [원본](https://fta.motir.go.kr/webmodule/_PSD_FTA/sg/1/eng/CHAPTER5_Annex5B.pdf) · [로컬](docs/samples/fta_co/Korea_FTA_Annex5B_CO_format.pdf) |
+
+## ghana
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | ICUMS — Ghana 통관 단일 시스템 | ICUMS (Integrated Customs Management System) | — | [열기](https://icums.gov.gh/) |
+| 🔗 ref | GSA — Conformity Assessment for Imports | Ghana Standards Authority (GSA) | — | [열기](https://www.gsa.gov.gh/) |
+| 🔗 ref | Ghana DVLA — 차량 등록·검사 | DVLA Ghana (Driver & Vehicle Licensing Authority) | — | [열기](https://www.dvla.gov.gh/) |
+
+**Notes:**
+
+- **ICUMS — Ghana 통관 단일 시스템** — configs/rules/ghana.yaml 의 pre_registration_system: ICUMS 출처.
+Pre-Arrival Assessment Reporting (PAAR) 포함.
+- **GSA — Conformity Assessment for Imports** — 차량 안전·환경 기준 검사 출처.
+- **Ghana DVLA — 차량 등록·검사** — 도착 후 차량 등록 절차.
 
 ## incoterms
 
@@ -40,10 +119,24 @@
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
 | 🔗 ref | Jordan Customs eForms — 공식 폼 페이지 | Jordan Customs | — | [열기](https://www.customs.gov.jo/en/eForms.aspx) |
+| 🔗 ref | Jordan Customs Tariff — HS Code 검색 | Jordan Customs | — | [열기](https://www.customs.gov.jo/en/Pages/CustomsTariff.aspx) |
 
 **Notes:**
 
 - **Jordan Customs eForms — 공식 폼 페이지** — 영문 페이지 직접 PDF 적음. 아랍어 버전이 더 많음.
+- **Jordan Customs Tariff — HS Code 검색** — 차량 배기량 기반 누진세 — 1500cc 이하 인기.
+
+## kazakhstan
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | KGD — Customs procedures (English) | Kazakhstan State Revenue Committee (KGD) | — | [열기](https://kgd.gov.kz/en) |
+| 🔗 ref | EAEU — Customs Tariff & Non-Tariff Regulation | Eurasian Economic Commission (EAEU) | — | [열기](https://eec.eaeunion.org/en/comission/department/dotr/) |
+
+**Notes:**
+
+- **KGD — Customs procedures (English)** — 차량 통관 절차 + EAEU 통합 룰. 러시아어/카자흐어 우선.
+- **EAEU — Customs Tariff & Non-Tariff Regulation** — 러시아·카자흐·키르기스·아르메니아·벨라루스 통합 룰. 우회수출 차단 핵심 출처.
 
 ## kenya
 
@@ -80,10 +173,13 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 |------|------|------|--------|------|
 | 🔗 ref | 2026 케냐 진출전략 (디지털자료) | KOTRA Open Knowledge Repository | — | [열기](https://openknowledge.kotra.or.kr/handle/2014.oak/33862) |
 | 🔗 ref | 수출, 더 이상 어렵지 않아요 — 온·오프라인 가이드북 | KOTRA | — | [열기](https://openknowledge.kotra.or.kr/handle/2014.oak/33740) |
+| 🔗 ref | KOTRA — 국가별 진출전략 (요르단·UAE·이집트·카자흐 등) | KOTRA 해외경제정보드림 | — | [열기](https://news.kotra.or.kr/user/globalAllBbs/kotranews/list/2/globalBbsDataAllList.do?MENU_ID=180&CATE_TOTAL_CD=181) |
 
 **Notes:**
 
 - **2026 케냐 진출전략 (디지털자료)** — JS 렌더링. 직접 방문해서 PDF 다운로드.
+- **KOTRA — 국가별 진출전략 (요르단·UAE·이집트·카자흐 등)** — 해외경제정보드림 → 진출전략 → 국가 선택. 신규 13개국 모두 가이드 존재.
+각 국가 진출 시 시장 사이즈 + 규제 요약.
 
 ## libya
 
@@ -93,12 +189,45 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 | 📄 PDF | ACI — Registration for Importers (English) | Libya Customs Authority | 2024-07 | [원본](https://customs.gov.ly/wp-content/uploads/2024/07/ACI-Registration-for-Importers-English-Version.pdf) · [로컬](docs/samples/libya/Libya_ACI_2024-07_importer_registration_EN.pdf) |
 | 📄 PDF | ACI — Registration for Exporters / Exporter Representatives (English) | Libya Customs Authority | 2024-07 | [원본](https://customs.gov.ly/wp-content/uploads/2024/07/ACI-Registration-for-Exporters-Exporter-Representatives-English-Version.pdf) · [로컬](docs/samples/libya/Libya_ACI_2024-07_exporter_registration_EN.pdf) |
 
+## mexico
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | VUCEM — Mexico Single Window for Foreign Trade | VUCEM (Ventanilla Única de Comercio Exterior Mexicana) | — | [열기](https://www.ventanillaunica.gob.mx/vucem/index.htm) |
+| 🔗 ref | SAT — Mexican Customs Procedures | SAT (Servicio de Administración Tributaria) — Aduanas | — | [열기](https://www.sat.gob.mx/aduanas) |
+
+**Notes:**
+
+- **VUCEM — Mexico Single Window for Foreign Trade** — 차량 사전 등록 의무. 스페인어.
+- **SAT — Mexican Customs Procedures** — 일반 관세 적용 (한-멕시코 FTA 미체결).
+
+## nigeria
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | NCS — B'Odogwu 통관 시스템 | Nigeria Customs Service (NCS) | — | [열기](https://www.customs.gov.ng/) |
+| 🔗 ref | SONCAP — Standards Organisation of Nigeria Conformity Assessment Programme | Standards Organisation of Nigeria (SON) | — | [열기](https://son.gov.ng/soncap/) |
+
+**Notes:**
+
+- **NCS — B'Odogwu 통관 시스템** — configs/rules/nigeria.yaml 의 pre_registration_system: NCS_BOdogwu 출처.
+Form M (외환 송금 사전 신청) 의무.
+- **SONCAP — Standards Organisation of Nigeria Conformity Assessment Programme** — 선적 전 인증 의무. Intertek/SGS/Cotecna 발행.
+
 ## psi
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
 | 📄 PDF | SGS PCA Nigeria Datasheet (Pre-Arrival Conformity Assessment) | SGS | — | [원본](https://www.sgs.com/en/-/media/sgscorp/documents/corporate/brochures/sgs-pca-nigeria-datasheet-a4-en-v21.cdn.en.pdf) · [로컬](docs/samples/psi/SGS_PCA_Nigeria_datasheet.pdf) |
 | 📄 PDF | SONCAP Approved Fees (Aug 2022) | Standards Organisation of Nigeria (SON) | 2022-08 | [원본](https://son.gov.ng/wp-content/uploads/2022/08/SONCAP-Approved-Fees-Aug-2022.pdf) · [로컬](docs/samples/psi/SON_SONCAP_approved_fees_2022-08.pdf) |
+| 🔗 ref | JEVIC — Pre-Shipment Inspection (Korea/Japan → Africa) | JEVIC (Japan Export Vehicle Inspection Center) | — | [열기](https://www.jevic.com/) |
+| 🔗 ref | Intertek — Government Conformity Assessment (PSI) | Intertek | — | [열기](https://www.intertek.com/government/inspection/conformity-assessment/) |
+
+**Notes:**
+
+- **JEVIC — Pre-Shipment Inspection (Korea/Japan → Africa)** — 케냐·탄자니아·우간다·잠비아 등 의무. 한국 평택·인천에서 검사.
+configs/rules/{kenya, tanzania}.yaml 의 psi_required: JEVIC 출처.
+- **Intertek — Government Conformity Assessment (PSI)** — SONCAP (NG), PVOC (KE), 모잠비크 PCA 등 다국 인증.
 
 ## references_misc
 
@@ -125,13 +254,48 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 - **CMA CGM Shipping Instructions Format** — 404 (URL 만료). cma-cgm.com 사이트에서 "Shipping Instructions" 검색해서 새 URL 확인 필요.
 대체로 Maersk_BL_example.pdf 와 CMA_CGM_paperless_BL.pdf 로 SI 양식 추정 가능.
 
+## sudan
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | OFAC — Sudan Sanctions Program | U.S. Treasury OFAC | — | [열기](https://ofac.treasury.gov/sanctions-programs-and-country-information/sudan-sanctions) |
+
+**Notes:**
+
+- **OFAC — Sudan Sanctions Program** — configs/rules/sudan.yaml 의 is_blocked + SANCTIONED_COUNTRIES 출처.
+2023~ 내전 + OFAC 제재 영향. 직수출 자동 차단 정당화.
+
+## tanzania
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | TRA — TANCIS 통관 시스템 | Tanzania Revenue Authority (TRA) | — | [열기](https://www.tra.go.tz/) |
+| 🔗 ref | TBS — 수입 차량 사전 신고 | Tanzania Bureau of Standards (TBS) | — | [열기](https://www.tbs.go.tz/) |
+
+**Notes:**
+
+- **TRA — TANCIS 통관 시스템** — configs/rules/tanzania.yaml 의 pre_registration_system: TANCIS 출처.
+- **TBS — 수입 차량 사전 신고** — TBS pre-shipment verification.
+
 ## uae
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
 | 📄 PDF | Dubai Customs — Customer Guide Booklet (English) | Dubai Customs | — | [원본](https://www.dubaicustoms.gov.ae/en/OpenData/Publications/Customer_Guide_Booklet_EN.pdf) · [로컬](docs/samples/uae/Dubai_Customs_customer_guide_EN.pdf) |
 | 🔗 ref | Dubai Trade — Forms section | Dubai Trade | — | [열기](https://www.dubaitrade.ae/en/help/support-document/category/150-forms) |
+| 🔗 ref | UAE FTA — VAT on Used Vehicles | UAE Federal Tax Authority | — | [열기](https://www.fta.gov.ae/en/) |
 
 **Notes:**
 
 - **Dubai Trade — Forms section** — 차량 declaration 포함 다양한 폼. 수동 탐색 필요.
+- **UAE FTA — VAT on Used Vehicles** — 5% VAT 표준. Free Zone 거래는 면세 가능.
+
+## zimbabwe
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 🔗 ref | ZIMRA — Used Vehicle Import Procedures | Zimbabwe Revenue Authority (ZIMRA) | — | [열기](https://www.zimra.co.zw/) |
+
+**Notes:**
+
+- **ZIMRA — Used Vehicle Import Procedures** — ASYCUDA World 시스템 사용. Durban (남아공) 또는 Beira (모잠비크) 환적.

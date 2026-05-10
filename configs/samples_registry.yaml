@@ -302,3 +302,267 @@ samples:
     title: Important information & Regulation by country for Japanese used cars
     notes: 200+ 국가별 중고차 수입 규제 한눈에. 참조용 (도착국 추가 시 빠른 lookup).
     verified_on: 2026-05-09
+
+  # ──────────────────────────────────────────────────────────────────────
+  # 신규 13개국 1차 자료 — 2026-05-10 추가 (5→20개국 확장 후 보강)
+  # 정부 도메인 / 공식 KOTRA / OFAC 등 권위 자료만. 다운로드 가능성 검증 못 한
+  # URL 은 ref 타입 — fetch 스크립트가 REGISTRY.md 에 링크만 기록함.
+  # ──────────────────────────────────────────────────────────────────────
+
+  # ─────────────────────── 이집트 (EG) — Nafeza ACI / GOEIC
+  - category: egypt
+    type: ref
+    url: https://www.nafeza.gov.eg/en/
+    source_org: Nafeza (Egyptian Single Window for Foreign Trade)
+    title: Nafeza Portal — Advance Cargo Information (ACI) entry
+    notes: |
+      ACI 사전 등록 의무. 이집트 도착 모든 화물 적용. 직접 PDF 적고 JS 렌더링.
+      configs/rules/egypt.yaml 의 pre_registration_system: Nafeza_ACI 1차 출처.
+    verified_on: 2026-05-10
+
+  - category: egypt
+    type: ref
+    url: https://www.customs.gov.eg/
+    source_org: Egyptian Customs Authority
+    title: Egyptian Customs Authority — Tariff & Procedures
+    notes: 차량 HS 분류 + 관세율 검색. 아랍어 우선 / 영어 일부.
+    verified_on: 2026-05-10
+
+  - category: egypt
+    type: ref
+    url: https://www.goeic.gov.eg/
+    source_org: GOEIC (General Organization for Export & Import Control)
+    title: GOEIC — 수입 사전 검사 인증
+    notes: 차량 인증 사전 검사 의무. 아랍어 사이트.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 카자흐스탄 (KZ) — KGD / EAEU
+  - category: kazakhstan
+    type: ref
+    url: https://kgd.gov.kz/en
+    source_org: Kazakhstan State Revenue Committee (KGD)
+    title: KGD — Customs procedures (English)
+    notes: 차량 통관 절차 + EAEU 통합 룰. 러시아어/카자흐어 우선.
+    verified_on: 2026-05-10
+
+  - category: kazakhstan
+    type: ref
+    url: https://eec.eaeunion.org/en/comission/department/dotr/
+    source_org: Eurasian Economic Commission (EAEU)
+    title: EAEU — Customs Tariff & Non-Tariff Regulation
+    notes: |
+      러시아·카자흐·키르기스·아르메니아·벨라루스 통합 룰. 우회수출 차단 핵심 출처.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 칠레 (CL) — Aduana de Chile + 한-칠레 FTA
+  - category: chile
+    type: ref
+    url: https://www.aduana.cl/aduana/site/edic/base/port/inicio.html
+    source_org: Servicio Nacional de Aduanas de Chile (SNA)
+    title: Chile Customs — 차량 수입 절차
+    notes: |
+      configs/rules/chile.yaml 의 pre_registration_system: SNA 출처.
+      스페인어 사이트 / 영문 일부.
+    verified_on: 2026-05-10
+
+  - category: chile
+    type: ref
+    url: https://www.fta.go.kr/cl/
+    source_org: 한국-칠레 FTA 종합지원포털
+    title: 한-칠레 FTA — C/O 양식 + 활용 가이드
+    notes: |
+      FTA C/O 활용 시 차량 관세 우대. 양식이 일반 C/O 와 다름 — 별도 파일.
+      configs/rules/chile.yaml 의 fta_certificate_of_origin 출처.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 멕시코 (MX) — VUCEM / SAT
+  - category: mexico
+    type: ref
+    url: https://www.ventanillaunica.gob.mx/vucem/index.htm
+    source_org: VUCEM (Ventanilla Única de Comercio Exterior Mexicana)
+    title: VUCEM — Mexico Single Window for Foreign Trade
+    notes: 차량 사전 등록 의무. 스페인어.
+    verified_on: 2026-05-10
+
+  - category: mexico
+    type: ref
+    url: https://www.sat.gob.mx/aduanas
+    source_org: SAT (Servicio de Administración Tributaria) — Aduanas
+    title: SAT — Mexican Customs Procedures
+    notes: 일반 관세 적용 (한-멕시코 FTA 미체결).
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 코스타리카 (CR) — Hacienda + 한-중미 FTA
+  - category: costa_rica
+    type: ref
+    url: https://www.hacienda.go.cr/contenido/12-tica
+    source_org: Ministerio de Hacienda — TICA
+    title: TICA — Sistema de Información para el Control Aduanero
+    notes: 코스타리카 통관 시스템.
+    verified_on: 2026-05-10
+
+  - category: costa_rica
+    type: ref
+    url: https://www.fta.go.kr/centralamerica/
+    source_org: 한국-중미 FTA 종합지원포털
+    title: 한-중미 FTA (2019 발효) — C/O 양식 + 6개국 활용 가이드
+    notes: |
+      코스타리카·엘살바도르·온두라스·니카라과·파나마 + 과테말라.
+      FTA C/O 활용 시 자동차 관세 우대 큼.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 가나 (GH) — ICUMS + GSA + DVLA
+  - category: ghana
+    type: ref
+    url: https://icums.gov.gh/
+    source_org: ICUMS (Integrated Customs Management System)
+    title: ICUMS — Ghana 통관 단일 시스템
+    notes: |
+      configs/rules/ghana.yaml 의 pre_registration_system: ICUMS 출처.
+      Pre-Arrival Assessment Reporting (PAAR) 포함.
+    verified_on: 2026-05-10
+
+  - category: ghana
+    type: ref
+    url: https://www.gsa.gov.gh/
+    source_org: Ghana Standards Authority (GSA)
+    title: GSA — Conformity Assessment for Imports
+    notes: 차량 안전·환경 기준 검사 출처.
+    verified_on: 2026-05-10
+
+  - category: ghana
+    type: ref
+    url: https://www.dvla.gov.gh/
+    source_org: DVLA Ghana (Driver & Vehicle Licensing Authority)
+    title: Ghana DVLA — 차량 등록·검사
+    notes: 도착 후 차량 등록 절차.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 탄자니아 (TZ) — TRA + TBS + JEVIC
+  - category: tanzania
+    type: ref
+    url: https://www.tra.go.tz/
+    source_org: Tanzania Revenue Authority (TRA)
+    title: TRA — TANCIS 통관 시스템
+    notes: |
+      configs/rules/tanzania.yaml 의 pre_registration_system: TANCIS 출처.
+    verified_on: 2026-05-10
+
+  - category: tanzania
+    type: ref
+    url: https://www.tbs.go.tz/
+    source_org: Tanzania Bureau of Standards (TBS)
+    title: TBS — 수입 차량 사전 신고
+    notes: TBS pre-shipment verification.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 알제리 (DZ) — Algeria Customs / ECTN
+  - category: algeria
+    type: ref
+    url: https://www.douane.gov.dz/
+    source_org: Direction Générale des Douanes (Algeria)
+    title: Algeria Customs — 차량 수입 절차
+    notes: |
+      아랍어/프랑스어 사이트. ECTN 사전 등록 의무.
+      configs/rules/algeria.yaml — 사실상 신차만 통과.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 짐바브웨 (ZW) — ZIMRA + VID
+  - category: zimbabwe
+    type: ref
+    url: https://www.zimra.co.zw/
+    source_org: Zimbabwe Revenue Authority (ZIMRA)
+    title: ZIMRA — Used Vehicle Import Procedures
+    notes: |
+      ASYCUDA World 시스템 사용. Durban (남아공) 또는 Beira (모잠비크) 환적.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 수단 (SD) — OFAC + 정세
+  - category: sudan
+    type: ref
+    url: https://ofac.treasury.gov/sanctions-programs-and-country-information/sudan-sanctions
+    source_org: U.S. Treasury OFAC
+    title: OFAC — Sudan Sanctions Program
+    notes: |
+      configs/rules/sudan.yaml 의 is_blocked + SANCTIONED_COUNTRIES 출처.
+      2023~ 내전 + OFAC 제재 영향. 직수출 자동 차단 정당화.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 아제르바이잔 (AZ) — State Customs
+  - category: azerbaijan
+    type: ref
+    url: https://customs.gov.az/en/
+    source_org: State Customs Committee of Azerbaijan
+    title: Azerbaijan Customs — Single Window
+    notes: |
+      configs/rules/azerbaijan.yaml 의 pre_registration_system: Single_Window 출처.
+      러시아어 비즈니스 표준. 코카서스 SUV 시장.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 요르단 (JO) 추가
+  - category: jordan
+    type: ref
+    url: https://www.customs.gov.jo/en/Pages/CustomsTariff.aspx
+    source_org: Jordan Customs
+    title: Jordan Customs Tariff — HS Code 검색
+    notes: 차량 배기량 기반 누진세 — 1500cc 이하 인기.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── UAE 추가
+  - category: uae
+    type: ref
+    url: https://www.fta.gov.ae/en/
+    source_org: UAE Federal Tax Authority
+    title: UAE FTA — VAT on Used Vehicles
+    notes: 5% VAT 표준. Free Zone 거래는 면세 가능.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── 나이지리아 (NG) 추가
+  - category: nigeria
+    type: ref
+    url: https://www.customs.gov.ng/
+    source_org: Nigeria Customs Service (NCS)
+    title: NCS — B'Odogwu 통관 시스템
+    notes: |
+      configs/rules/nigeria.yaml 의 pre_registration_system: NCS_BOdogwu 출처.
+      Form M (외환 송금 사전 신청) 의무.
+    verified_on: 2026-05-10
+
+  - category: nigeria
+    type: ref
+    url: https://son.gov.ng/soncap/
+    source_org: Standards Organisation of Nigeria (SON)
+    title: SONCAP — Standards Organisation of Nigeria Conformity Assessment Programme
+    notes: 선적 전 인증 의무. Intertek/SGS/Cotecna 발행.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── PSI 공통 — JEVIC (KE/TZ/UG)
+  - category: psi
+    type: ref
+    url: https://www.jevic.com/
+    source_org: JEVIC (Japan Export Vehicle Inspection Center)
+    title: JEVIC — Pre-Shipment Inspection (Korea/Japan → Africa)
+    notes: |
+      케냐·탄자니아·우간다·잠비아 등 의무. 한국 평택·인천에서 검사.
+      configs/rules/{kenya, tanzania}.yaml 의 psi_required: JEVIC 출처.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── PSI 공통 — Intertek (NG/MZ 등)
+  - category: psi
+    type: ref
+    url: https://www.intertek.com/government/inspection/conformity-assessment/
+    source_org: Intertek
+    title: Intertek — Government Conformity Assessment (PSI)
+    notes: SONCAP (NG), PVOC (KE), 모잠비크 PCA 등 다국 인증.
+    verified_on: 2026-05-10
+
+  # ─────────────────────── KOTRA 신규국 진출전략 (참조)
+  - category: kotra_country
+    type: ref
+    url: https://news.kotra.or.kr/user/globalAllBbs/kotranews/list/2/globalBbsDataAllList.do?MENU_ID=180&CATE_TOTAL_CD=181
+    source_org: KOTRA 해외경제정보드림
+    title: KOTRA — 국가별 진출전략 (요르단·UAE·이집트·카자흐 등)
+    notes: |
+      해외경제정보드림 → 진출전략 → 국가 선택. 신규 13개국 모두 가이드 존재.
+      각 국가 진출 시 시장 사이즈 + 규제 요약.
+    verified_on: 2026-05-10
