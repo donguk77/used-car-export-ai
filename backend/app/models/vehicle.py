@@ -35,7 +35,8 @@ class Vehicle(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     transmission: Mapped[str | None] = mapped_column(String(8))  # A/T, M/T
     drivetrain: Mapped[str | None] = mapped_column(String(8))  # FWD/RWD/AWD/4WD
     steering: Mapped[str | None] = mapped_column(String(8))  # LHD/RHD
-    seats: Mapped[int | None] = mapped_column(Integer)
+    seats: Mapped[int | None] = mapped_column(Integer)  # 좌석수 (8702 vs 8703 분기, #033)
+    gross_vehicle_weight_kg: Mapped[int | None] = mapped_column(Integer)  # GVW (8704 trucks 세분, #033)
     color_exterior: Mapped[str | None] = mapped_column(String(32))
     color_interior: Mapped[str | None] = mapped_column(String(32))
     mileage_km: Mapped[int | None] = mapped_column(Integer)

@@ -73,6 +73,8 @@ export interface Vehicle {
   transmission: string | null;
   drivetrain: string | null;
   steering: "LHD" | "RHD" | null;
+  seats: number | null;  // 좌석수 (#033 — HS 8702 vs 8703 분기)
+  gross_vehicle_weight_kg: number | null;  // GVW (#033 — HS 8704 세분)
   mileage_km: number | null;
   color_exterior: string | null;
   list_price_usd: number | null;

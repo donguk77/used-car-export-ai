@@ -47,71 +47,73 @@ DEMO_VEHICLES = [
     dict(  # 1
         vin="KMHE41LBXLA000001", make="Hyundai", model="Sonata", year=2020,
         body_type="passenger", fuel_type="Gasoline", engine_cc=2000,
-        transmission="A/T", steering="LHD", mileage_km=58000,
+        transmission="A/T", steering="LHD", mileage_km=58000, seats=5,
         color_exterior="Pearl White", list_price_usd=14000, hs_code="8703.23",
         manufacture_date=date(2020, 4, 1), registration_date=date(2020, 5, 15),
     ),
     dict(  # 2
         vin="KMHJ381AAJA000002", make="Hyundai", model="Tucson", year=2019,
         body_type="passenger", fuel_type="Diesel", engine_cc=2000,
-        transmission="A/T", steering="LHD", mileage_km=72000,
+        transmission="A/T", steering="LHD", mileage_km=72000, seats=5,
         color_exterior="Black", list_price_usd=13500, hs_code="8703.32",
         manufacture_date=date(2019, 7, 10),
     ),
     dict(  # 3
         vin="KMHE41LBXJA000003", make="Hyundai", model="Sonata", year=2018,
         body_type="passenger", fuel_type="Gasoline", engine_cc=2000,
-        transmission="A/T", steering="LHD", mileage_km=88000,
+        transmission="A/T", steering="LHD", mileage_km=88000, seats=5,
         color_exterior="Silver", list_price_usd=10500, hs_code="8703.23",
         manufacture_date=date(2018, 3, 1),
     ),
     dict(  # 4 — G80 (high-cc, 키르기스스탄 차단 시연용)
         vin="KMHHU81KMNA000004", make="Genesis", model="G80", year=2022,
         body_type="passenger", fuel_type="Gasoline", engine_cc=3342,
-        transmission="A/T", steering="LHD", mileage_km=42000,
+        transmission="A/T", steering="LHD", mileage_km=42000, seats=5,
         color_exterior="Midnight Blue", list_price_usd=55000, hs_code="8703.24",
         manufacture_date=date(2022, 1, 15),
     ),
-    dict(  # 5 — 1톤 트럭 (시리아 시연용)
+    dict(  # 5 — 1톤 트럭 (시리아 시연용) — Bongo 1톤 GVW 약 2,800kg
         vin="KMFGA17EPJA000005", make="Kia", model="Bongo", year=2020,
         body_type="truck", fuel_type="Diesel", engine_cc=2497,
         transmission="M/T", steering="LHD", mileage_km=95000,
+        seats=3, gross_vehicle_weight_kg=2800,  # 1톤 트럭, 8704.21 (≤5t) confirm
         color_exterior="White", list_price_usd=18500, hs_code="8704.21",
         manufacture_date=date(2020, 8, 1),
     ),
     dict(  # 6
         vin="KMHD84LF2KU000006", make="Hyundai", model="Avante", year=2019,
         body_type="passenger", fuel_type="Gasoline", engine_cc=1591,
-        transmission="A/T", steering="LHD", mileage_km=65000,
-        color_exterior="White", list_price_usd=11000, hs_code="8703.23",  # findings #032: 1591cc > 1500cc → 8703.23
+        transmission="A/T", steering="LHD", mileage_km=65000, seats=5,
+        color_exterior="White", list_price_usd=11000, hs_code="8703.23",  # findings #032
         manufacture_date=date(2019, 5, 1),
     ),
     dict(  # 7 — RHD Tucson (케냐 시연용, 단 2017이라 발효 후 fail)
         vin="KMHJ381BFHU000007", make="Hyundai", model="Tucson", year=2017,
         body_type="passenger", fuel_type="Diesel", engine_cc=2000,
-        transmission="A/T", steering="RHD", mileage_km=98000,
+        transmission="A/T", steering="RHD", mileage_km=98000, seats=5,
         color_exterior="Gray", list_price_usd=11500, hs_code="8703.32",
         manufacture_date=date(2017, 3, 1), registration_date=date(2017, 5, 1),
     ),
     dict(  # 8
         vin="KNAGM4A75LA000008", make="Kia", model="K5", year=2020,
         body_type="passenger", fuel_type="Gasoline", engine_cc=2000,
-        transmission="A/T", steering="LHD", mileage_km=53000,
+        transmission="A/T", steering="LHD", mileage_km=53000, seats=5,
         color_exterior="Silver", list_price_usd=15000, hs_code="8703.23",
         manufacture_date=date(2020, 6, 1),
     ),
     dict(  # 9
         vin="KM8R5DHE6MU000009", make="Hyundai", model="Palisade", year=2021,
         body_type="passenger", fuel_type="Gasoline", engine_cc=3778,
-        transmission="A/T", steering="LHD", mileage_km=38000,
+        transmission="A/T", steering="LHD", mileage_km=38000, seats=8,  # Palisade 7-8 인승
         color_exterior="Midnight Black", list_price_usd=42000, hs_code="8703.24",
         manufacture_date=date(2021, 2, 1),
     ),
-    dict(  # 10 — 승합차
+    dict(  # 10 — 승합차 — Grand Starex 12인승 (8702.10 confirm)
         vin="KMJWA37FBJU000010", make="Hyundai", model="Grand Starex", year=2018,
         body_type="van", fuel_type="Diesel", engine_cc=2497,
         transmission="A/T", steering="LHD", mileage_km=110000,
-        color_exterior="White", list_price_usd=14000, hs_code="8702.10",  # findings #033: 12-seat 가정 (≥10 seats → 8702). 7-9 seats 는 8703.32
+        seats=12, gross_vehicle_weight_kg=2900,  # 12인승 → 8702.10 (≥10 seats), GVW <5t
+        color_exterior="White", list_price_usd=14000, hs_code="8702.10",  # findings #033 해소
         manufacture_date=date(2018, 4, 1),
     ),
 ]

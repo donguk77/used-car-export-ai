@@ -44,7 +44,8 @@ class VehicleBase(BaseModel):
     transmission: str | None = None
     drivetrain: str | None = None
     steering: str | None = Field(default=None, description="LHD/RHD")
-    seats: int | None = None
+    seats: int | None = Field(default=None, description="좌석수 (HS 8702 vs 8703 분기)")
+    gross_vehicle_weight_kg: int | None = Field(default=None, description="GVW kg (HS 8704 트럭 세분)")
     color_exterior: str | None = None
     color_interior: str | None = None
     mileage_km: int | None = None

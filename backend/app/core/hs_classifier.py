@@ -72,6 +72,8 @@ def classify(
     body_type: str | None,
     fuel_type: str | None,
     engine_cc: int | None,
+    seats: int | None = None,                    # #033 — 8702 (≥10 seats) vs 8703 분기
+    gross_vehicle_weight_kg: int | None = None,  # #033 — 8704 GVW 분기
 ) -> HSClassification:
     """Vehicle spec → 6자리 HS code 추정.
 
@@ -79,6 +81,8 @@ def classify(
         body_type: passenger / bus / truck / van (None 시 passenger 가정)
         fuel_type: Gasoline / Diesel / HEV / PHEV / EV / Hybrid 등
         engine_cc: 배기량 (None 시 1500cc 가정 — 가장 흔한 8703.23 fallback)
+        seats: 좌석수 (van/bus 분기, ≥10 → 8702, 미만 → 8703)
+        gross_vehicle_weight_kg: GVW (truck 8704.21 ≤5t / 8704.22 5-20t / .23 >20t)
 
     Returns:
         HSClassification — confidence 가 0.7 이하면 사람 검토 권장.
@@ -87,25 +91,48 @@ def classify(
     fuel = (fuel_type or "Gasoline").strip()
     cc = engine_cc or 1500
 
-    # 화물 차량 (8704)
+    # 화물 차량 (8704) — GVW 기준 세분
     if body == "truck":
-        # GVW 정보 없어 ≤5t 가정 (한국 1톤 트럭 봉고 등 대부분)
+        gvw_t = (gross_vehicle_weight_kg or 0) / 1000  # kg → t
         if fuel in _DIESEL_KEYWORDS:
-            return HSClassification("8704.21", f"truck + diesel + GVW≤5t 가정", 0.7)
-        return HSClassification("8704.31", f"truck + gasoline + GVW≤5t 가정", 0.7)
+            if gvw_t == 0:  # GVW 모름 — 한국 1톤 트럭 봉고 가정
+                return HSClassification("8704.21", "truck + diesel + GVW≤5t 가정 (한국 1톤)", 0.7)
+            if gvw_t <= 5:
+                return HSClassification("8704.21", f"truck + diesel + GVW {gvw_t:.1f}t ≤ 5t", 0.95)
+            if gvw_t <= 20:
+                return HSClassification("8704.22", f"truck + diesel + GVW {gvw_t:.1f}t (5-20t)", 0.95)
+            return HSClassification("8704.23", f"truck + diesel + GVW {gvw_t:.1f}t > 20t", 0.95)
+        # 가솔린 트럭
+        if gvw_t <= 5 or gvw_t == 0:
+            return HSClassification("8704.31", f"truck + gasoline + GVW≤5t", 0.85)
+        return HSClassification("8704.32", f"truck + gasoline + GVW>5t", 0.95)
 
-    # 버스 / 승합차 (8702)
+    # 버스 / 승합차 (8702 vs 8703 — 좌석수로 분기)
     if body in ("bus", "van"):
-        # van 은 좌석수 모호 — ≥10인승 가정 (Grand Starex 등)
-        if fuel in _DIESEL_KEYWORDS:
-            return HSClassification("8702.10", f"{body} + diesel + ≥10 seats 가정", 0.6)
-        if _matches_any(fuel, _BEV_KEYWORDS):
-            return HSClassification("8702.40", f"{body} + EV", 0.8)
-        if _matches_any(fuel, _HEV_KEYWORDS) or _matches_any(fuel, _PHEV_KEYWORDS):
-            ext = "diesel-hybrid" if "Diesel" in fuel else "gasoline-hybrid"
-            return HSClassification("8702.20" if "Diesel" in fuel else "8702.30",
-                                    f"{body} + {ext}", 0.7)
-        return HSClassification("8702.90", f"{body} + gasoline 추정", 0.6)
+        # #033 핵심: seats 알면 정확 분기. ≥10 → 8702 (운송), <10 → 8703 (승용)
+        if seats is not None:
+            if seats >= 10:  # 8702 series
+                if _matches_any(fuel, _BEV_KEYWORDS):
+                    return HSClassification("8702.40", f"{body} {seats}seats + EV", 0.95)
+                if _matches_any(fuel, _PHEV_KEYWORDS) or _matches_any(fuel, _HEV_KEYWORDS):
+                    return HSClassification("8702.20" if "Diesel" in fuel else "8702.30",
+                                            f"{body} {seats}seats + hybrid", 0.85)
+                if fuel in _DIESEL_KEYWORDS:
+                    return HSClassification("8702.10", f"{body} {seats}seats + diesel", 0.95)
+                return HSClassification("8702.90", f"{body} {seats}seats + gasoline", 0.85)
+            # seats < 10 → 8703 로 fallthrough (passenger 분기)
+            body = "passenger"  # reclassify
+        else:
+            # seats 모름 — 보수적 추정. van 은 좌석수 다양 (7/9/12) → 노트로 처리
+            if fuel in _DIESEL_KEYWORDS:
+                return HSClassification("8702.10",
+                                        f"{body} + diesel + ≥10 seats 가정 (seats 미상)", 0.6)
+            if _matches_any(fuel, _BEV_KEYWORDS):
+                return HSClassification("8702.40", f"{body} + EV (seats 미상)", 0.7)
+            if _matches_any(fuel, _HEV_KEYWORDS) or _matches_any(fuel, _PHEV_KEYWORDS):
+                return HSClassification("8702.20" if "Diesel" in fuel else "8702.30",
+                                        f"{body} + hybrid (seats 미상)", 0.65)
+            return HSClassification("8702.90", f"{body} + gasoline 추정 (seats 미상)", 0.6)
 
     # 승용차 (8703) — 가장 일반적인 케이스
     # PHEV

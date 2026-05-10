@@ -668,11 +668,14 @@ def _build_document_input(
         engine_cc=vehicle.engine_cc or 0,
         color=vehicle.color_exterior or "?",
         mileage_km=vehicle.mileage_km or 0,
-        # findings #034 — vehicle.hs_code 비어있으면 자동 분류 (8703.23 hard-default 대신)
+        # findings #034 + #033 — vehicle.hs_code 비면 자동 분류. seats/GVW 활용해서
+        # 8702 vs 8703 vs 8704 정확 분기.
         hs_code=vehicle.hs_code or hs_classifier.classify(
             body_type=vehicle.body_type,
             fuel_type=vehicle.fuel_type,
             engine_cc=vehicle.engine_cc,
+            seats=vehicle.seats,
+            gross_vehicle_weight_kg=vehicle.gross_vehicle_weight_kg,
         ).hs_code,
         net_weight_kg=1480,  # PoC: 차량 평균. 실제는 Vehicle 에 컬럼 추가
         gross_weight_kg=1620,

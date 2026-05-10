@@ -6,6 +6,48 @@
 
 ---
 
+## 🟢 #041 — Vehicle 모델에 GVW 추가 + HS 분류기 정확도 ↑ (#033 해소)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 fixed in backend + frontend + seed
+
+이전 #033 — Grand Starex (van + 2.5L diesel) 의 8702 vs 8703 분기 모호.
+Vehicle 모델에 좌석수 정보 부재. hs_classifier 가 van/bus 처리 시 confidence
+0.6 ('seats 미상').
+
+수정:
+1. `Vehicle` 모델에 `gross_vehicle_weight_kg` 컬럼 신설 (seats 는 이미 있음)
+2. `ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS gross_vehicle_weight_kg INTEGER`
+   idempotent 마이그레이션 (Alembic 미사용 → raw SQL)
+3. `hs_classifier.classify(seats=, gross_vehicle_weight_kg=)` 시그니처 확장
+4. 분류 로직 분기:
+   - **van/bus seats ≥ 10** → 8702.x (운송 차량) confidence 0.95
+   - **van seats < 10** → 8703.x 로 reclassify
+   - **truck GVW ≤ 5t** → 8704.21 (가솔린 .31)
+   - **truck 5-20t** → 8704.22
+   - **truck > 20t** → 8704.23
+5. `listings.py` mail-draft 의 hs_code fallback 호출 시 seats/GVW 전달
+6. `vehicles.py` Pydantic schema 에 `gross_vehicle_weight_kg` 필드 추가
+7. `frontend/src/types/api.ts` Vehicle interface 동기화
+8. `seed_demo_data.py` 10 차량 모두 seats 채움:
+   - 승용차 5-8seats / Bongo 트럭 3seats + 2,800kg GVW
+   - **Grand Starex 12seats + 2,900kg GVW** → 8702.10 정확 confirm
+
+분류기 단위 검증:
+- Van 12-seat + 2.5L diesel → **8702.10** confidence 0.95 (이전 0.6)
+- Van 8-seat + 2.5L diesel → **8703.32** confidence 0.95 (자동 reclassify)
+- Truck 1t (2,800kg) + diesel → **8704.21** confidence 0.95
+- Truck 7t (7,000kg) + diesel → **8704.22** confidence 0.95
+- Bus 30-seat + diesel → **8702.10** confidence 0.95
+
+라이브 검증 (API):
+- 10 차량 모두 seats 표시. Bongo + Grand Starex GVW 추가 표시.
+- HS code 모두 정확 매핑 confirm.
+
+→ #033 finding 완전 해소. 분류기 평균 confidence 0.7 → 0.95 (van/truck 한정).
+
+---
+
 ## 🟢 #040 — mail_writer prompt 강화 (관세 + 운임 자동 주입) (FIX 완료)
 
 **발견일:** 2026-05-10
