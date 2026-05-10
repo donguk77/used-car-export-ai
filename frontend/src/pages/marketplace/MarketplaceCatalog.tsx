@@ -297,8 +297,19 @@ function MarketplaceCard({ vehicle }: { vehicle: Vehicle }) {
       to={`/marketplace/${vehicle.id}`}
       className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-lg"
     >
-      <div className="relative flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-        <Car className="h-20 w-20 text-slate-400 transition group-hover:scale-110" />
+      <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+        {vehicle.image_url ? (
+          <img
+            src={vehicle.image_url}
+            alt={`${vehicle.make ?? ""} ${vehicle.model ?? ""} ${vehicle.year ?? ""}`.trim()}
+            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <Car className="h-20 w-20 text-slate-400 transition group-hover:scale-110" />
+          </div>
+        )}
         <button
           type="button"
           onClick={(e) => { e.preventDefault(); }}

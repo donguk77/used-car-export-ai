@@ -101,8 +101,18 @@ export function MarketplaceLanding() {
                 to={`/marketplace/${featured[0].id}`}
                 className="block overflow-hidden rounded-lg bg-white text-slate-900 shadow-2xl transition hover:scale-[1.02]"
               >
-                <div className="relative flex aspect-[16/10] items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-                  <Car className="h-32 w-32 text-slate-300" />
+                <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+                  {featured[0].image_url ? (
+                    <img
+                      src={featured[0].image_url}
+                      alt={`${featured[0].make ?? ""} ${featured[0].model ?? ""}`.trim()}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <Car className="h-32 w-32 text-slate-300" />
+                    </div>
+                  )}
                   <div className="absolute left-4 top-4 rounded-md bg-amber-500 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
                     Featured
                   </div>
@@ -181,8 +191,19 @@ export function MarketplaceLanding() {
               to={`/marketplace/${v.id}`}
               className="group block overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-lg"
             >
-              <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 transition group-hover:from-slate-200 group-hover:to-slate-300">
-                <Car className="h-16 w-16 text-slate-400" />
+              <div className="aspect-video overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 transition group-hover:from-slate-200 group-hover:to-slate-300">
+                {v.image_url ? (
+                  <img
+                    src={v.image_url}
+                    alt={`${v.make ?? ""} ${v.model ?? ""}`.trim()}
+                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <Car className="h-16 w-16 text-slate-400" />
+                  </div>
+                )}
               </div>
               <div className="p-4">
                 <p className="truncate text-sm font-bold">

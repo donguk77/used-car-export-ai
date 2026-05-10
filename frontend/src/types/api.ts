@@ -81,6 +81,7 @@ export interface Vehicle {
   status: string;
   registration_date: ISODate | null;
   manufacture_date: ISODate | null;
+  image_url: string | null; // AI 생성 (Imagen) — /vehicle-images/{id}.png
 }
 
 export interface DecodedVin {

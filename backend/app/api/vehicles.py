@@ -53,6 +53,7 @@ class VehicleBase(BaseModel):
     list_price_usd: float | None = None
     port_of_loading: str | None = None
     hs_code: str | None = None
+    image_url: str | None = None  # AI 생성 이미지 (vehicle-images/{id}.png)
 
 
 class VehicleCreate(VehicleBase):

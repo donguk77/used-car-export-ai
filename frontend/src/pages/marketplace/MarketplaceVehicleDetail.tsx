@@ -57,17 +57,27 @@ export function MarketplaceVehicleDetail() {
         {/* Left — gallery + info */}
         <div>
           {/* Main image */}
-          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-slate-200">
-            <div className="flex aspect-video items-center justify-center">
-              <Car className="h-48 w-48 text-slate-300" />
-            </div>
+          <div className="relative aspect-video overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-slate-200">
+            {vehicle.image_url ? (
+              <img
+                src={vehicle.image_url}
+                alt={`${vehicle.make ?? ""} ${vehicle.model ?? ""} ${vehicle.year ?? ""}`.trim()}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <Car className="h-48 w-48 text-slate-300" />
+              </div>
+            )}
             <div className="absolute left-4 top-4 flex gap-2">
               <span className="rounded-md bg-amber-500 px-3 py-1 text-xs font-bold uppercase text-white">
                 Inspected
               </span>
-              <span className="rounded-md bg-slate-900 px-3 py-1 text-xs font-bold uppercase text-white">
-                {vehicle.steering}
-              </span>
+              {vehicle.steering && (
+                <span className="rounded-md bg-slate-900 px-3 py-1 text-xs font-bold uppercase text-white">
+                  {vehicle.steering}
+                </span>
+              )}
             </div>
             <button
               type="button"
@@ -78,14 +88,22 @@ export function MarketplaceVehicleDetail() {
             </button>
           </div>
 
-          {/* Thumbnail row (placeholder) */}
+          {/* Thumbnail row — 같은 이미지 6번 (실제로는 angle 별 사진이지만 PoC) */}
           <div className="mt-3 flex gap-2 overflow-x-auto">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="flex h-20 w-28 shrink-0 cursor-pointer items-center justify-center rounded border-2 border-transparent bg-slate-100 hover:border-slate-900"
+                className="flex h-20 w-28 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded border-2 border-transparent bg-slate-100 hover:border-slate-900"
               >
-                <Car className="h-8 w-8 text-slate-300" />
+                {vehicle.image_url ? (
+                  <img
+                    src={vehicle.image_url}
+                    alt=""
+                    className="h-full w-full object-cover opacity-90 hover:opacity-100"
+                  />
+                ) : (
+                  <Car className="h-8 w-8 text-slate-300" />
+                )}
               </div>
             ))}
           </div>

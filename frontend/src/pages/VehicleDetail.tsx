@@ -148,8 +148,18 @@ export function VehicleDetailPage() {
           {/* 차량 이미지 placeholder */}
           <Card>
             <CardContent className="p-0">
-              <div className="relative flex aspect-video items-center justify-center bg-gradient-to-br from-muted to-muted/40">
-                <Car className="h-32 w-32 text-muted-foreground/40" />
+              <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-muted to-muted/40">
+                {vehicle.image_url ? (
+                  <img
+                    src={vehicle.image_url}
+                    alt={`${vehicle.make ?? ""} ${vehicle.model ?? ""} ${vehicle.year ?? ""}`.trim()}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <Car className="h-32 w-32 text-muted-foreground/40" />
+                  </div>
+                )}
                 <div className="absolute right-3 top-3 flex gap-2">
                   <Badge variant={statusVariant}>
                     {VEHICLE_STATUS_LABEL[vehicle.status] ?? vehicle.status}

@@ -47,6 +47,9 @@ class Vehicle(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     accident_history: Mapped[str | None] = mapped_column(Text)
     inspection_grade: Mapped[str | None] = mapped_column(String(16))
 
+    # AI 생성 이미지 URL (frontend/public/vehicle-images/{id}.png 같은 상대경로)
+    image_url: Mapped[str | None] = mapped_column(String(512))
+
     # 가격·재고
     purchase_price_krw: Mapped[int | None] = mapped_column(BigInteger)
     list_price_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))
