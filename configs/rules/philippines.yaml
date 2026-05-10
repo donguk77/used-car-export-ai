@@ -1,0 +1,50 @@
+# 필리핀 — 중량/배기량 제한 + 40% 관세
+# 출처: WebSearch (FIDI 2024-06 + customs.gov.ph)
+
+country:
+  code: PH
+  name_en: Philippines
+  name_ko: 필리핀
+  name_local: Pilipinas
+  region: south_east_asia
+  primary_language: tl
+  business_language: en
+  steering: LHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Manila
+    - Subic Bay
+    - Cebu
+  pre_registration_system: BOC_TRS
+  consular_legalization: false
+  notes: |
+    "Cars not exceeding 1500 kgs weight and 2800 cc engine displacements" 만 수입 가능.
+    Bureau of Customs (BOC) 등록 + 40% 관세 + 10% VAT + Ad Valorem 15-100% (배기량 기반).
+    개인용 중고차 수입은 returning resident 위주 — 상업 채널 라이선스 필요.
+    영어가 비즈니스 표준 100%.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 3   # FIDI: returning resident 위주, 사실상 신차
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required: []
+    doc_translation_lang: null
+    consular_required: false
+    pre_registration: BOC_TRS
+    blocked_conditions:
+      - field: engine_cc
+        op: gt
+        value: 2800
+        reason: "필리핀 — 배기량 2,800cc 초과 차량 수입 금지 (BOC 명시)"
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - boc_authority_to_release
+    source_url: https://customs.gov.ph/motor-vehicles-boats-yachts
+    last_verified_at: 2026-05-10

@@ -882,3 +882,98 @@ samples:
     issued: 2024-09
     used_for: configs/rules/south_africa.yaml — is_blocked 정당화 (LoA 사실상 미발급 1차 출처)
     verified_on: 2026-05-10
+
+  # ──────────────────────────────────────────────────────────────────────
+  # 동남아 + 남아 8개국 (2026-05-10) — 20→28 확장
+  # FIDI Customs Guide 시리즈 + 정부 직접 자료
+  # ──────────────────────────────────────────────────────────────────────
+
+  - category: myanmar
+    type: pdf
+    filename: MYANMAR_Import_FIDI_Customs_Guide_2024-01.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-01/MYANMAR%20Import%20-%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Asia
+    title: Myanmar Import — FIDI Customs Guide (2024-01)
+    issued: 2024-01
+    used_for: configs/rules/myanmar.yaml — 정세 + 제재 narrative
+    verified_on: 2026-05-10
+
+  - category: cambodia
+    type: pdf
+    filename: CAMBODIA_Import_FIDI_Customs_Guide_2024-01.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-01/CAMBODIA%20Import%20-%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Asia
+    title: Cambodia Import — FIDI Customs Guide (2024-01)
+    issued: 2024-01
+    used_for: configs/rules/cambodia.yaml — 동남아 대형 중고차 시장 narrative
+    verified_on: 2026-05-10
+
+  - category: vietnam
+    type: pdf
+    filename: VIETNAM_Import_FIDI_Customs_Guide_2024-07.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-07/VIETNAM%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Asia
+    title: Vietnam Import — FIDI Customs Guide (2024-07)
+    issued: 2024-07
+    used_for: configs/rules/vietnam.yaml — 고관세 200%+ + 16인승 150% 검증
+    verified_on: 2026-05-10
+
+  - category: thailand
+    type: pdf
+    filename: THAILAND_Import_FIDI_Customs_Guide_2024-07.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-07/THAILAND%20Import%20%20-%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Asia
+    title: Thailand Import — FIDI Customs Guide (2024-07)
+    issued: 2024-07
+    used_for: configs/rules/thailand.yaml — is_blocked 정당화 (사실상 신차만)
+    verified_on: 2026-05-10
+
+  - category: philippines
+    type: pdf
+    filename: PHILIPPINES_Import_FIDI_Customs_Guide_2024-06.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-06/PHILIPPINES%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Asia
+    title: Philippines Import — FIDI Customs Guide (2024-06)
+    issued: 2024-06
+    used_for: configs/rules/philippines.yaml — 1500kg/2800cc 한도 + 40% 관세
+    verified_on: 2026-05-10
+
+  - category: malaysia
+    type: pdf
+    filename: MALAYSIA_Import_FIDI_Customs_Guide_2024-06.pdf
+    url: https://www.fidi.org/sites/default/files/public/2024-06/MALAYSIA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Asia
+    title: Malaysia Import — FIDI Customs Guide (2024-06)
+    issued: 2024-06
+    used_for: configs/rules/malaysia.yaml — AP 시스템 + is_blocked 정당화
+    verified_on: 2026-05-10
+
+  - category: bangladesh
+    type: pdf
+    filename: USDA_Bangladesh_Exporter_Guide_2024.pdf
+    url: https://apps.fas.usda.gov/newgainapi/api/Report/DownloadReportByFileName?fileName=Exporter+Guide+Annual_Dhaka_Bangladesh_BG2024-0005.pdf
+    source_org: USDA Foreign Agricultural Service
+    title: Bangladesh Exporter Guide (2024)
+    issued: 2024
+    used_for: configs/rules/bangladesh.yaml — 수입 절차 + BRTA + 관세
+    verified_on: 2026-05-10
+
+  - category: sri_lanka
+    type: pdf
+    filename: SRI_LANKA_Import_FIDI_Customs_Guide_2022-01.pdf
+    url: https://www.fidi.org/sites/default/files/public/2022-01/SRI%20LANKA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf
+    source_org: FIDI Asia
+    title: Sri Lanka Import — FIDI Customs Guide (2022-01)
+    issued: 2022-01
+    used_for: configs/rules/sri_lanka.yaml — 외환위기 전 baseline (2024 정책 변동 추적 필요)
+    verified_on: 2026-05-10
+
+  - category: sri_lanka
+    type: pdf
+    filename: Sri_Lanka_Customs_NITG_2024_Preamble.pdf
+    url: https://www.customs.gov.lk/wp-content/uploads/2024/02/1.-Preamble-intergrated.pdf
+    source_org: Sri Lanka Customs Department
+    title: National Imports Tariff Guide (NITG) 2024 — Preamble
+    issued: 2024-02
+    used_for: configs/rules/sri_lanka.yaml — 정부 직접 1차 출처 (재개방 후 룰)
+    verified_on: 2026-05-10

@@ -243,7 +243,7 @@ export function MarketplaceLanding() {
           </div>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             <StatCard value={(vehicles?.length ?? 0).toString()} suffix="+" label="Vehicles in stock" hint="Updated daily" />
-            <StatCard value="20" label="Destination countries" hint="6 regions · LHD + RHD" />
+            <StatCard value="28" label="Destination countries" hint="8 regions · LHD + RHD" />
             <StatCard value="6" label="Languages supported" hint="EN · ES · AR · RU · FR · KO" />
             <StatCard value="4" label="Auto-generated docs" hint="Invoice · PL · SI · C/O" />
           </div>

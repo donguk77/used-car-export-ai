@@ -2,7 +2,7 @@
 
 이 파일은 `scripts/fetch_public_samples.py` 가 자동 생성합니다. 직접 편집하지 말고 `configs/samples_registry.yaml` 을 고치세요.
 
-총 87 항목 · 카테고리 27 개
+총 96 항목 · 카테고리 35 개
 
 
 ## algeria
@@ -33,6 +33,18 @@ configs/rules/algeria.yaml — 사실상 신차만 통과.
 러시아어 비즈니스 표준. 코카서스 SUV 시장.
 - **Azerbaijan — WTO TFA Article 10.4 Members' Practices** — SSL local issuer cert 누락 (wcoomd.org). 브라우저 직접 다운로드 가능.
 - **Single Window in the Republic of Azerbaijan — UN/CEFACT Case Study** — HTTP 403 (UA 차단). 브라우저 직접 다운로드 가능.
+
+## bangladesh
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Bangladesh Exporter Guide (2024) | USDA Foreign Agricultural Service | 2024 | [원본](https://apps.fas.usda.gov/newgainapi/api/Report/DownloadReportByFileName?fileName=Exporter+Guide+Annual_Dhaka_Bangladesh_BG2024-0005.pdf) · [로컬](docs/samples/bangladesh/USDA_Bangladesh_Exporter_Guide_2024.pdf) |
+
+## cambodia
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Cambodia Import — FIDI Customs Guide (2024-01) | FIDI Asia | 2024-01 | [원본](https://www.fidi.org/sites/default/files/public/2024-01/CAMBODIA%20Import%20-%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/cambodia/CAMBODIA_Import_FIDI_Customs_Guide_2024-01.pdf) |
 
 ## chile
 
@@ -213,6 +225,12 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 | 📄 PDF | ACI — Registration for Importers (English) | Libya Customs Authority | 2024-07 | [원본](https://customs.gov.ly/wp-content/uploads/2024/07/ACI-Registration-for-Importers-English-Version.pdf) · [로컬](docs/samples/libya/Libya_ACI_2024-07_importer_registration_EN.pdf) |
 | 📄 PDF | ACI — Registration for Exporters / Exporter Representatives (English) | Libya Customs Authority | 2024-07 | [원본](https://customs.gov.ly/wp-content/uploads/2024/07/ACI-Registration-for-Exporters-Exporter-Representatives-English-Version.pdf) · [로컬](docs/samples/libya/Libya_ACI_2024-07_exporter_registration_EN.pdf) |
 
+## malaysia
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Malaysia Import — FIDI Customs Guide (2024-06) | FIDI Asia | 2024-06 | [원본](https://www.fidi.org/sites/default/files/public/2024-06/MALAYSIA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/malaysia/MALAYSIA_Import_FIDI_Customs_Guide_2024-06.pdf) |
+
 ## mexico
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
@@ -231,6 +249,12 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 브라우저로 직접 다운로드 후 docs/samples/mexico/ 에 저장 가능.
 - **Manual de usuarios — trámite de internación temporal de vehículos** — 자동 다운로드 실패 (10060 timeout) — 수동 다운로드 가능.
 
+## myanmar
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Myanmar Import — FIDI Customs Guide (2024-01) | FIDI Asia | 2024-01 | [원본](https://www.fidi.org/sites/default/files/public/2024-01/MYANMAR%20Import%20-%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/myanmar/MYANMAR_Import_FIDI_Customs_Guide_2024-01.pdf) |
+
 ## nigeria
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
@@ -245,6 +269,12 @@ docs/samples/korea_customs/ 에 저장하면 됨.
 Form M (외환 송금 사전 신청) 의무.
 - **SONCAP — Standards Organisation of Nigeria Conformity Assessment Programme** — 선적 전 인증 의무. Intertek/SGS/Cotecna 발행.
 - **Import Profile — Nigeria (SONCAP / NCS / Form M 통합 가이드)** — HTTP 403 (UA 차단). 브라우저 직접 다운로드 가능.
+
+## philippines
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Philippines Import — FIDI Customs Guide (2024-06) | FIDI Asia | 2024-06 | [원본](https://www.fidi.org/sites/default/files/public/2024-06/PHILIPPINES%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/philippines/PHILIPPINES_Import_FIDI_Customs_Guide_2024-06.pdf) |
 
 ## psi
 
@@ -299,6 +329,13 @@ configs/rules/{kenya, tanzania}.yaml 의 psi_required: JEVIC 출처.
 - **ITAC — Import Control Application Forms (IE462 등)** — 개별 IE462/IE362 PDF 직접 URL 은 404 (사이트 리뉴얼). Application Forms
 페이지에서 최신 파일 다운로드 가능. LoA 첨부 없이 승인 안 됨.
 
+## sri_lanka
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Sri Lanka Import — FIDI Customs Guide (2022-01) | FIDI Asia | 2022-01 | [원본](https://www.fidi.org/sites/default/files/public/2022-01/SRI%20LANKA%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/sri_lanka/SRI_LANKA_Import_FIDI_Customs_Guide_2022-01.pdf) |
+| 📄 PDF | National Imports Tariff Guide (NITG) 2024 — Preamble | Sri Lanka Customs Department | 2024-02 | [원본](https://www.customs.gov.lk/wp-content/uploads/2024/02/1.-Preamble-intergrated.pdf) · [로컬](docs/samples/sri_lanka/Sri_Lanka_Customs_NITG_2024_Preamble.pdf) |
+
 ## sudan
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
@@ -343,6 +380,12 @@ U.S. persons 거래 가능하지만 BIS 라이선스 필요 가능성.
 브라우저 직접 다운로드 가능. 우리 fetch 한 PVoC Programme Guideline
 2025 + Harmonised Procedure 2종이 동일 내용 커버.
 
+## thailand
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Thailand Import — FIDI Customs Guide (2024-07) | FIDI Asia | 2024-07 | [원본](https://www.fidi.org/sites/default/files/public/2024-07/THAILAND%20Import%20%20-%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/thailand/THAILAND_Import_FIDI_Customs_Guide_2024-07.pdf) |
+
 ## uae
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
@@ -356,6 +399,12 @@ U.S. persons 거래 가능하지만 BIS 라이선스 필요 가능성.
 
 - **Dubai Trade — Forms section** — 차량 declaration 포함 다양한 폼. 수동 탐색 필요.
 - **UAE FTA — VAT on Used Vehicles** — 5% VAT 표준. Free Zone 거래는 면세 가능.
+
+## vietnam
+
+| 종류 | 제목 | 출처 | 발급일 | 링크 |
+|------|------|------|--------|------|
+| 📄 PDF | Vietnam Import — FIDI Customs Guide (2024-07) | FIDI Asia | 2024-07 | [원본](https://www.fidi.org/sites/default/files/public/2024-07/VIETNAM%20Import%20%E2%80%93%20FIDI%20Customs%20Guide.pdf) · [로컬](docs/samples/vietnam/VIETNAM_Import_FIDI_Customs_Guide_2024-07.pdf) |
 
 ## zimbabwe
 

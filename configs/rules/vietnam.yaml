@@ -1,0 +1,46 @@
+# 베트남 — 매우 고관세 (16인승+ 150%, 일반 200%+)
+# 출처: WebSearch + docs/used_car_export_top20_countries.md 인용
+
+country:
+  code: VN
+  name_en: Vietnam
+  name_ko: 베트남
+  name_local: Việt Nam
+  region: south_east_asia
+  primary_language: vi
+  business_language: en
+  steering: LHD
+  is_high_risk: true   # 고관세로 진입 어려움
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Hai Phong
+    - Cat Lai (Ho Chi Minh)
+    - Da Nang
+  pre_registration_system: VNACCS
+  consular_legalization: false
+  notes: |
+    매우 고관세 시장 — 일반 승용차 수입세 200%+ (관세 + 특별소비세 + VAT).
+    16인승 이상 버스 150%, 9인승 이하 70-150%.
+    중고차 수입 12인승 이하 사실상 금지된 시기 있었음 (2018~ 정책 변동).
+    한-베 FTA (2015 발효) — 신차 일부 우대, 중고차는 무관.
+    VNACCS 사전 신고 + 베트남어 인보이스 권장.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 5
+    age_basis: manufacture_year
+    steering_required: LHD_only
+    psi_required: []
+    doc_translation_lang: vi
+    consular_required: false
+    pre_registration: VNACCS
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - vietnamese_translation
+    source_url: https://customs.gov.vn
+    last_verified_at: 2026-05-10

@@ -1,0 +1,51 @@
+# 말레이시아 — RHD + AP (Approved Permit) 시스템 (사실상 차단)
+# 출처: WebSearch (FIDI 2024-06)
+
+country:
+  code: MY
+  name_en: Malaysia
+  name_ko: 말레이시아
+  name_local: Malaysia
+  region: south_east_asia
+  primary_language: ms
+  business_language: en
+  steering: RHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: true   # AP 시스템 — 중고차 사실상 import 금지
+  main_ports:
+    - Port Klang
+    - Penang
+    - Johor
+  pre_registration_system: SMK
+  consular_legalization: false
+  notes: |
+    AP (Approved Permit) 시스템 — 중고차 수입은 정부 발행 라이선스 필요.
+    개인 발급 사실상 불가 (자동차 산업 보호 정책).
+    Royal Malaysian Customs Department (RMCD) 통관 + JPJ 차량 등록 사전 승인.
+    PoC 권고: 직수출 대상 제외 (AP 라이선스 보유 distributor 만 가능).
+    영어 비즈니스 100%, 말레이어 공식 서류만 일부.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 5
+    age_basis: manufacture_year
+    steering_required: RHD_only
+    psi_required: []
+    doc_translation_lang: null
+    consular_required: false
+    pre_registration: SMK
+    blocked_conditions:
+      - field: destination_country
+        op: eq
+        value: MY
+        reason: "말레이시아 — AP (Approved Permit) 시스템으로 일반 중고차 import 사실상 금지"
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - approved_permit_AP
+    source_url: https://www.customs.gov.my
+    last_verified_at: 2026-05-10

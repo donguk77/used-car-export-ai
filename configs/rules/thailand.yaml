@@ -1,0 +1,50 @@
+# 태국 — RHD + 사실상 신차 위주 시장 (returning resident 예외)
+# 출처: WebSearch (FIDI 2024-07 + Trade.gov)
+
+country:
+  code: TH
+  name_en: Thailand
+  name_ko: 태국
+  name_local: ประเทศไทย
+  region: south_east_asia
+  primary_language: th
+  business_language: en
+  steering: RHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: true   # 일반 중고차 수입 사실상 금지
+  main_ports:
+    - Laem Chabang
+    - Bangkok
+  pre_registration_system: e-Customs
+  consular_legalization: false
+  notes: |
+    중고차 일반 수입 사실상 금지 — Returning Thai resident / 외교관 / 특수 케이스만.
+    매우 높은 관세 + 특별소비세 + VAT 합계 200%+.
+    한국 직수출은 환승 허브로만 활용 (Laem Chabang).
+    DLT (Department of Land Transport) 등록 사전 승인 필요.
+    PoC 권고: 직수출 대상 제외, 환승만 카운트.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 5
+    age_basis: manufacture_year
+    steering_required: RHD_only
+    psi_required: []
+    doc_translation_lang: null
+    consular_required: false
+    pre_registration: e-Customs
+    blocked_conditions:
+      - field: destination_country
+        op: eq
+        value: TH
+        reason: "태국 — 중고차 일반 수입 사실상 금지 (returning resident / diplomat 예외만)"
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - dlt_pre_approval
+    source_url: https://www.customs.go.th
+    last_verified_at: 2026-05-10

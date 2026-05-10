@@ -1,0 +1,45 @@
+# 스리랑카 — RHD + 외환위기 후 점진적 재개방
+# 출처: WebSearch (FIDI 2022-01 + customs.gov.lk Tariff 2024)
+
+country:
+  code: LK
+  name_en: Sri Lanka
+  name_ko: 스리랑카
+  name_local: ශ්‍රී ලංකා
+  region: south_asia
+  primary_language: si
+  business_language: en
+  steering: RHD
+  is_high_risk: true   # 2020~2024 import ban 후 점진 재개방
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Colombo
+    - Hambantota
+  pre_registration_system: ASYCUDA_World
+  consular_legalization: false
+  notes: |
+    2020.3 ~ 2024 외환위기로 차량 수입 전면 금지 — 2024.7 부터 점진 재개방.
+    현재 (2026.5) 일부 카테고리 (전기차 / 하이브리드 / 상업용) 만 허용.
+    Sri Lanka Customs Department NITG 2024 가 최신 관세표.
+    영어 비즈니스 무난, 싱할라어/타밀어 공식.
+    한국 중고차 진출 위해 정책 변동 모니터링 필요.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 3   # 재개방 후 보수적
+    age_basis: manufacture_year
+    steering_required: RHD_only
+    psi_required: []
+    doc_translation_lang: null
+    consular_required: false
+    pre_registration: ASYCUDA_World
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - sri_lanka_customs_letter
+    source_url: https://www.customs.gov.lk
+    last_verified_at: 2026-05-10

@@ -1,0 +1,50 @@
+# 미얀마 — RHD + 군부 정세 + OFAC 제재 (2021.2 쿠데타 이후 재제재)
+# 우리 backend SANCTIONED_COUNTRIES 에 이미 등재 (SY/SD/CU/MM)
+# 출처: WebSearch (FIDI 2024-01)
+
+country:
+  code: MM
+  name_en: Myanmar
+  name_ko: 미얀마
+  name_local: မြန်မာ
+  region: south_east_asia
+  primary_language: my
+  business_language: en
+  steering: RHD
+  is_high_risk: true
+  is_russia_proxy_risk: false
+  is_sanctioned: true   # 2021 쿠데타 이후 OFAC 재제재
+  is_blocked: true      # 정세 + 제재로 직수출 자동 차단
+  main_ports:
+    - Yangon
+    - Thilawa
+  pre_registration_system: MACCS
+  consular_legalization: false
+  notes: |
+    2021.2 군부 쿠데타 이후 OFAC 제재 재발효 + EU 제재.
+    중고차 수입은 사전에도 라이선스·연식 제한 엄격 — 사실상 closed.
+    PoC 권고: 직수출 자동 차단 (제재 + 정세).
+    Notify Party 가 MM 인 경우 우회수출 의심 검토 필요.
+    SANCTIONED_COUNTRIES (compliance.py) 에 이미 등재.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: null
+    steering_required: RHD_only
+    psi_required: []
+    doc_translation_lang: en
+    consular_required: false
+    pre_registration: MACCS
+    blocked_conditions:
+      - field: destination_country
+        op: eq
+        value: MM
+        reason: "OFAC 제재 + 군부 정세 — 직수출 자동 차단 (재수출 케이스만 별도 검토)"
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - ofac_compliance_check
+    source_url: https://customs.gov.mm
+    last_verified_at: 2026-05-10

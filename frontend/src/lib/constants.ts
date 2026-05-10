@@ -100,6 +100,16 @@ export const COUNTRY_FLAG: Record<string, string> = {
   KG: "🇰🇬",
   KZ: "🇰🇿",
   AZ: "🇦🇿",
+  // 동남아 (2026-05-10 확장)
+  MM: "🇲🇲",
+  KH: "🇰🇭",
+  VN: "🇻🇳",
+  TH: "🇹🇭",
+  PH: "🇵🇭",
+  MY: "🇲🇾",
+  // 남아시아
+  BD: "🇧🇩",
+  LK: "🇱🇰",
   // 참고용 (시드 안 됨)
   RU: "🇷🇺",
   KR: "🇰🇷",

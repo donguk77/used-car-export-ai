@@ -1,0 +1,47 @@
+# 방글라데시 — RHD + 일본 중고차 시장 + 5년 한도 (JAAI 기준)
+# 출처: WebSearch (USDA Exporter Guide 2024 + 산업 자료)
+
+country:
+  code: BD
+  name_en: Bangladesh
+  name_ko: 방글라데시
+  name_local: বাংলাদেশ
+  region: south_asia
+  primary_language: bn
+  business_language: en
+  steering: RHD
+  is_high_risk: false
+  is_russia_proxy_risk: false
+  is_sanctioned: false
+  is_blocked: false
+  main_ports:
+    - Chittagong
+    - Mongla
+  pre_registration_system: ASYCUDA_World
+  consular_legalization: false
+  notes: |
+    일본 중고차 활성 시장 — JAAI 기준 4-5년 한도 (year_of_manufacture + 1년).
+    BRTA (Bangladesh Road Transport Authority) 등록 사전 승인.
+    NBR (National Board of Revenue) 통관 + ASYCUDA World.
+    수입세 + VAT + 보충세 합계 100-200% (배기량 기반).
+    영어 비즈니스 무난.
+
+rules:
+  - body_type_filter: passenger
+    age_limit_years: 5
+    age_basis: manufacture_year
+    steering_required: RHD_only
+    psi_required:
+      - JEVIC  # 일본/한국 발 차량 PSI 권장
+    doc_translation_lang: null
+    consular_required: false
+    pre_registration: ASYCUDA_World
+    required_documents:
+      - commercial_invoice
+      - packing_list
+      - bill_of_lading
+      - certificate_of_origin
+      - jaai_certificate
+      - brta_registration_form
+    source_url: http://www.bangladeshcustoms.gov.bd
+    last_verified_at: 2026-05-10

@@ -166,6 +166,13 @@ const RANDOM_POOL = {
     { code: "KG", names: ["Bishkek Auto", "Osh Trading", "Tian Shan Motors"] },
     { code: "KZ", names: ["Almaty Auto", "Astana Motors", "Caspian Trading"] },
     { code: "AZ", names: ["Baku Auto", "Ganja Motors", "Caspian Trading"] },
+    // 동남아 (2026-05-10 확장 — MM/TH/MY 는 auto-blocked 카테고리)
+    { code: "KH", names: ["Phnom Penh Auto", "Sihanoukville Trading", "Angkor Motors"] },
+    { code: "VN", names: ["Hanoi Auto", "Ho Chi Minh Motors", "Hai Phong Trading"] },
+    { code: "PH", names: ["Manila Auto", "Cebu Motors", "Subic Bay Trading"] },
+    // 남아시아
+    { code: "BD", names: ["Dhaka Auto", "Chittagong Motors", "Sylhet Trading"] },
+    { code: "LK", names: ["Colombo Auto", "Hambantota Trading", "Lanka Motors"] },
   ] as const,
   contactFirstNames: ["Carlos", "Ahmed", "James", "Mohammed", "Daniel", "Khalid", "Adebayo", "Aibek", "Karim", "Pedro"],
   contactLastNames: ["Rodriguez", "Hassan", "Smith", "Al-Mansouri", "Kamau", "Okonkwo", "Ibragimov", "Hadi", "García", "Mensah"],
