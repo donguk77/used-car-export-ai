@@ -17,11 +17,14 @@
 | 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
 | 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
 | Cross-validate 검증 | **31개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **22개** | #001 + #006~#025 |
+| 발견된 finding | **25개** | #001 + #006~#028 |
 | YAML 수정 적용 | **9개국** | DO·KE·JO·GH·MX·ZW·KH + NG·AE (룰 변경 또는 docs 추가) |
 | YAML notes 추가 | **10개국** | KZ·DZ·ZA + PH·BD·LK + NG·AE·LK·ZW 보강 |
+| Backend 코드 fix | **1건** | mail-draft 언어 fallback 강화 (#026 — 12국 미지원 primary 처리) |
 | 문서 템플릿 검증 | **0 gaps** | 4종 PDF 필드 커버리지 100% (validate_document_fields.py) |
 | FTA C/O 양식 정합성 | **15/15 필드** | Korea FTA Annex 5B 와 우리 co_application.html 매칭 |
+| 실제 생성 PDF 검증 | **4/4 PDFs** | DO 거래 라이브 생성 후 pymupdf 추출 → 필드 매트릭스 confirm (#028) |
+| 시드 vs compliance 일관성 | **3/4 일치** | YAML is_sanctioned: MM·SD·SY ↔ compliance.py 동일 (CU 만 미시드 #027) |
 
 ---
 

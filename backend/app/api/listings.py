@@ -374,11 +374,21 @@ def draft_mail(
     buyer = db.get(Buyer, listing.buyer_id)
     country = _load_country(db, listing.destination_country)
 
-    # 언어 자동 감지: 명시 > 바이어 선호 > 국가 공식 > en
+    # 언어 자동 감지: 명시 > 바이어 선호 > 국가 공식 > 국가 비즈니스 > en
+    # findings #026 — 28국 중 12국 (KZ kk, AZ az, KH km, BD bn, KG ky, MY ms,
+    # MM my, PH tl, LK si, TZ sw, TH th, VN vi) 의 primary_language 가 LLM
+    # 미지원. business_language 거치는 fallback 추가로 'kk' 같은 raw 코드가
+    # Gemini 에 직행하는 것 방지.
+    _SUPPORTED_LLM_LANGS = {"en", "es", "ar", "ru", "fr", "ko"}
+
+    def _supported(lang: str | None) -> str | None:
+        return lang if lang in _SUPPORTED_LLM_LANGS else None
+
     language = (
-        payload.language
-        or (buyer.preferred_language if buyer else None)
-        or country.primary_language
+        _supported(payload.language)
+        or _supported(buyer.preferred_language if buyer else None)
+        or _supported(country.primary_language)
+        or _supported(country.business_language)
         or "en"
     )
 

@@ -6,6 +6,93 @@
 
 ---
 
+## 🟢 #028 — 실제 생성된 4종 PDF 필드 검증 (DO 거래 예시)
+
+**발견일:** 2026-05-10
+**검증 자료:** 라이브 생성된 4 PDF (DO listing aeb34437, Sonata 2020 → Rodriguez)
+**상태:** 🟢 confirmed (all fields present)
+
+`POST /api/listings/{id}/documents` → 4종 PDF 생성 → pymupdf 텍스트 추출 →
+필드 매트릭스 cross-check:
+
+| 문서 | 페이지 | 핵심 필드 (전부 confirmed) |
+|---|---|---|
+| invoice | 1p | Hyundai Sonata 2020 · VIN KMHE41LBXLA000001 · 8703.23 HS · $14,000 · Rodriguez Motors · Santo Domingo |
+| packing_list | 1p | Vehicle desc · VIN as Marks · Net 1,480 / Gross 1,620 KG · "Marks & Numbers" |
+| shipping_instruction | 1p | B/L wording 대문자 · "TO ORDER" if L/C · VIN stenciled on door post |
+| co_application | 1p | HS 8703.23 · **ORIGIN CRITERION: WO (Wholly Obtained)** · Producer Same as Exporter |
+
+→ 단순 템플릿이 아니라 실제 데이터 (vehicle spec + buyer + listing) 가 정확히
+   merge 됨. 한국식 주소 + 스페인어 bilingual (Sr. Carlos Rodríguez) + FTA C/O
+   Origin Criterion (WO) 까지 정확.
+
+End-to-end 검증 완료: YAML 룰 → import-check → listing → 4 PDF 생성 → 필드 매칭.
+
+---
+
+## 🟡 #027 — Cuba (CU) 가 compliance.py 에 있지만 YAML 없음 (Phase 2 후보)
+
+**발견일:** 2026-05-10
+**상태:** 🟡 noted (PoC 영향 없음)
+
+`backend/app/core/compliance.py:SANCTIONED_COUNTRIES = {SY, SD, CU, MM}` 에는
+Cuba (CU) 가 있지만 `configs/rules/cuba.yaml` 은 시드되지 않음. Cuba 바이어를
+랜덤 풀에 추가하려면:
+1. `configs/rules/cuba.yaml` 작성 (is_blocked + OFAC 제재)
+2. COUNTRY_FLAG 에 🇨🇺 추가
+3. 시드 재실행
+
+PoC 시연 narrative 영향 없음 — 미얀마/시리아/수단 3개로 충분.
+
+---
+
+## 🟢 #026 — 메일 LLM 언어 fallback 강화 (FIX 완료)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 fixed in backend
+
+28개국 중 **12국** 의 primary_language 가 MailWriter `LANGUAGE_NAMES`
+미지원:
+
+| Country | primary | business | 위험 |
+|---|---|---|---|
+| KZ | kk (Kazakh) | ru ✓ | high (자국어 우선) |
+| AZ | az (Azerbaijani) | ru ✓ | high |
+| KH | km (Khmer) | en ✓ | medium |
+| BD | bn (Bengali) | en ✓ | medium |
+| KG | ky (Kyrgyz) | ru ✓ | medium |
+| MY | ms (Malay) | en ✓ | medium (auto-blocked) |
+| MM | my (Burmese) | en ✓ | low (auto-blocked) |
+| PH | tl (Tagalog) | en ✓ | medium |
+| LK | si (Sinhala) | en ✓ | low |
+| TZ | sw (Swahili) | en ✓ | medium |
+| TH | th (Thai) | en ✓ | low (auto-blocked) |
+| VN | vi (Vietnamese) | en ✓ | high |
+
+이전 fallback (`buyer.preferred_language → country.primary_language → en`)
+는 buyer 가 preferred_language 비어있으면 raw "kk"/"vi"/"th" 같은 코드가
+Gemini prompt 에 직행. LLM 이 이상한 언어로 응답하거나 영어로 fallback 할
+수 있음 — 일관성 없음.
+
+수정 (`backend/app/api/listings.py:377-396`):
+```python
+_SUPPORTED_LLM_LANGS = {"en", "es", "ar", "ru", "fr", "ko"}
+
+def _supported(lang): return lang if lang in _SUPPORTED_LLM_LANGS else None
+
+language = (
+    _supported(payload.language)
+    or _supported(buyer.preferred_language if buyer else None)
+    or _supported(country.primary_language)   # 지원 코드만 통과
+    or _supported(country.business_language)  # 폴백 거쳐 영어/러시아어
+    or "en"
+)
+```
+
+→ KZ/AZ/KG → ru / KH/BD/MY/MM/PH/LK/TZ/TH/VN → en. 일관성 있음.
+
+---
+
 ## 🟢 #025 — 짐바브웨 CBCA 2015.5.16~ 강제 + SADC C/O 우대 (notes 추가)
 
 **발견일:** 2026-05-10
