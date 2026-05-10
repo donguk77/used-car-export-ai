@@ -6,6 +6,98 @@
 
 ---
 
+## 🟢 #025 — 짐바브웨 CBCA 2015.5.16~ 강제 + SADC C/O 우대 (notes 추가)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/zimbabwe/CBRTA_Zimbabwe_Handbook_2018-05-17.pdf`
+**상태:** 🟢 noted
+
+CBRTA 명시 deep:
+- "any consignment on the category list not accompanied with the required
+  CBCA certificate will be refused from entering the country" (2015.5.16 발효)
+- 카테고리: Food/Agriculture, Building/civil engineering, Timber, ...
+- SADC 회원국 화물은 SADC Certificates of Origin 우대
+- Cross-border charges: Yellow card, New Limpopo Bridge fee, Carbon tax,
+  EMA fee 등 transit 시 추가 비용
+
+→ #012 (CBCA 2단계 검사) 보강. is_blocked 차단 정책 정당화 + SADC 회원
+   바이어 narrative 강화.
+
+---
+
+## 🟡 #024 — 스리랑카 일반 승용차 룰 NITG Preamble 외 (보수적 추정)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/sri_lanka/Sri_Lanka_Customs_NITG_2024_Preamble.pdf`
+**상태:** 🟡 noted (Phase 2 deeper)
+
+NITG Preamble Chapter 87 deep search: **"ambulance more than 03 years old"**
+만 명시 (Director General of Health Services 추천 필요). 일반 승용차 연식
+룰은 NITG Preamble 외 chapter detail 또는 MOC announcements 에 있음.
+
+우리 YAML `sri_lanka.yaml` 3년 룰은 ambulance 룰 일반화 + 외환위기 후 보수적
+정책 추정. 정확한 일반 승용차 룰은 별도 source (Sri Lanka Customs detail
+chapter 또는 Department of Trade announcements) 필요.
+
+---
+
+## 🟢 #023 — 한국 영문 수출신고필증 + FTA 원산지 선적후 발급 (narrative 강화)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/korea_customs/UNIPASS_FAQ_2023-11-17.pdf`
+**상태:** 🟢 noted (narrative 강화)
+
+UNIPASS FAQ 2023-11 명시:
+- 영문 수출신고필증 발급 가능 (FAQ #5) — 외국 바이어 제출용
+- FTA 원산지증명서 선적후 발급 가능 (FAQ #10) — '선적후 발급' 문구 기재
+- 협정관세 적용 신청서 (FAQ #6)
+- 통관고유부호 발급 절차 (FAQ #1-3)
+
+→ 우리 시연 narrative: "메일 자동 생성 + 4종 PDF 외에 한국 측 절차 (UNIPASS,
+   대한상공회의소 C/O, 영문 수출신고필증) 와도 호환". 수출 흐름의 한국 측 부분
+   별도 채널이지만 우리 시스템과 매끄럽게 연결됨.
+
+---
+
+## 🟢 #022 — Korea FTA Annex 5B C/O 양식 15 필드 (우리 템플릿 정합성 confirm)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/fta_co/Korea_FTA_Annex5B_CO_format.pdf`
+**상태:** 🟢 confirmed (template OK)
+
+Korea-Singapore FTA Annex 5B C/O 양식 15 필드:
+1. Exporter / 2. Importer / 3. Departure Date / 4. Vessel's Name/Flight No /
+5. Port of Discharge and Route / 6. Country of Final Destination /
+7. Country of Origin / 8. Item Number / 9. Description of Goods /
+10. HS No. (6digit) / 11. Marks & Numbers / 12. Quantity & Unit /
+13. **Origin Criterion** / 14. Declaration by Exporter / 15. Certification
+
+우리 `co_application.html` 템플릿 16/17 (gaps=0) 이미 검증. FTA 활용 시 필요한
+'Origin Criterion' 필드도 우리 템플릿에 포함됨 (validate_document_fields.py
+이전 round 에서 추가).
+
+→ Chile / Costa Rica YAML 의 `fta_certificate_of_origin` 항목이 실제 양식과
+   필드 매칭 confirmed.
+
+---
+
+## 🟢 #021 — SONCAP 비용표 정확화 (notes 추가)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/psi/SON_SONCAP_approved_fees_2022-08.pdf`
+**상태:** 🟢 noted
+
+SON 공식 fees 2022-08-01 발효:
+- SONCAP Certificate (SC): **$350 per shipment**
+- Product Certificate (Unregistered): $500 / (Registered): $1000 /
+  (Licensed): $2000
+- New Product / Non-Conformity Report: $350 / Amendment: $100
+
+→ `nigeria.yaml` notes 에 정확한 비용 명시. 멘토 "비용 narrative 가능?"
+   질문에 즉답 가능.
+
+---
+
 ## 🟢 #020 — 한국 수출신고필증은 우리 시스템 4종 외 (관세사 EDI)
 
 **발견일:** 2026-05-10

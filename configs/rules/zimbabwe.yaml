@@ -31,6 +31,9 @@ rules:
     # findings #012 — CBRTA 2018 Handbook: 짐바브웨 정부 2015.3.16 부터 Bureau
     # Veritas 와 4년 CBCA (Consignment-Based Conformity Assessment) 계약.
     # 선적 전 Bureau Veritas 검사 + 도착 후 VID 검사 — 2단계.
+    # findings #025 — CBRTA 추가: "any consignment on the category list not
+    # accompanied with the required CBCA certificate will be refused from
+    # entering the country" (2015.5.16~ 발효). SADC 회원국 화물은 SADC C/O 우대.
     psi_required:
       - Bureau_Veritas_CBCA
       - VID_Inspection
