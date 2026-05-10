@@ -10,10 +10,13 @@ DELETE /api/listings/{id}
 
 from __future__ import annotations
 
+import logging
 import uuid
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Annotated, Any
+
+logger = logging.getLogger(__name__)
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from fastapi.responses import FileResponse
@@ -397,6 +400,18 @@ def draft_mail(
         raise HTTPException(
             status.HTTP_502_BAD_GATEWAY,
             f"LLM provider returned malformed response. Try again or switch provider. ({e})",
+        ) from e
+    except HTTPException:
+        raise
+    except Exception as e:
+        # Gemini 일시 장애 (429 quota / 503 / network timeout) — 503 + 명확한 메시지
+        logger.exception("LLM provider error during mail-draft")
+        raise HTTPException(
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            (
+                f"LLM provider unavailable ({type(e).__name__}). "
+                "Try again in a moment or switch LLM_PROVIDER in backend/.env."
+            ),
         ) from e
 
     message = Message(

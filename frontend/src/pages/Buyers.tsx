@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { AxiosError } from "axios";
 import { Building2, Phone, Plus, Search, ShieldAlert, ShieldCheck, ShieldX } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -11,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useBuyers } from "@/hooks/useBuyers";
 import { COUNTRY_FLAG, SANCTIONS_LABEL, SANCTIONS_VARIANT } from "@/lib/constants";
+import { formatApiError } from "@/lib/utils";
 import type { Buyer, SanctionsStatus } from "@/types/api";
 
 const SANCTIONS_FILTER_LABELS: Record<string, string> = {
@@ -107,9 +107,7 @@ export function BuyersPage() {
           <CardContent className="py-8 text-sm">
             <p className="font-medium text-destructive">바이어를 불러오지 못했습니다.</p>
             <p className="mt-2 text-xs text-muted-foreground">
-              {error instanceof AxiosError
-                ? (error.response?.data?.detail ?? error.message)
-                : (error as Error)?.message}
+              {formatApiError(error)}
             </p>
           </CardContent>
         </Card>

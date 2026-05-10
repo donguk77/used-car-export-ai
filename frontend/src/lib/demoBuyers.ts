@@ -140,15 +140,15 @@ export const DEMO_BUYER_PRESETS: BuyerFormPreset[] = [
 ];
 
 // ── 랜덤 바이어 생성기 ─────────────────────────────────────
+// import_rules 시드된 5개국으로 제한 — 미시드 국가는 거래 생성 시 404 유발.
+// (Phase 2 에서 시드 확장하면 풀도 자연스럽게 늘어남)
 const RANDOM_POOL = {
-  // 우리 시드 5개국 + 일부 시연 후보국
   countries: [
     { code: "DO", names: ["Garcia Auto", "Hernandez Motors", "Lopez Trading"] },
     { code: "KE", names: ["Nairobi Auto", "Mombasa Motors", "Kamau Trading"] },
     { code: "LY", names: ["Tripoli Auto", "Benghazi Trading", "Sahara Motors"] },
-    { code: "AE", names: ["Dubai Auto FZE", "Sharjah Motors", "Jebel Ali Trading"] },
-    { code: "JO", names: ["Aqaba Trading", "Amman Motors", "Petra Auto"] },
-    { code: "NG", names: ["Lagos Auto", "Apapa Trading", "Tinubu Motors"] },
+    { code: "KG", names: ["Bishkek Auto", "Osh Trading", "Tian Shan Motors"] },
+    { code: "SY", names: ["Aleppo Trading", "Latakia Motors", "Homs Auto"] },
   ] as const,
   contactFirstNames: ["Carlos", "Ahmed", "James", "Mohammed", "Daniel", "Khalid", "Adebayo"],
   contactLastNames: ["Rodriguez", "Hassan", "Smith", "Al-Mansouri", "Kamau", "Okonkwo"],

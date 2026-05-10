@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { AxiosError } from "axios";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -31,7 +30,7 @@ import {
   generateRandomBuyer,
   type BuyerFormData,
 } from "@/lib/demoBuyers";
-import { cn } from "@/lib/utils";
+import { cn, formatApiError } from "@/lib/utils";
 import type { ComplianceReport } from "@/types/api";
 
 export function BuyerNewPage() {
@@ -276,9 +275,7 @@ export function BuyerNewPage() {
             <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
               <p className="font-medium text-destructive">등록 실패</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {createMutation.error instanceof AxiosError
-                  ? (createMutation.error.response?.data?.detail ?? createMutation.error.message)
-                  : (createMutation.error as Error)?.message}
+                {formatApiError(createMutation.error)}
               </p>
             </div>
           )}

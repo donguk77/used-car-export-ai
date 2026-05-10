@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { ArrowLeft, Car, FileText, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -11,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { FUEL_LABEL, VEHICLE_STATUS_LABEL, VEHICLE_STATUS_VARIANT } from "@/lib/constants";
-import { formatPrice } from "@/lib/utils";
+import { formatApiError, formatPrice } from "@/lib/utils";
 import type { Vehicle } from "@/types/api";
 
 export function VehicleDetailPage() {
@@ -57,9 +56,7 @@ export function VehicleDetailPage() {
         <CardContent className="py-8 text-sm">
           <p className="font-medium text-destructive">매물을 찾을 수 없습니다</p>
           <p className="mt-1 text-muted-foreground">
-            {error instanceof AxiosError
-              ? (error.response?.data?.detail ?? error.message)
-              : (error as Error)?.message ?? "이미 삭제됐거나 ID가 잘못됐을 수 있습니다."}
+            {formatApiError(error) || "이미 삭제됐거나 ID가 잘못됐을 수 있습니다."}
           </p>
           <Link
             to="/vehicles"
@@ -132,9 +129,7 @@ export function VehicleDetailPage() {
           <div>
             <p className="font-medium text-destructive">삭제 실패</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {deleteMutation.error instanceof AxiosError
-                ? (deleteMutation.error.response?.data?.detail ?? deleteMutation.error.message)
-                : (deleteMutation.error as Error)?.message}
+              {formatApiError(deleteMutation.error)}
             </p>
           </div>
           <Button

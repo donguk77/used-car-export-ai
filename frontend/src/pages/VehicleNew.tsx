@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -18,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { api } from "@/lib/api";
 import { DEMO_PRESETS, generateRandomVehicle, type VehicleFormData } from "@/lib/demoVehicles";
-import { cn } from "@/lib/utils";
+import { cn, formatApiError } from "@/lib/utils";
 import type { DecodedVin, Vehicle } from "@/types/api";
 
 const EMPTY_FORM: VehicleFormData = {
@@ -386,9 +385,7 @@ export function VehicleNewPage() {
             <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
               <p className="font-medium">등록 실패</p>
               <p className="mt-1 text-xs">
-                {createMutation.error instanceof AxiosError
-                  ? (createMutation.error.response?.data?.detail ?? createMutation.error.message)
-                  : (createMutation.error as Error)?.message}
+                {formatApiError(createMutation.error)}
               </p>
             </div>
           )}

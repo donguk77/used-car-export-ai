@@ -21,6 +21,10 @@ DIRECT_BLOCKED_COUNTRIES: set[str] = {"RU", "BY", "KP", "IR"}
 # 러시아 우회 위험 EAEU/CIS 국가 (전략물자 자가판정 대상)
 RUSSIA_PROXY_COUNTRIES: set[str] = {"KG", "KZ", "TJ", "AM", "UZ"}
 
+# OFAC/EU 제재 적용국 — direct_blocked 까진 아니지만 사전 조회·문서 추가 필요
+# (시리아: 2024.5 OFAC 부분 완화, 여전히 SDN 다수; 쿠바·미얀마 동일 카테고리)
+SANCTIONED_COUNTRIES: set[str] = {"SY", "CU", "MM"}
+
 # 우회수출 의심 차량 속성 — 「전략물자 수출입고시」 별표 2의2 (2024.2.24 개정)
 RUSSIA_PROXY_ENGINE_CC_LIMIT: int = 2000
 RUSSIA_PROXY_PRICE_USD_LIMIT: float = 50_000
@@ -65,6 +69,7 @@ def check(buyer: Buyer, vehicle: Vehicle | None = None) -> ComplianceReport:
     findings: list[Finding] = []
 
     _check_direct_blocked(buyer, findings)
+    _check_sanctioned_country(buyer, findings)
     _check_russia_proxy(buyer, vehicle, findings)
     _check_ofac(buyer, findings)
     _check_yestrade(buyer, findings)
@@ -82,6 +87,20 @@ def _check_direct_blocked(buyer: Buyer, findings: list[Finding]) -> None:
                 severity="blocked",
                 code="direct_export_blocked",
                 message=f"Direct export to {buyer.country_code} prohibited (대외무역법/제재).",
+            )
+        )
+
+
+def _check_sanctioned_country(buyer: Buyer, findings: list[Finding]) -> None:
+    if buyer.country_code in SANCTIONED_COUNTRIES:
+        findings.append(
+            Finding(
+                severity="warning",
+                code="sanctioned_country",
+                message=(
+                    f"{buyer.country_code} subject to OFAC/EU sanctions — "
+                    "pre-clearance check + consular legalization required."
+                ),
             )
         )
 

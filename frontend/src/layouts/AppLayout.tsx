@@ -6,7 +6,6 @@ import {
   Globe2,
   LayoutDashboard,
   Mail,
-  Settings,
   Users,
 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
@@ -43,7 +42,8 @@ const NAV: { section: string; items: NavItem[] }[] = [
     section: "기타",
     items: [
       { label: "벤치마크 미리보기", to: "/marketplace", icon: Globe2 },
-      { label: "설정", to: "/settings", icon: Settings },
+      // 설정 페이지는 PoC 스코프 밖 — Phase 2. 시연 시 사이드바에서 숨김.
+      // { label: "설정", to: "/settings", icon: Settings },
     ],
   },
 ];

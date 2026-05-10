@@ -22,9 +22,11 @@ export function useBuyers(params?: { sanctions_status?: string }) {
 // (["buyers", "all"], ["buyers", "clean"], ...) 가 동시 갱신됨.
 // TanStack v5 partial-key 매칭으로 의도된 동작.
 
+// useListings.ts:useBuyerById 와 같은 캐시 키 ("buyers" prefix) 사용 — 한쪽에서
+// invalidate 하면 양쪽 화면이 함께 갱신되도록.
 export function useBuyer(id: string | undefined) {
   return useQuery({
-    queryKey: ["buyer", id],
+    queryKey: ["buyers", "detail", id],
     queryFn: async (): Promise<Buyer> => {
       const r = await api.get<Buyer>(`/api/buyers/${id}`);
       return r.data;

@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { AxiosError } from "axios";
 import { CheckCircle2, FileText, Plus, Search, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -13,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useListings } from "@/hooks/useListings";
 import { COUNTRY_FLAG, LISTING_STATUS_LABEL } from "@/lib/constants";
-import { formatPrice, shortId } from "@/lib/utils";
+import { formatApiError, formatPrice, shortId } from "@/lib/utils";
 import type { Listing, ListingStatus } from "@/types/api";
 
 const STATUS_VARIANT: Record<ListingStatus, "secondary" | "success" | "warning" | "destructive" | "outline"> = {
@@ -112,9 +111,7 @@ export function ListingsPage() {
           <CardContent className="py-8 text-sm">
             <p className="font-medium text-destructive">거래를 불러오지 못했습니다.</p>
             <p className="mt-2 text-xs text-muted-foreground">
-              {error instanceof AxiosError
-                ? (error.response?.data?.detail ?? error.message)
-                : (error as Error)?.message}
+              {formatApiError(error)}
             </p>
           </CardContent>
         </Card>

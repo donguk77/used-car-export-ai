@@ -153,8 +153,12 @@ export function useGenerateDocuments(listingId: string | undefined) {
   return useMutation({
     mutationFn: async (): Promise<{ documents: ExportDocument[] }> => {
       if (!listingId) throw new Error("listingId required for generate-documents");
+      // 콜드 스타트 시 Playwright Chromium 다운로드/실행 ~25-40s 가 발생할 수 있어
+      // 기본 axios 30s 타임아웃 대신 90s 로 override. 워밍업 후엔 ~10s 로 끝남.
       const r = await api.post<{ listing_id: string; documents: ExportDocument[] }>(
         `/api/listings/${listingId}/documents`,
+        undefined,
+        { timeout: 90_000 },
       );
       return r.data;
     },

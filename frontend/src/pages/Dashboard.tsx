@@ -1,18 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { AlertTriangle, Car, FileText, ShieldCheck, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
+import { formatApiError } from "@/lib/utils";
 import type { DashboardSummary } from "@/types/api";
-
-function errorMessage(err: unknown): string {
-  if (err instanceof AxiosError) {
-    return err.response?.data?.detail ?? err.message;
-  }
-  return err instanceof Error ? err.message : "unknown error";
-}
 
 export function DashboardPage() {
   const { data, isLoading, isError, error } = useQuery({
@@ -44,7 +37,7 @@ export function DashboardPage() {
                 cd backend && uvicorn app.main:app --reload
               </code>
             </p>
-            <p className="mt-2 text-xs text-muted-foreground">상세: {errorMessage(error)}</p>
+            <p className="mt-2 text-xs text-muted-foreground">상세: {formatApiError(error)}</p>
           </CardContent>
         </Card>
       )}

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { AxiosError } from "axios";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -29,7 +28,7 @@ import {
   SANCTIONS_LABEL,
   SANCTIONS_VARIANT,
 } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn, formatApiError } from "@/lib/utils";
 import type { SanctionsStatus } from "@/types/api";
 
 export function BuyerDetailPage() {
@@ -58,9 +57,7 @@ export function BuyerDetailPage() {
         <CardContent className="py-8 text-sm">
           <p className="font-medium text-destructive">바이어를 찾을 수 없습니다</p>
           <p className="mt-1 text-muted-foreground">
-            {error instanceof AxiosError
-              ? (error.response?.data?.detail ?? error.message)
-              : (error as Error)?.message ?? "이미 삭제됐거나 ID가 잘못됐을 수 있습니다."}
+            {formatApiError(error) || "이미 삭제됐거나 ID가 잘못됐을 수 있습니다."}
           </p>
           <Link to="/buyers" className="mt-3 inline-flex items-center gap-1 text-xs underline">
             <ArrowLeft className="h-3 w-3" /> 바이어 목록으로
@@ -137,9 +134,7 @@ export function BuyerDetailPage() {
       {recheckMutation.isError && (
         <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
           재검사 실패:{" "}
-          {recheckMutation.error instanceof AxiosError
-            ? (recheckMutation.error.response?.data?.detail ?? recheckMutation.error.message)
-            : (recheckMutation.error as Error)?.message}
+          {formatApiError(recheckMutation.error)}
         </div>
       )}
 

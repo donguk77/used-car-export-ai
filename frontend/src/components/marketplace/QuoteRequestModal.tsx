@@ -32,35 +32,48 @@ export function QuoteRequestModal({
   const [destination, setDestination] = useState<string>("");
   const [notes, setNotes] = useState("");
 
+  // 차단 바이어는 dropdown 에서 제외 (admin CreateListingModal 정책과 일관성)
+  const eligibleBuyers = useMemo(
+    () => (buyersQ.data ?? []).filter((b) => b.sanctions_status !== "blocked"),
+    [buyersQ.data],
+  );
+
   const selectedBuyer = useMemo(
     () => buyersQ.data?.find((b) => b.id === buyerId),
     [buyersQ.data, buyerId],
   );
 
-  // 바이어 선택 → 도착국 자동
+  // 바이어 변경 시 도착국 항상 새로 채움 (이전 국가 stuck 방지)
   useEffect(() => {
-    if (selectedBuyer && !destination) {
+    if (selectedBuyer) {
       setDestination(selectedBuyer.country_code);
     }
-  }, [selectedBuyer, destination]);
+  }, [selectedBuyer]);
 
-  // 모달 닫힐 때 폼 + mutation 상태 리셋
+  // 모달 닫힐 때 폼 리셋 — open 만 deps (createMutation churn 방지)
   useEffect(() => {
-    if (!open) {
-      setBuyerId("");
-      setDestination("");
-      setNotes("");
-      createMutation.reset();
-    }
-  }, [open, createMutation]);
+    if (open) return;
+    setBuyerId("");
+    setDestination("");
+    setNotes("");
+    createMutation.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // 제출 중 close 차단
+  const safeClose = () => {
+    if (createMutation.isPending) return;
+    onClose();
+  };
 
   // Esc 키로 닫기
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") safeClose(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, createMutation.isPending]);
 
   if (!open) return null;
 
@@ -84,7 +97,7 @@ export function QuoteRequestModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={onClose}
+      onClick={safeClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="quote-modal-title"
@@ -106,9 +119,10 @@ export function QuoteRequestModal({
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={safeClose}
+            disabled={createMutation.isPending}
             aria-label="닫기"
-            className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <X className="h-4 w-4" />
           </button>
@@ -134,7 +148,7 @@ export function QuoteRequestModal({
                   required
                 >
                   <option value="">— 바이어를 선택하세요 —</option>
-                  {buyersQ.data?.map((b) => (
+                  {eligibleBuyers.map((b) => (
                     <option key={b.id} value={b.id}>
                       {COUNTRY_FLAG[b.country_code] ?? "🌐"} {b.company_name ?? "(미상)"}
                       {" "}— {b.country_code}
@@ -201,8 +215,9 @@ export function QuoteRequestModal({
             <div className="flex items-center justify-end gap-2 border-t pt-4">
               <button
                 type="button"
-                onClick={onClose}
-                className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                onClick={safeClose}
+                disabled={createMutation.isPending}
+                className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 취소
               </button>

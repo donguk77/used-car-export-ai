@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { AxiosError } from "axios";
 import {
   ArrowLeft,
   Car,
@@ -38,7 +37,7 @@ import {
   SANCTIONS_LABEL,
   SANCTIONS_VARIANT,
 } from "@/lib/constants";
-import { cn, formatPrice, shortId } from "@/lib/utils";
+import { cn, formatApiError, formatPrice, shortId } from "@/lib/utils";
 import type {
   ExportDocType,
   ListingStatus,
@@ -111,9 +110,7 @@ export function ListingDetailPage() {
         <CardContent className="py-8 text-sm">
           <p className="font-medium text-destructive">거래를 찾을 수 없습니다</p>
           <p className="mt-1 text-muted-foreground">
-            {listingQ.error instanceof AxiosError
-              ? (listingQ.error.response?.data?.detail ?? listingQ.error.message)
-              : (listingQ.error as Error)?.message ?? "ID 가 잘못됐을 수 있습니다."}
+            {formatApiError(listingQ.error) || "ID 가 잘못됐을 수 있습니다."}
           </p>
           <Link to="/listings" className="mt-3 inline-flex items-center gap-1 text-xs underline">
             <ArrowLeft className="h-3 w-3" /> 거래 목록으로
@@ -187,10 +184,7 @@ export function ListingDetailPage() {
         </div>
         {updateStatusMutation.isError && (
           <p role="alert" aria-live="polite" className="mt-2 text-xs text-destructive">
-            상태 전환 실패:{" "}
-            {updateStatusMutation.error instanceof AxiosError
-              ? (updateStatusMutation.error.response?.data?.detail ?? updateStatusMutation.error.message)
-              : (updateStatusMutation.error as Error)?.message}
+            상태 전환 실패: {formatApiError(updateStatusMutation.error)}
           </p>
         )}
       </header>
@@ -442,9 +436,7 @@ function MailComposerSection({
           <div role="alert" aria-live="polite" className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
             <p className="font-medium text-destructive">생성 실패</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {draftMutation.error instanceof AxiosError
-                ? (draftMutation.error.response?.data?.detail ?? draftMutation.error.message)
-                : (draftMutation.error as Error)?.message}
+              {formatApiError(draftMutation.error)}
             </p>
           </div>
         )}
@@ -526,10 +518,7 @@ function DocumentsSection({
 
         {generateMutation.isError && (
           <div role="alert" aria-live="polite" className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-            생성 실패:{" "}
-            {generateMutation.error instanceof AxiosError
-              ? (generateMutation.error.response?.data?.detail ?? generateMutation.error.message)
-              : (generateMutation.error as Error)?.message}
+            생성 실패: {formatApiError(generateMutation.error)}
           </div>
         )}
 

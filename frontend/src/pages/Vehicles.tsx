@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { AxiosError } from "axios";
 import { Car, Plus, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -11,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useVehicles } from "@/hooks/useVehicles";
 import { VEHICLE_STATUS_LABEL } from "@/lib/constants";
+import { formatApiError } from "@/lib/utils";
 import type { Vehicle } from "@/types/api";
 
 export function VehiclesPage() {
@@ -100,9 +100,7 @@ export function VehiclesPage() {
               백엔드 서버가 켜져 있는지 확인하세요.
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
-              {error instanceof AxiosError
-                ? (error.response?.data?.detail ?? error.message)
-                : (error as Error)?.message}
+              {formatApiError(error)}
             </p>
           </CardContent>
         </Card>
