@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Award,
@@ -12,16 +13,21 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
+import { DemoModeModal } from "@/components/marketplace/DemoModeModal";
+import { QuoteRequestModal } from "@/components/marketplace/QuoteRequestModal";
 import { api } from "@/lib/api";
 import type { Vehicle } from "@/types/api";
 
 export function MarketplaceVehicleDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: vehicle, isLoading } = useQuery({
-    queryKey: ["vehicle", id],
+    queryKey: ["vehicles", "detail", id],
     queryFn: async (): Promise<Vehicle> => (await api.get(`/api/vehicles/${id}`)).data,
     enabled: Boolean(id),
   });
+
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [demoFeature, setDemoFeature] = useState<string | null>(null);
 
   if (isLoading) {
     return (
@@ -89,6 +95,7 @@ export function MarketplaceVehicleDetail() {
             </div>
             <button
               type="button"
+              onClick={() => setDemoFeature("Save / 즐겨찾기")}
               className="absolute right-4 top-4 rounded-full bg-white/90 p-2 backdrop-blur hover:bg-white"
               aria-label="Save"
             >
@@ -223,10 +230,18 @@ export function MarketplaceVehicleDetail() {
               </>
             )}
 
-            <button type="button" className="mt-5 w-full rounded-md bg-slate-900 py-3 text-sm font-semibold text-white hover:bg-slate-800">
+            <button
+              type="button"
+              onClick={() => setQuoteOpen(true)}
+              className="mt-5 w-full rounded-md bg-slate-900 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+            >
               Request Quote
             </button>
-            <button className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-slate-300 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+            <button
+              type="button"
+              onClick={() => setDemoFeature("Chat on WhatsApp")}
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-slate-300 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
               <MessageCircle className="h-4 w-4" /> Chat on WhatsApp
             </button>
 
@@ -252,6 +267,9 @@ export function MarketplaceVehicleDetail() {
           </div>
         </aside>
       </div>
+
+      <QuoteRequestModal vehicle={vehicle} open={quoteOpen} onClose={() => setQuoteOpen(false)} />
+      <DemoModeModal open={Boolean(demoFeature)} feature={demoFeature ?? ""} onClose={() => setDemoFeature(null)} />
     </div>
   );
 }

@@ -90,6 +90,28 @@ export function useUpdateListingStatus() {
   });
 }
 
+// ── 거래 생성 (마켓플레이스 'Request Quote' 흐름) ──────────
+export interface CreateListingInput {
+  vehicle_id: string;
+  buyer_id: string;
+  destination_country: string;
+  notes?: string;
+}
+
+export function useCreateListing() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: CreateListingInput): Promise<Listing> => {
+      const r = await api.post<Listing>("/api/listings", input);
+      return r.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["listings"] });
+      qc.invalidateQueries({ queryKey: ["dashboard-summary"] });
+    },
+  });
+}
+
 // ── 메일 ──────────────────────────────────────────────────
 export interface MailDraftInput {
   scenario: MailScenario;
