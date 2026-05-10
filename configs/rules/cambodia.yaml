@@ -10,7 +10,7 @@ country:
   region: south_east_asia
   primary_language: km
   business_language: en
-  steering: LHD  # 우측통행, LHD 권장 (단 일본 RHD 차량 일부 사용 중)
+  steering: LHD  # FIDI 2024-01 명시: "Motor vehicle must be left-hand driven" (#014)
   is_high_risk: false
   is_russia_proxy_risk: false
   is_sanctioned: false
@@ -21,18 +21,18 @@ country:
   pre_registration_system: ASYCUDA_World
   consular_legalization: false
   notes: |
-    동남아 대표적 중고차 활성 시장 — 일본 RHD 차량 다수 유입.
-    공식적으로는 LHD 권장이지만 RHD 단속 느슨 (실태).
-    Camcontrol (Cambodia Import-Export Inspection & Fraud Repression)
-    선적 전 검사 가능.
-    관세 + VAT + 특별세 합계 50-70% (배기량 기반).
+    동남아 대표적 중고차 활성 시장 (Phnom Penh / Sihanoukville).
+    findings #014 — FIDI 2024-01 명시: "Motor vehicle must be left-hand driven"
+    (이전 우리 추정 'any' 잘못됨 — 정정).
+    관세 60-125% + 정부세 10-50% (type/age/engine 기반, FIDI 직접 인용).
+    Camcontrol 사전 검사 가능. ASYCUDA World 통관.
     크메르어 공식 + 영어 비즈니스 무난.
 
 rules:
   - body_type_filter: passenger
     age_limit_years: 10
     age_basis: manufacture_year
-    steering_required: any  # 실태 반영
+    steering_required: LHD_only  # findings #014 — FIDI 명시
     psi_required: []  # Camcontrol 선택적
     doc_translation_lang: null
     consular_required: false

@@ -20,9 +20,11 @@ country:
   pre_registration_system: ASYCUDA_World
   consular_legalization: false
   notes: |
-    일본 중고차 활성 시장 — JAAI 기준 4-5년 한도 (year_of_manufacture + 1년).
-    BRTA (Bangladesh Road Transport Authority) 등록 사전 승인.
-    NBR (National Board of Revenue) 통관 + ASYCUDA World.
+    findings #016 — USDA Bangladesh Exporter Guide 2024 는 자동차 specific
+    정보 부족 (농업 위주). 우리 5년 룰은 산업 자료 (JAAI 기준) 추정 — Phase 2
+    에서 BRTA 1차 자료 수동 보강 필요 (REGISTRY ref 등록됨).
+    일본 중고차 활성 시장. 4-5년 한도 (year_of_manufacture + 1).
+    BRTA 등록 사전 승인 + NBR 통관 + ASYCUDA World.
     수입세 + VAT + 보충세 합계 100-200% (배기량 기반).
     영어 비즈니스 무난.
 

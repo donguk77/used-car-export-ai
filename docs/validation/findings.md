@@ -6,6 +6,64 @@
 
 ---
 
+## 🟢 #017 — 스리랑카 NITG 2024 는 종합 관세표 (차량 specific 룰 별도)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/sri_lanka/Sri_Lanka_Customs_NITG_2024_Preamble.pdf`
+**상태:** 🟢 noted (Phase 2 보강 후보)
+
+NITG 2024 는 78p 종합 HS 코드 + 권장 표준 가이드 — 차량 specific 룰 (연식·
+관세·MOC announcements) 은 별도 추적 필요. 우리 3년 룰은 외환위기 (2020-2024)
+재개방 후 보수적 추정 — 현재 정확성은 MOC announcements 모니터링 필요.
+
+---
+
+## 🟢 #016 — 방글라데시 USDA Exporter Guide 자동차 정보 부족 (notes 추가)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/bangladesh/USDA_Bangladesh_Exporter_Guide_2024.pdf`
+**상태:** 🟢 noted (BRTA 1차 자료 수동 보강 필요)
+
+USDA Foreign Agricultural Service 의 Exporter Guide 는 농업 수출 위주로,
+차량 import 룰은 거의 다루지 않음. 우리 5년 한도는 JAAI 산업 자료 기반 추정.
+Phase 2: BRTA 공식 vehicle import guideline PDF 수동 다운로드 필요.
+
+---
+
+## 🟢 #015 — 필리핀 12개월 consignee 등록 의무 (notes 추가)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/philippines/PHILIPPINES_Import_FIDI_Customs_Guide_2024-06.pdf`
+**상태:** 🟢 noted (Phase 2 enforcement)
+
+FIDI 2024-06 명시:
+- "Cars not exceeding 1500 kgs weight and 2800 cc engine displacements"
+- "must be registered under consignee's name for at least 12 months"
+- "Returning residents, Dual Citizens, and holders of 13G or 13A visa
+  are allowed... approximately 200% of car book value for duties and taxes"
+- Prior Authority to Import from Bureau of Import Services (BIS)
+
+우리 YAML 의 `engine_cc>2800cc` blocked_condition ✓ confirmed.
+12개월 consignee 등록 + 1500kg 한도 + 200% 관세는 enforcement Phase 2.
+
+---
+
+## 🟢 #014 — 캄보디아 LHD only 명시 (FIX 완료)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/cambodia/CAMBODIA_Import_FIDI_Customs_Guide_2024-01.pdf`
+**상태:** 🟢 fixed in YAML
+
+FIDI Cambodia 2024-01 명시: "**Motor vehicle must be left-hand driven**"
+
+우리 YAML `cambodia.yaml`: 처음 작성 시 "RHD 단속 느슨" 으로 추정해서
+`steering_required: any` 로 했지만, FIDI 1차 자료는 strict LHD 명시.
+
+수정: `steering_required: any → LHD_only`. 노트도 정정.
+관세 60-125% + 정부세 10-50% 도 FIDI 명시로 보강.
+
+---
+
 ## 🟢 #013 — 알제리 fiscal HP 10 CV 한도 + CIF 3M DZD 한도 (notes 추가)
 
 **발견일:** 2026-05-10

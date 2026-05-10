@@ -1,25 +1,25 @@
-# 데이터 수집·검증 종합 분석 (2026-05-10)
+# 데이터 수집·검증 종합 분석 (2026-05-10, v2)
 
 > 수출 룰 엔진(`configs/rules/*.yaml`)을 1차 권위 자료(`docs/samples/`)와
 > cross-validate 한 결과. 발표·멘토 미팅용 종합 분석.
 >
-> 자세한 개별 finding: `docs/validation/findings.md` (#001~#013)
+> 자세한 개별 finding: `docs/validation/findings.md` (#001~#017)
 > 검증 도구: `scripts/read_pdf_excerpt.py` (pymupdf 기반)
 
 ---
 
-## 1. 전체 현황
+## 1. 전체 현황 (v2 — 28개국 확장 후)
 
 | 카테고리 | 수치 | 비고 |
 |---|---|---|
-| 시드된 국가 | **20** | DO·KE·KG·LY·SY (기존 5) + 15 신규 |
-| ImportRule 행 | **22** | DO 가 차종별 3개 (passenger/bus/truck) |
-| 1차 자료 PDF (실제 보유) | **38** | 19/20 국가 + 공통 자료 5종 |
-| 1차 자료 URL 인덱스 (REGISTRY) | **80 entries** | 53 pdf + 27 ref |
-| Cross-validate 검증 | **13개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **9개** | #001 (기존) + #006~#013 (신규 8개) |
-| YAML 수정 적용 | **5개국** | DO·KE·JO·GH·MX·ZW (룰 변경) |
-| YAML notes 추가 | **3개국** | KZ·DZ·ZA (PoC enforcement 외 항목) |
+| 시드된 국가 | **28** | 5 → 20 → **28** (ASEAN 6 + 남아 2 추가) |
+| ImportRule 행 | **30** | DO 가 차종별 3개 (passenger/bus/truck) |
+| 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
+| 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
+| Cross-validate 검증 | **22개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
+| 발견된 finding | **14개** | #001 + #006~#017 |
+| YAML 수정 적용 | **7개국** | DO·KE·JO·GH·MX·ZW + KH (LHD only) |
+| YAML notes 추가 | **6개국** | KZ·DZ·ZA + PH·BD·LK |
 
 ---
 
@@ -42,12 +42,13 @@
 
 ## 3. 발견 (Findings) 분류
 
-### 🔴 Hard error (룰 자체가 틀림) — 2건
+### 🔴 Hard error (룰 자체가 틀림) — 3건
 
 | # | 국가 | 이전 YAML | 정정 YAML | 출처 |
 |---|---|---|---|---|
 | #001 | **DO** | passenger 10년 | passenger **5년** | FIDI 2024-10 명시 |
 | #008 | **GH** | LHD_only | **any** (RHD 시 핸들 제거 수수료) | FIDI 2023-09 명시 |
+| #014 | **KH** | any (RHD 단속 느슨 추정) | **LHD_only** | FIDI 2024-01 명시 |
 
 → 이 둘은 **잘못 보내면 통관 거부** 되는 hard error. fix 안 됐으면 데모에서
 Sonata 2020 → DO 가 통과됐을 텐데 (실제론 차단), 멘토가 1차 자료 cross-check

@@ -21,10 +21,12 @@ country:
   pre_registration_system: BOC_TRS
   consular_legalization: false
   notes: |
-    "Cars not exceeding 1500 kgs weight and 2800 cc engine displacements" 만 수입 가능.
-    Bureau of Customs (BOC) 등록 + 40% 관세 + 10% VAT + Ad Valorem 15-100% (배기량 기반).
-    개인용 중고차 수입은 returning resident 위주 — 상업 채널 라이선스 필요.
-    영어가 비즈니스 표준 100%.
+    findings #015 — FIDI 2024-06 명시:
+    - "Cars not exceeding 1500 kgs weight and 2800 cc engine displacements"
+    - "약 200% car book value 만큼 duties+taxes" (returning residents/dual citizens/13G/13A 비자만)
+    - "must be registered under consignee's name for at least 12 months" (개인사용 12개월 의무)
+    - Prior Authority to Import from Bureau of Import Services (BIS) 사전 발급
+    Bureau of Customs (BOC) 통관. 영어 비즈니스 100%. 일반 상업 채널 사실상 closed.
 
 rules:
   - body_type_filter: passenger
