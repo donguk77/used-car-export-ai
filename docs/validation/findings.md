@@ -6,6 +6,36 @@
 
 ---
 
+## 🟢 #039 — 28국 항구 물류 매트릭스 신설 (Korea → 도착항 ETA + 운임)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 docs added — `docs/validation/shipping_matrix.md`
+
+이전: country YAML 의 `main_ports` 필드만 (항구명 list). ETA / 운임 / 운송
+방식 / frequency 없음. 멘토 "면토 며칠 걸려?" "운임 얼마?" 즉답 어려움.
+
+신설 `docs/validation/shipping_matrix.md`:
+- **Korea → 28국 주요 항구** ETA + RoRo/Container 운임 추정 매트릭스
+- 7 region 분류 (라틴/아프리카/북아프리카/중동/중앙아/동남아/남아)
+- Sonata 2020 $14,000 FOB 기준 도착 후 총 비용 (운임 + 보험 + 관세)
+  · UAE: ~$16,400 / 3주 (가장 빠름·저렴)
+  · MX: ~$19,800 / 3주
+  · KH/VN: 2주 (최단 거리)
+  · DO/CR/KE/EG: 4-6주
+  · KG/KZ: 6-7주 (Trans-Siberian rail)
+  · LY: 5-6주 (정세 + 보험료 ↑↑)
+- 한국 측 항만 비교 (평택/인천/부산/광양/울산)
+- Carrier 공개 schedule URL (EUKOR/Wallenius/NYK)
+
+⚠️ 한계: carrier 들 가격 비공개 → 산업 추정 (±30%). Phase 2 에서 EUKOR API
+또는 Freightos 연동 시 정확화.
+
+→ 시연 narrative: "동남아·중동: 2-3주 / 카리브·아프리카: 5-6주 / 중앙아 철도:
+   6-7주" 즉답 가능. UAE 재수출 허브 narrative + 한국 1위 LY 정세 risk
+   narrative 보강.
+
+---
+
 ## 🟢 #038 — 28국 관세 매트릭스 신설 (시연 narrative 강화)
 
 **발견일:** 2026-05-10
