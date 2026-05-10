@@ -6,6 +6,61 @@
 
 ---
 
+## 🟢 #047 — Compliance perf: OFAC 18,947 entries 도 0.01ms/buyer
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+OFAC SDN 18,947 entries 통합 (#042) 후 실 perf 측정:
+
+| 항목 | 결과 |
+|---|---|
+| OFAC cold load (XML 파싱) | **3.9초** (28MB → 18,947 dict entries) |
+| In-memory 사용량 (tracemalloc) | **8.5MB** |
+| Compliance check (no SDN match) | **0.01 ms/buyer** (50건 0.6ms) |
+| Compliance check (SDN exact match) | **0.01 ms/buyer** (50건 0.7ms, dict O(1)) |
+| Throughput | ~**100,000 buyers/sec** 이론치 |
+
+→ OFAC 정식 통합으로 인한 성능 영향 사실상 없음. 50 buyers 동시 등록도
+   0.6ms 로 처리. cold start 4초만 trade-off.
+
+→ Phase 2 fuzzy match (Levenshtein) 도입 시 재측정 필요.
+
+---
+
+## 🟢 #046 — Compliance multi-finding stacking 라이브 검증 (6 케이스)
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+Round 12 stress test — 다층 finding 정확 누적 + edge case 안전:
+
+**Test 1**: RU + OFAC SDN match (실 entry "OOO VOLGA GROUP")
+- overall=`blocked`, score=0, **2 findings stack**:
+  - direct_export_blocked (RU 자체)
+  - **ofac_sdn_match: uid=16806, programs=UKRAINE-EO13661** (실 SDN entry)
+
+**Test 2**: KG + 2.5L diesel + $60k 차량 (Russia-proxy 다층)
+- overall=`blocked`, score=20, **3 findings stack**:
+  - warning russia_proxy_country (KG 위치)
+  - **blocked russia_proxy_strategic** (>2000cc + price>$50000)
+  - warning new_buyer_high_value (KYC review)
+
+**Test 3**: SY (sanctioned country)
+- overall=`warning`, score=85, 1 finding (sanctioned_country) — #A3 fix 동작
+
+**Test 4**: Empty company name → 0 findings (edge OK)
+
+**Test 5**: XSS injection 시도 (`<script>alert(1)</script>`)
+→ 0 findings (OFAC normalize 가 special chars 제거 → 매치 안 됨, XSS 안전)
+
+**Test 6**: Yestrade tax_id stub match
+- overall=`blocked`, finding `yestrade_concerned` — #043 stub 동작
+
+→ multi-layer 룰 모두 독립적으로 동작 + edge case 안전 + XSS 안전.
+
+---
+
 ## 🟢 #045 — 5 listings × mail + 4 PDFs E2E 라이브 검증 (20/20)
 
 **발견일:** 2026-05-11
