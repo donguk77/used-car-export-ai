@@ -80,11 +80,12 @@ export function MarketplaceLanding() {
               </button>
             </div>
 
-            {/* Trust marks */}
+            {/* Trust marks + live vehicle count badge */}
             <div className="mt-10 flex flex-wrap gap-6 text-xs text-slate-400">
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5" /> 112-Point Inspection
-              </div>
+              <a href="/marketplace/catalog" className="flex items-center gap-1.5 underline-offset-4 hover:text-white hover:underline">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                <strong className="text-white">{(vehicles?.length ?? 0).toLocaleString()}+</strong> Vehicles Available
+              </a>
               <div className="flex items-center gap-1.5">
                 <Globe className="h-3.5 w-3.5" /> 100+ Countries Shipped
               </div>
@@ -221,23 +222,59 @@ export function MarketplaceLanding() {
         </div>
       </section>
 
+      {/* About — stats cards (trust signal, Autobell-style) */}
+      <section className="bg-slate-50 border-y">
+        <div className="mx-auto max-w-[1400px] px-6 py-16">
+          <div className="mb-10 text-center">
+            <p className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+              About AutoExport Global
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight">The AI-First Korean Used-Car Export Platform</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-600">
+              Built for SME exporters in Songdo, Incheon. AI-powered import-rule
+              checks, multilingual buyer correspondence, and auto-generated export
+              documents — all in one workflow.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+            <StatCard value={(vehicles?.length ?? 0).toString()} label="Vehicles in stock" hint="Updated daily" />
+            <StatCard value="5" label="Destination countries" hint="DO · KE · LY · KG · SY" />
+            <StatCard value="5" label="Languages supported" hint="EN · ES · AR · RU · KR" />
+            <StatCard value="4" label="Auto-generated docs" hint="Invoice · PL · SI · C/O" />
+          </div>
+        </div>
+      </section>
+
       {/* Auction promo */}
-      <section className="bg-slate-100">
+      <section className="bg-slate-900 text-white">
         <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-6 px-6 py-12 sm:flex-row sm:justify-between">
           <div>
-            <span className="mb-2 inline-block rounded-md bg-amber-100 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-amber-800">
+            <span className="mb-2 inline-block rounded-md bg-amber-500/20 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-amber-300">
               Weekly Auction
             </span>
             <h2 className="text-2xl font-bold tracking-tight">Korea's No.1 Used Car Auction</h2>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-slate-300">
               Live bidding every Wednesday · Reserve your seat with one click.
             </p>
           </div>
-          <button className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800">
+          <button type="button" className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100">
             <Gavel className="h-4 w-4" /> Check the next Auction
           </button>
         </div>
       </section>
+    </div>
+  );
+}
+
+function StatCard({ value, label, hint }: { value: string; label: string; hint: string }) {
+  return (
+    <div className="text-center">
+      <p className="text-4xl font-extrabold tracking-tight text-slate-900 tabular-nums sm:text-5xl">
+        {value}
+        <span className="text-2xl font-bold text-amber-500">+</span>
+      </p>
+      <p className="mt-2 text-sm font-semibold text-slate-700">{label}</p>
+      <p className="mt-0.5 text-[11px] text-slate-500">{hint}</p>
     </div>
   );
 }

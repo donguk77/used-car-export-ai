@@ -42,6 +42,12 @@ export function MarketplaceVehicleDetail() {
     );
   }
 
+  // CIF 가격 분해 — RoRo 평균 운임 + 1% 보험 (PoC 단순화, 실 환경은 destination 별 룩업)
+  const fob = vehicle.list_price_usd ?? 0;
+  const shipping = 1800; // Korea → 글로벌 RoRo 평균 ($1,500~$2,200 range)
+  const insurance = Math.round(fob * 0.01);
+  const cifBreakdown = { fob, shipping, insurance, total: fob + shipping + insurance };
+
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-6">
       {/* Breadcrumb */}
@@ -164,18 +170,46 @@ export function MarketplaceVehicleDetail() {
           </div>
         </div>
 
-        {/* Right — sticky purchase panel */}
+        {/* Right — sticky purchase panel with CIF breakdown */}
         <aside className="lg:sticky lg:top-6 lg:self-start">
           <div className="rounded-lg border bg-white p-6 shadow-sm">
-            <p className="text-xs uppercase tracking-widest text-slate-500">FOB Incheon</p>
+            <p className="text-xs uppercase tracking-widest text-slate-500">Total CIF (worldwide)</p>
             <p className="mt-1 text-3xl font-bold text-slate-900">
-              ${vehicle.list_price_usd?.toLocaleString()}
+              ${cifBreakdown.total.toLocaleString()}
             </p>
             <p className="mt-1 text-xs text-slate-500">
-              + shipping &amp; insurance · CIF quote available
+              All-in to nearest port · Final CIF varies by destination
             </p>
 
-            <button className="mt-5 w-full rounded-md bg-slate-900 py-3 text-sm font-semibold text-white hover:bg-slate-800">
+            {/* Price breakdown */}
+            <div className="mt-5 space-y-1.5 rounded-md bg-slate-50 p-3 text-xs">
+              <div className="flex justify-between">
+                <span className="text-slate-600">Vehicle (FOB Incheon)</span>
+                <span className="font-medium tabular-nums text-slate-900">
+                  ${cifBreakdown.fob.toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-600">Ocean freight (RoRo est.)</span>
+                <span className="font-medium tabular-nums text-slate-900">
+                  ${cifBreakdown.shipping.toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-600">Marine insurance (~1%)</span>
+                <span className="font-medium tabular-nums text-slate-900">
+                  ${cifBreakdown.insurance.toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between border-t border-slate-300 pt-1.5 text-sm font-bold text-slate-900">
+                <span>CIF Total</span>
+                <span className="tabular-nums">
+                  ${cifBreakdown.total.toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            <button type="button" className="mt-5 w-full rounded-md bg-slate-900 py-3 text-sm font-semibold text-white hover:bg-slate-800">
               Request Quote
             </button>
             <button className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-slate-300 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
