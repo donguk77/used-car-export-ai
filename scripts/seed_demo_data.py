@@ -83,7 +83,7 @@ DEMO_VEHICLES = [
         vin="KMHD84LF2KU000006", make="Hyundai", model="Avante", year=2019,
         body_type="passenger", fuel_type="Gasoline", engine_cc=1591,
         transmission="A/T", steering="LHD", mileage_km=65000,
-        color_exterior="White", list_price_usd=11000, hs_code="8703.22",
+        color_exterior="White", list_price_usd=11000, hs_code="8703.23",  # findings #032: 1591cc > 1500cc → 8703.23
         manufacture_date=date(2019, 5, 1),
     ),
     dict(  # 7 — RHD Tucson (케냐 시연용, 단 2017이라 발효 후 fail)
@@ -111,7 +111,7 @@ DEMO_VEHICLES = [
         vin="KMJWA37FBJU000010", make="Hyundai", model="Grand Starex", year=2018,
         body_type="van", fuel_type="Diesel", engine_cc=2497,
         transmission="A/T", steering="LHD", mileage_km=110000,
-        color_exterior="White", list_price_usd=14000, hs_code="8702.10",
+        color_exterior="White", list_price_usd=14000, hs_code="8702.10",  # findings #033: 12-seat 가정 (≥10 seats → 8702). 7-9 seats 는 8703.32
         manufacture_date=date(2018, 4, 1),
     ),
 ]

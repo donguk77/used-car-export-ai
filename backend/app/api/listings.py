@@ -25,7 +25,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_current_user_id
-from app.core import compliance
+from app.core import compliance, hs_classifier
 from app.core.rule_engine import ImportCheckResult, RuleEngineError, evaluate
 from app.db import get_db
 from app.models import Buyer, Country, Document, Listing, Message, User, Vehicle
@@ -659,7 +659,12 @@ def _build_document_input(
         engine_cc=vehicle.engine_cc or 0,
         color=vehicle.color_exterior or "?",
         mileage_km=vehicle.mileage_km or 0,
-        hs_code=vehicle.hs_code or "8703.23",
+        # findings #034 — vehicle.hs_code 비어있으면 자동 분류 (8703.23 hard-default 대신)
+        hs_code=vehicle.hs_code or hs_classifier.classify(
+            body_type=vehicle.body_type,
+            fuel_type=vehicle.fuel_type,
+            engine_cc=vehicle.engine_cc,
+        ).hs_code,
         net_weight_kg=1480,  # PoC: 차량 평균. 실제는 Vehicle 에 컬럼 추가
         gross_weight_kg=1620,
         unit_price_usd=float(listing.agreed_price_usd or vehicle.list_price_usd or 0),

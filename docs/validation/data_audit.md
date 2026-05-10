@@ -17,14 +17,16 @@
 | 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
 | 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
 | Cross-validate 검증 | **31개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **25개** | #001 + #006~#028 |
+| 발견된 finding | **28개** | #001 + #006~#034 |
 | YAML 수정 적용 | **9개국** | DO·KE·JO·GH·MX·ZW·KH + NG·AE (룰 변경 또는 docs 추가) |
 | YAML notes 추가 | **10개국** | KZ·DZ·ZA + PH·BD·LK + NG·AE·LK·ZW 보강 |
-| Backend 코드 fix | **1건** | mail-draft 언어 fallback 강화 (#026 — 12국 미지원 primary 처리) |
+| Backend 코드 fix | **2건** | mail-draft 언어 fallback (#026) + HS 자동 분류기 (#034) |
+| 시드 데이터 fix | **1건** | Avante 1591cc HS code 정정 (#032) |
 | 문서 템플릿 검증 | **0 gaps** | 4종 PDF 필드 커버리지 100% (validate_document_fields.py) |
 | FTA C/O 양식 정합성 | **15/15 필드** | Korea FTA Annex 5B 와 우리 co_application.html 매칭 |
 | 실제 생성 PDF 검증 | **4/4 PDFs** | DO 거래 라이브 생성 후 pymupdf 추출 → 필드 매트릭스 confirm (#028) |
 | 시드 vs compliance 일관성 | **3/4 일치** | YAML is_sanctioned: MM·SD·SY ↔ compliance.py 동일 (CU 만 미시드 #027) |
+| 시드 vs HS classifier 정합성 | **10/10 일치** | 10 차량 모두 자동 분류 결과와 시드값 일치 (재시드 후) |
 
 ---
 

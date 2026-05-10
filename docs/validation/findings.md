@@ -6,6 +6,74 @@
 
 ---
 
+## 🟢 #034 — HS code 자동 분류기 신설 (FIX 완료)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 fixed in backend
+
+이전: `vehicle.hs_code or "8703.23"` hard-default → 사용자가 hs_code 비워두면
+모든 차량이 1500-3000cc 가솔린으로 분류됨 (실제로는 트럭/버스/EV/디젤 등 다양).
+
+신설 `backend/app/core/hs_classifier.py` (HS 2022 기준):
+- 8702.10/.20/.30/.40/.90 (≥10인승 버스)
+- 8703.21~.24 (가솔린, 배기량별)
+- 8703.31~.33 (디젤, 배기량별)
+- 8703.40/.50 (HEV, 가솔린/디젤)
+- 8703.60/.70 (PHEV, 가솔린/디젤)
+- 8703.80 (BEV)
+- 8704.21~.32 (트럭, GVW + 연료별)
+
+분류 로직: body_type → fuel_type → engine_cc 순. confidence 점수 (0.0~1.0)
+포함 — truck/van 은 좌석수/GVW 모름으로 0.6-0.7, ICE 가솔린/디젤은 배기량
+명확하면 0.95.
+
+🐛 분류기 작성 중 substring bug 발견 + fix:
+- "HEV" 가 "EV" substring 매치 → BEV 로 잘못 분류되던 bug
+- `_matches_any()` helper 로 단어 단위 정확 매치 (split + set 교집합)
+
+backend/app/api/listings.py 의 fallback 정정:
+```python
+hs_code=vehicle.hs_code or hs_classifier.classify(
+    body_type=vehicle.body_type,
+    fuel_type=vehicle.fuel_type,
+    engine_cc=vehicle.engine_cc,
+).hs_code
+```
+
+---
+
+## 🟡 #033 — Grand Starex (van + 2.5L diesel) → 8702.10 vs 8703.32 모호
+
+**발견일:** 2026-05-10
+**상태:** 🟡 noted (12-seat 가정)
+
+WCO HS 2022:
+- 8702 = 운송 차량 ≥10 seats incl driver
+- 8703 = 승용차 ≤9 seats
+
+Grand Starex 는 7인승 / 9인승 / 12인승 모델 존재. 우리 시드는 12-seat 가정
+하여 8702.10 (디젤 ≥10seats). 7-9 seats 면 8703.32.
+
+→ Vehicle 모델에 `seats` 컬럼 추가 시 자동 분류 정확도 ↑ (Phase 2).
+
+---
+
+## 🟢 #032 — Avante 1591cc HS code 잘못 (FIX 완료)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 fixed in seed
+
+WCO HS 2022 8703 세분:
+- 8703.21: ≤1,000cc / 8703.22: 1,000-1,500cc / **8703.23: 1,500-3,000cc**
+
+Avante 1591cc 는 1500cc 초과 → 8703.23 가 정확. 우리 시드는 8703.22 로
+잘못 분류 (Avante 표준 1.6L 모델로 추정해서 1500 경계 잘못 적용).
+
+수정: `scripts/seed_demo_data.py` Avante hs_code "8703.22" → "8703.23".
+재시드 후 라이브 confirm.
+
+---
+
 ## 🟢 #028 — 실제 생성된 4종 PDF 필드 검증 (DO 거래 예시)
 
 **발견일:** 2026-05-10
