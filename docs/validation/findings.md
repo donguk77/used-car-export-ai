@@ -6,6 +6,37 @@
 
 ---
 
+## 🔴 #037 — ICC Incoterms 2020 mirror URL 이 hijack 됨 (FIX 완료)
+
+**발견일:** 2026-05-10
+**상태:** 🔴 detected & 🟢 fixed
+
+`docs/samples/incoterms/ICC_Incoterms_2020_full.pdf` 가 PDF 가 아닌 HTML.
+첫 줄: `<!DOCTYPE html><html lang="id-ID"...><title>BAHAGIA777: Bocora...`
+도박 사이트 내용. URL `iscosafricashipping.org/wp-content/.../ICC-INCOTERMS-2020.pdf`
+가 hijack 되어 우리 fetch 시 잘못된 콘텐츠 받음.
+
+이전 round 5 에서 pymupdf 로 "10KB chars / 38p" 결과는 hijack 된 HTML 이
+PDF 로 위장한 것 (실제는 영문 텍스트 거의 없음).
+
+**FIX:**
+1. `docs/samples/incoterms/ICC_Incoterms_2020_full.pdf` 삭제
+2. `samples_registry.yaml` 정정: ICC Switzerland 의 무료 introduction PDF 사용
+   (https://www.icc-switzerland.ch/images/723e_inco2020_eng_intro.pdf)
+3. ICC 본 paywall 자료 (€45/€69 책자) 는 Phase 2 정식 구입 후 추가
+4. `iccwbo.org` 본 페이지를 ref 로 추가
+
+검증 (대체 PDF):
+- pages: 18 / chars: 44,501
+- 11 Incoterms 코드 전부 명시 (EXW/FCA/FAS/FOB/CFR/CIF/CPT/CIP/DAP/DPU/DDP)
+- E/F/C/D 4 카테고리 분류 명확
+- 시연 narrative: "Incoterms 2020 표준 코드 기반 우리 시스템" — 자료 confirmed.
+
+**교훈**: third-party mirror URL 신뢰 위험 — 정부/공식 도메인 우선. 정기적인
+REGISTRY 재검증 (예: 분기별 fetch --force) 필요.
+
+---
+
 ## 🟢 #036 — 5 언어 mail-draft 라이브 동작 confirm (es·ar·ru·fr·en)
 
 **발견일:** 2026-05-10

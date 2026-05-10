@@ -2,7 +2,7 @@
 
 이 파일은 `scripts/fetch_public_samples.py` 가 자동 생성합니다. 직접 편집하지 말고 `configs/samples_registry.yaml` 을 고치세요.
 
-총 96 항목 · 카테고리 35 개
+총 97 항목 · 카테고리 35 개
 
 
 ## algeria
@@ -134,11 +134,14 @@ Pre-Arrival Assessment Reporting (PAAR) 포함.
 
 | 종류 | 제목 | 출처 | 발급일 | 링크 |
 |------|------|------|--------|------|
-| 📄 PDF | ICC Incoterms 2020 — full rules | ICC International Chamber of Commerce (mirror) | 2020 | [원본](https://iscosafricashipping.org/wp-content/uploads/2020/02/ICC-INCOTERMS-2020.pdf) · [로컬](docs/samples/incoterms/ICC_Incoterms_2020_full.pdf) |
+| 📄 PDF | Incoterms 2020 Introduction (English) — ICC Switzerland 무료 자료 | ICC Switzerland (영문 무료 introduction) | 2020 | [원본](https://www.icc-switzerland.ch/images/723e_inco2020_eng_intro.pdf) · [로컬](docs/samples/incoterms/ICC_Switzerland_Incoterms_2020_intro.pdf) |
+| 🔗 ref | Incoterms 2020 본 페이지 (paywall €45/€69) | ICC International Chamber of Commerce | — | [열기](https://iccwbo.org/business-solutions/incoterms-rules/incoterms-2020/) |
 | 🔗 ref | Incoterms 2020 Checklist & Flowcharts | ICC Sweden | — | [열기](https://icc.se/wp-content/uploads/2022/05/icc-incoterms-2020-checklist-int.pdf) |
 
 **Notes:**
 
+- **Incoterms 2020 Introduction (English) — ICC Switzerland 무료 자료** — ICC 본 PDF (€45/€69) 는 Phase 2 정식 구입 후 추가.
+- **Incoterms 2020 본 페이지 (paywall €45/€69)** — 정식 책자 구매 필요.
 - **Incoterms 2020 Checklist & Flowcharts** — 404 (URL 만료). icc.se 새 위치 확인 필요. ICC_Incoterms_2020_full.pdf 가 상위 자료라 우선순위 낮음.
 
 ## jordan

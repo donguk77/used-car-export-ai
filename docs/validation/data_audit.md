@@ -16,8 +16,8 @@
 | ImportRule 행 | **30** | DO 가 차종별 3개 (passenger/bus/truck) |
 | 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
 | 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
-| Cross-validate 검증 | **31개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **30개** | #001 + #006~#036 |
+| Cross-validate 검증 | **32개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
+| 발견된 finding | **31개** | #001 + #006~#037 |
 | YAML 수정 적용 | **9개국** | DO·KE·JO·GH·MX·ZW·KH + NG·AE (룰 변경 또는 docs 추가) |
 | YAML notes 추가 | **10개국** | KZ·DZ·ZA + PH·BD·LK + NG·AE·LK·ZW 보강 |
 | Backend 코드 fix | **3건** | mail-draft 언어 fallback (#026) + HS 분류기 (#034) + LLM 자동 retry (#035) |

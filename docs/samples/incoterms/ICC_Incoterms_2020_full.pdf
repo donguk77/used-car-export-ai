@@ -20,7 +20,7 @@
     <meta content="website" name="categories" />
     <meta content="indonesia" name="geo.region" />
     <meta content="jakarta" name="geo.placename" />
-   <script nonce="TFNQUvYHwdi8uHoMheRs/Q==" type="996446d2f4c5b246258e7fe4-text/javascript">
+   <script nonce="TFNQUvYHwdi8uHoMheRs/Q==" type="ddc772f2e6830502cc144395-text/javascript">
       //<![CDATA[
       window.dataLayer = window.dataLayer || [];
       
@@ -28,11 +28,11 @@
    </script>
     <style>@font-face{font-family:digital_sans_ef_medium;font-display:swap;src:url(//dsuown9evwz4y.cloudfront.net/Fonts/digital_sans_ef_medium.woff2) format("woff2"),url(//dsuown9evwz4y.cloudfront.net/Fonts/digital_sans_ef_medium.woff) format("woff");font-weight:400;font-style:normal}@font-face{font-family:gilroybold;font-display:swap;src:url(//dsuown9evwz4y.cloudfront.net/Fonts/Gilroy-Bold.woff2) format("woff2"),url(//dsuown9evwz4y.cloudfront.net/Fonts/Gilroy-Bold.woff) format("woff");font-weight:400;font-style:normal}@font-face{font-family:Open24DisplaySt;font-display:swap;src:url(//dsuown9evwz4y.cloudfront.net/Fonts/Open24DisplaySt.woff2) format("woff2");font-weight:400;font-style:normal}@font-face{font-family:"Glyphicons Halflings";font-display:swap;src:url(//dsuown9evwz4y.cloudfront.net/Fonts/glyphicons-halflings-regular.woff) format("woff")}body{font-family:digital_sans_ef_medium,Arial,Helvetica,sans-serif;font-size:14px}.h1,.h2,.h3,.h4,.h5,.h6,h1,h2,h3,h4,h5,h6{font-family:inherit}.home-progressive-jackpot .jackpot-play-section .jackpot-play-text{font-family:gilroybold}.home-progressive-jackpot .jackpot-container{font-family:Open24DisplaySt}.glyphicon{font-family:"Glyphicons Halflings"}</style>
     <link href="https://www.zmori.com/" rel="canonical" />
-    <link rel="alternate" hreflang="id-id" href="https://zmori.com/"/>
-    <link rel="alternate" hreflang="id" href="https://zmori.com/"/>
-    <link rel="alternate" hreflang="en" href="https://zmori.com/"/>
-    <link rel="alternate" hreflang="x-default" href="https://zmori.com/"/>
-    <link rel="alternate" href="https://zmori.com/"/>
+    <link rel="alternate" hreflang="id-id" href="https://amp.zmori.com/"/>
+    <link rel="alternate" hreflang="id" href="https://amp.zmori.com/"/>
+    <link rel="alternate" hreflang="en" href="https://amp.zmori.com/"/>
+    <link rel="alternate" hreflang="x-default" href="https://amp.zmori.com/"/>
+    <link rel="alternate" href="https://amp.zmori.com/"/>
     <link href="/bahagia777.jpg" rel="icon" type="image/x-icon" />
     <link href="/Content/desktop.css?v=hGUT-mkDWuWx0x3Kdvvq0rr91BgbVdPLcTIhn5TuhiQ1" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet" />
@@ -46,7 +46,7 @@
             text-transform: none !important;
         }
     </style>
-    <link rel="amphtml" href="https://zmori.com/" />
+    <link rel="amphtml" href="https://amp.zmori.com/" />
     <link href="/Content/reserve.css?v=20250529" rel="stylesheet" />
 </head>
 
@@ -68,7 +68,7 @@
                     <div class="topbar-left-section">
                         <div class="topbar-item"> <span class="js_live_chat_link live-chat"> <i data-icon="live-chat" style="background-image: url(https://dsuown9evwz4y.cloudfront.net/Images/v-normad-alpha/light-cyan/desktop/layout/live-chat.svg?v=20250529);"></i> </span> </div>
                         <div class="topbar-item"> <a href="https://www.zmori.com/" class="download-apk-btn"> <i data-icon="android" style="background-image: url(https://dsuown9evwz4y.cloudfront.net/Images/icons/android-logo.svg?v=20250529);"></i> </a> </div>
-                        <div class="topbar-item"> <a href="https://zmori.com/" rel="nofollow"> <i data-icon="contact-us" style="background-image: url(https://dsuown9evwz4y.cloudfront.net/Images/v-normad-alpha/light-cyan/desktop/layout/mobile.svg?v=20250529);"></i> </a> </div>
+                        <div class="topbar-item"> <a href="https://amp.zmori.com/" rel="nofollow"> <i data-icon="contact-us" style="background-image: url(https://dsuown9evwz4y.cloudfront.net/Images/v-normad-alpha/light-cyan/desktop/layout/mobile.svg?v=20250529);"></i> </a> </div>
                         <div class="topbar-item language-selector-container" style="--image-src: url(https://dsuown9evwz4y.cloudfront.net/Images/v-normad-alpha/light-cyan/desktop/layout/flags.png?v=20250529);">
                             <div id="language_selector_trigger" data-toggle="dropdown" class="language-selector-trigger" data-language="id"><i data-language="id"></i></div>
                             <ul class="dropdown-menu language-selector">
@@ -5337,7 +5337,7 @@
             </div>
         </div>
     </div>
-    <script type="996446d2f4c5b246258e7fe4-text/javascript">
+    <script type="ddc772f2e6830502cc144395-text/javascript">
       // Fungsi untuk mendapatkan nama hari
       function getDayName(dayIndex) {
           const days = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
@@ -5383,12 +5383,12 @@
             display: block;
         }
     </style>
-    <script src="/bundles/desktop.js?v=TyON_AiUQEZLO_sKTVQeVz-uaRS3mBR_6rYANiID1l41" defer type="996446d2f4c5b246258e7fe4-text/javascript"></script>
-    <script src="/bundles/Home/desktop.js?v=wgCMWmB3IdLrfHnFgMJZ0F4Fr0lS9teinbX4Xhsr7lo1" defer type="996446d2f4c5b246258e7fe4-text/javascript"></script>
+    <script src="/bundles/desktop.js?v=TyON_AiUQEZLO_sKTVQeVz-uaRS3mBR_6rYANiID1l41" defer type="ddc772f2e6830502cc144395-text/javascript"></script>
+    <script src="/bundles/Home/desktop.js?v=wgCMWmB3IdLrfHnFgMJZ0F4Fr0lS9teinbX4Xhsr7lo1" defer type="ddc772f2e6830502cc144395-text/javascript"></script>
     <div class="search-popup-container" id="search_popup_container"></div>
-    <script src="/bundles/reserve.js?v=8ZkoZ3svUa1mm3fUna_DT0LFrjbAHZVOgr4xzLxrZZ81" defer type="996446d2f4c5b246258e7fe4-text/javascript"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"9bc43b3beb4947d98d5bf017327bf291","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous" type="996446d2f4c5b246258e7fe4-text/javascript"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"6820b46281db4f0aaa1198e46a96b9f4","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous" type="996446d2f4c5b246258e7fe4-text/javascript"></script>
-<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="996446d2f4c5b246258e7fe4-|49" defer></script></body>
+    <script src="/bundles/reserve.js?v=8ZkoZ3svUa1mm3fUna_DT0LFrjbAHZVOgr4xzLxrZZ81" defer type="ddc772f2e6830502cc144395-text/javascript"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"9bc43b3beb4947d98d5bf017327bf291","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous" type="ddc772f2e6830502cc144395-text/javascript"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"6820b46281db4f0aaa1198e46a96b9f4","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous" type="ddc772f2e6830502cc144395-text/javascript"></script>
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="ddc772f2e6830502cc144395-|49" defer></script></body>
 
 </html>

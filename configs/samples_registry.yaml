@@ -135,15 +135,26 @@ samples:
     verified_on: 2026-05-09
 
   # ─────────────────────── Incoterms 2020 (ICC 국제 표준)
+  # findings #037 — 이전 mirror URL (iscosafricashipping.org) hijack 됨,
+  # 우리 로컬 파일이 HTML 광고 페이지였음. ICC Switzerland 무료 introduction 으로 대체.
   - category: incoterms
     type: pdf
-    filename: ICC_Incoterms_2020_full.pdf
-    url: https://iscosafricashipping.org/wp-content/uploads/2020/02/ICC-INCOTERMS-2020.pdf
-    source_org: ICC International Chamber of Commerce (mirror)
-    title: ICC Incoterms 2020 — full rules
+    filename: ICC_Switzerland_Incoterms_2020_intro.pdf
+    url: https://www.icc-switzerland.ch/images/723e_inco2020_eng_intro.pdf
+    source_org: ICC Switzerland (영문 무료 introduction)
+    title: Incoterms 2020 Introduction (English) — ICC Switzerland 무료 자료
     issued: 2020
     used_for: configs/rules/* (Incoterm 처리), backend/app/services/mail_writer.py
-    verified_on: 2026-05-09
+    verified_on: 2026-05-10
+    notes: ICC 본 PDF (€45/€69) 는 Phase 2 정식 구입 후 추가.
+
+  - category: incoterms
+    type: ref
+    url: https://iccwbo.org/business-solutions/incoterms-rules/incoterms-2020/
+    source_org: ICC International Chamber of Commerce
+    title: Incoterms 2020 본 페이지 (paywall €45/€69)
+    notes: 정식 책자 구매 필요.
+    verified_on: 2026-05-10
 
   - category: incoterms
     type: ref
