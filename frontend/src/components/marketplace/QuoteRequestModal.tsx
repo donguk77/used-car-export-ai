@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { AxiosError } from "axios";
 import { ArrowRight, CheckCircle2, Loader2, ShieldAlert, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { useBuyers } from "@/hooks/useBuyers";
 import { useCreateListing } from "@/hooks/useListings";
 import { COUNTRY_FLAG, SANCTIONS_LABEL } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn, formatApiError } from "@/lib/utils";
 import type { Vehicle } from "@/types/api";
 
 /**
@@ -195,10 +194,7 @@ export function QuoteRequestModal({
 
             {createMutation.isError && (
               <div role="alert" aria-live="polite" className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
-                요청 실패:{" "}
-                {createMutation.error instanceof AxiosError
-                  ? (createMutation.error.response?.data?.detail ?? createMutation.error.message)
-                  : (createMutation.error as Error)?.message}
+                요청 실패: {formatApiError(createMutation.error)}
               </div>
             )}
 

@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { ArrowLeft, Car, FileText, Loader2, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Car, FileText, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { CountryMatrix } from "@/components/CountryMatrix";
+import { CreateListingModal } from "@/components/CreateListingModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,9 +18,10 @@ export function VehicleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const [createListingOpen, setCreateListingOpen] = useState(false);
 
   const { data: vehicle, isLoading, isError, error } = useQuery({
-    queryKey: ["vehicle", id],
+    queryKey: ["vehicles", "detail", id],
     queryFn: async (): Promise<Vehicle> => {
       const r = await api.get<Vehicle>(`/api/vehicles/${id}`);
       return r.data;
@@ -97,8 +100,11 @@ export function VehicleDetailPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button onClick={() => setCreateListingOpen(true)} className="gap-2">
+              <Plus className="h-4 w-4" /> 이 매물로 거래 만들기
+            </Button>
             <Button variant="outline" disabled className="gap-2">
-              <Pencil className="h-4 w-4" /> 수정 (Day 4)
+              <Pencil className="h-4 w-4" /> 수정
             </Button>
             <Button
               variant="destructive"
@@ -207,8 +213,8 @@ export function VehicleDetailPage() {
                   메일·서류 자동화가 시작됩니다.
                 </p>
               </div>
-              <Button variant="outline" disabled>
-                거래 만들기 (Day 4)
+              <Button onClick={() => setCreateListingOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" /> 거래 만들기
               </Button>
             </CardContent>
           </Card>
@@ -219,6 +225,12 @@ export function VehicleDetailPage() {
           <CountryMatrix vehicle={vehicle} />
         </aside>
       </div>
+
+      <CreateListingModal
+        open={createListingOpen}
+        onClose={() => setCreateListingOpen(false)}
+        prefillVehicleId={vehicle.id}
+      />
     </div>
   );
 }

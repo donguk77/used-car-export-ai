@@ -1,12 +1,14 @@
 import { useMemo, useState } from "react";
 import { AxiosError } from "axios";
-import { CheckCircle2, FileText, Search, XCircle } from "lucide-react";
+import { CheckCircle2, FileText, Plus, Search, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { CreateListingModal } from "@/components/CreateListingModal";
 import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/Skeleton";
 import { StatusFilter, type FilterOption } from "@/components/StatusFilter";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useListings } from "@/hooks/useListings";
@@ -32,6 +34,7 @@ const STATUS_VARIANT: Record<ListingStatus, "secondary" | "success" | "warning" 
 export function ListingsPage() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
 
   const { data, isLoading, isError, error } = useListings();
 
@@ -65,11 +68,16 @@ export function ListingsPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h2 className="text-2xl font-semibold tracking-tight">거래 파이프라인</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          전체 {data?.length ?? 0}건 · 상태별 진행 추적 · 클릭하여 메일·서류 작업
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">거래 파이프라인</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            전체 {data?.length ?? 0}건 · 상태별 진행 추적 · 클릭하여 메일·서류 작업
+          </p>
+        </div>
+        <Button onClick={() => setCreateOpen(true)} className="gap-2">
+          <Plus className="h-4 w-4" /> 새 거래 만들기
+        </Button>
       </header>
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -118,8 +126,15 @@ export function ListingsPage() {
           title={data && data.length === 0 ? "거래가 없습니다" : "검색 결과가 없습니다"}
           description={
             data && data.length === 0
-              ? "매물 상세에서 '거래 만들기' 클릭으로 시작합니다 (Day 6 예정)."
+              ? "매물 + 바이어 + 도착국을 골라 첫 거래를 만들어보세요."
               : "필터를 해제하거나 다른 검색어를 입력해보세요."
+          }
+          action={
+            data && data.length === 0 ? (
+              <Button onClick={() => setCreateOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" /> 새 거래 만들기
+              </Button>
+            ) : undefined
           }
         />
       )}
@@ -131,6 +146,8 @@ export function ListingsPage() {
           ))}
         </div>
       )}
+
+      <CreateListingModal open={createOpen} onClose={() => setCreateOpen(false)} />
     </div>
   );
 }

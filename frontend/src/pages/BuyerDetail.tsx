@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { AxiosError } from "axios";
 import {
   AlertTriangle,
@@ -8,6 +9,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  Plus,
   RefreshCw,
   ShieldAlert,
   ShieldCheck,
@@ -17,6 +19,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import { CreateListingModal } from "@/components/CreateListingModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +35,7 @@ import type { SanctionsStatus } from "@/types/api";
 export function BuyerDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [createListingOpen, setCreateListingOpen] = useState(false);
 
   const { data: buyer, isLoading, isError, error } = useBuyer(id);
   const recheckMutation = useRecheckBuyer();
@@ -106,6 +110,14 @@ export function BuyerDetailPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button
+              onClick={() => setCreateListingOpen(true)}
+              disabled={buyer.sanctions_status === "blocked"}
+              title={buyer.sanctions_status === "blocked" ? "Blocked 바이어는 거래 생성 불가" : undefined}
+              className="gap-2"
+            >
+              <Plus className="h-4 w-4" /> 이 바이어와 거래 만들기
+            </Button>
             <Button variant="outline" onClick={onRecheck} disabled={recheckMutation.isPending} className="gap-2">
               {recheckMutation.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -247,6 +259,12 @@ export function BuyerDetailPage() {
           </Card>
         </aside>
       </div>
+
+      <CreateListingModal
+        open={createListingOpen}
+        onClose={() => setCreateListingOpen(false)}
+        prefillBuyerId={buyer.id}
+      />
     </div>
   );
 }
