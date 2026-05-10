@@ -41,7 +41,10 @@ const NAV: { section: string; items: NavItem[] }[] = [
   },
   {
     section: "기타",
-    items: [{ label: "설정", to: "/settings", icon: Settings }],
+    items: [
+      { label: "벤치마크 미리보기", to: "/marketplace", icon: Globe2 },
+      { label: "설정", to: "/settings", icon: Settings },
+    ],
   },
 ];
 

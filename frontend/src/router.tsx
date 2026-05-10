@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { AppLayout } from "./layouts/AppLayout";
+import { MarketplaceLayout } from "./layouts/MarketplaceLayout";
 import { BuyerDetailPage } from "./pages/BuyerDetail";
 import { BuyerNewPage } from "./pages/BuyerNew";
 import { BuyersPage } from "./pages/Buyers";
@@ -9,6 +10,9 @@ import { DocumentsPage } from "./pages/Documents";
 import { ListingDetailPage } from "./pages/ListingDetail";
 import { ListingsPage } from "./pages/Listings";
 import { MailPage } from "./pages/Mail";
+import { MarketplaceCatalog } from "./pages/marketplace/MarketplaceCatalog";
+import { MarketplaceLanding } from "./pages/marketplace/MarketplaceLanding";
+import { MarketplaceVehicleDetail } from "./pages/marketplace/MarketplaceVehicleDetail";
 import { NotFoundPage } from "./pages/NotFound";
 import { RouteErrorPage } from "./pages/RouteError";
 import { SettingsPage } from "./pages/Settings";
@@ -34,7 +38,18 @@ export const router = createBrowserRouter([
       { path: "mail", element: <MailPage /> },
       { path: "documents", element: <DocumentsPage /> },
       { path: "settings", element: <SettingsPage /> },
-      { path: "*", element: <NotFoundPage /> },
     ],
   },
+  // Marketplace 벤치마크 (Autobell-style) — 멘토 비교용 별도 레이아웃
+  {
+    path: "/marketplace",
+    element: <MarketplaceLayout />,
+    errorElement: <RouteErrorPage />,
+    children: [
+      { index: true, element: <MarketplaceLanding /> },
+      { path: "catalog", element: <MarketplaceCatalog /> },
+      { path: ":id", element: <MarketplaceVehicleDetail /> },
+    ],
+  },
+  { path: "*", element: <NotFoundPage /> },
 ]);
