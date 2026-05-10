@@ -6,6 +6,65 @@
 
 ---
 
+## 🟢 #020 — 한국 수출신고필증은 우리 시스템 4종 외 (관세사 EDI)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/korea_customs/KITA_export_declaration_form_loaded_pre.pdf`
+**상태:** 🟢 noted (스코프 명확화)
+
+KITA 수출신고필증 양식 — 신고자/세관/신고번호/신고일자/수출자/주소/사업자등록번호/
+거래구분/결제방법/목적국/적재항/선박회사/적재예정보세구역/물품소재지/HS코드/단가/금액 등
+30+ 필드. 관세사 EDI (UNI-PASS) 통해 발급 — 우리 시스템이 직접 생성하지 않음.
+
+우리 자동 생성 4종 (Invoice / PL / SI / CO) 은 **수출자 → 바이어** 방향 문서.
+수출신고필증은 **수출자 → 한국 관세청** 방향 — 별도 채널 (관세사 위임).
+
+→ data_audit.md 의 "검증 못 한 영역" 에 명시. Phase 2 에서 관세사 EDI 통합 후보.
+
+---
+
+## 🟢 #019 — UAE Vehicle Clearance Certificate (VCC) 추가 (FIX 완료)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/uae/Dubai_Customs_customer_guide_EN.pdf`
+**상태:** 🟢 fixed in YAML
+
+Dubai Customs Customer Guide (52p, 정부 직접) 명시: "Vehicle Clearance
+Certificates (VCC)" 별도 챕터 (§23) — 차량은 일반 화물 외 별도 인증 필요.
+
+또 다른 새 정보:
+- 5% 관세 + 5% VAT (CIF 기준)
+- Free Zone (Jebel Ali, Sharjah) 별도 절차 — 면세 가능
+- Private Customs Warehouse 2년 저장 + 1년 연장
+- Client Accreditation Program (CAP) 1년 유효
+
+수정: `uae.yaml` required_documents 에 `vehicle_clearance_certificate` 추가
++ notes 에 5% 관세 / Free Zone / CAP 명시.
+
+---
+
+## 🟢 #018 — 나이지리아 SONCAP 3 routes + 6개 IAF (FIX 완료)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/psi/SGS_PCA_Nigeria_datasheet.pdf`
+**상태:** 🟢 fixed in YAML
+
+SGS PCA Nigeria datasheet 명시:
+- SONCAP 3 routes:
+  - Route A: per-shipment, 6개월 유효 (한국 발 single-shipment 일반)
+  - Route B: Registered Product Certificate, 1년 유효 (manufacturer 검증)
+  - Route C: Licensed Certificate, 1년 + 공장 audit
+- IAF (Independent Accredited Firms): SGS · Intertek · Cotecna · CCIC ·
+  BV · CSIC — 수출자/수입자 선택
+- 매 shipment 별 SC (SONCAP Certificate) 필수 — Product Cert 와 별개
+
+수정:
+- `nigeria.yaml` required_documents 분리: `soncap_sc_per_shipment` +
+  `product_certificate_route_b_or_c` (이전 단일 `soncap_certificate`)
+- notes 에 3 routes + IAFs 상세 명시
+
+---
+
 ## 🟢 #017 — 스리랑카 NITG 2024 는 종합 관세표 (차량 specific 룰 별도)
 
 **발견일:** 2026-05-10

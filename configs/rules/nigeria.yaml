@@ -20,9 +20,14 @@ country:
   pre_registration_system: NCS_BOdogwu
   consular_legalization: false
   notes: |
-    SONCAP (Standards Organisation of Nigeria Conformity Assessment Programme) 선적 전 필수.
-    NCS B'Odogwu 시스템 사전 등록.
-    Form M (Foreign Exchange Form M) — 외환 송금 사전 신청.
+    findings #018 — SGS PCA Nigeria datasheet 명시:
+    - SONCAP 3 routes: Route A (per-shipment, 6개월 유효) / Route B (Registered
+      Product Certificate, 1년 유효) / Route C (Licensed Certificate, 1년 + 공장
+      audit). 한국 발 single-shipment 는 Route A 가 일반적.
+    - IAF (Independent Accredited Firms): SGS · Intertek · Cotecna · CCIC ·
+      BV · CSIC. 수출자/수입자가 선택.
+    - 모든 shipment 별로 SC (SONCAP Certificate) 필수 — Product Cert 와 별도.
+    NCS B'Odogwu 시스템 사전 등록 + Form M (외환 송금 사전 신청).
     항만 혼잡으로 통관 지연 빈번 — 도착 예상일 +14일 버퍼 권장.
     관세 + VAT + 레비 35~70%.
 
@@ -41,7 +46,8 @@ rules:
       - packing_list
       - bill_of_lading
       - certificate_of_origin
-      - soncap_certificate
+      - soncap_sc_per_shipment   # 매 선적 별 SONCAP Certificate (SC)
+      - product_certificate_route_b_or_c  # Route B/C 활용 시
       - form_m
     source_url: https://www.son.gov.ng
-    last_verified_at: 2026-05-09
+    last_verified_at: 2026-05-10

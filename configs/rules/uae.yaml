@@ -21,10 +21,15 @@ country:
   pre_registration_system: Dubai_Trade
   consular_legalization: false
   notes: |
+    findings #019 — Dubai Customs Customer Guide 52p 명시:
+    - VCC (Vehicle Clearance Certificate) 필요 — 차량 별도 인증.
+    - 5% 관세 + 5% VAT (CIF 기준) + 처리 수수료.
+    - Free Zone 거래 (Jebel Ali, Sharjah Free Zone) 별도 절차 — 면세 가능.
+    - Private Customs Warehouse 최대 2년 저장 + 1년 연장 가능.
+    - Client Accreditation Program (CAP) 1년 유효.
     영어 비즈니스 100% — AI 메일 기본값 영어.
     UAE 는 "최종 시장" 이 아니라 재수출 허브 — 시리아/이라크/예멘/아프리카로 재수출.
     Notify Party 확인이 진짜 최종 목적지 추적의 핵심.
-    Free Zone (Jebel Ali Free Zone 등) 거래는 일반 통관과 다른 절차.
 
 rules:
   - body_type_filter: null  # 전 차종 자유
@@ -40,5 +45,6 @@ rules:
       - packing_list
       - bill_of_lading
       - certificate_of_origin
+      - vehicle_clearance_certificate  # VCC — 차량 별도 인증 (Dubai Customs)
     source_url: https://www.dubaitrade.ae
-    last_verified_at: 2026-05-09
+    last_verified_at: 2026-05-10
