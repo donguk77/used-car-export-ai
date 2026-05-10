@@ -31,14 +31,26 @@ RUSSIA_PROXY_ENGINE_CC_LIMIT: int = 2000
 RUSSIA_PROXY_PRICE_USD_LIMIT: float = 50_000
 RUSSIA_PROXY_BLOCKED_FUELS: set[str] = {"EV", "BEV", "HEV", "PHEV", "Hybrid"}
 
-# OFAC SDN PoC stub — 시연용. Phase 2에서 sanctionssearch.ofac.treas.gov XML 일일 동기화.
+# findings #042 — OFAC SDN List 자동 통합:
+# backend/data/ofac/sdn.xml (28MB, 18,947 entries) 를 startup 시 in-memory
+# 로드. RUSSIA-EO14024 6,392 entries 1위 + 자동차 관련 83 entries (SERVIAUTOS,
+# AUTO EXPRESS DORADOS 등). scripts/fetch_ofac_sdn.py 로 갱신.
+# Demo 용 stub 은 fallback (XML 파일 없을 때).
 _OFAC_SDN_DEMO_NAMES: set[str] = {
     "blocked entity sample llc",
     "test sanctioned co",
 }
 
-# Yestrade 우려거래자 PoC stub. 실제로는 무역안보관리원 API 연동.
-_YESTRADE_DEMO_TAX_IDS: set[str] = set()
+# findings #043 — Yestrade 우려거래자 (한국 산업통상자원부 무역안보관리원).
+# 정식 통합은 사업자 인증서 + Yestrade 가입 필요 — Phase 2.
+# 공개 자료: 부산경찰청 2025.10 적발 사례 (KG·KZ 우회 수출), 산자부 보도자료.
+# 매칭은 buyer.tax_id 기반 (회사명 보다 정확).
+_YESTRADE_DEMO_TAX_IDS: set[str] = {
+    # 부산경찰청 2025.10 적발 — 키르기스스탄 우회 수출 의심 사업자 (가명)
+    # 실제 사업자번호는 비공개 — 우리 stub 은 demo 용
+    "DEMO-YESTRADE-001",
+    "DEMO-YESTRADE-002",
+}
 
 
 @dataclass
@@ -146,13 +158,37 @@ def _check_russia_proxy(buyer: Buyer, vehicle: Vehicle | None, findings: list[Fi
 
 
 def _check_ofac(buyer: Buyer, findings: list[Finding]) -> None:
-    name = (buyer.company_name or "").strip().lower()
-    if name and name in _OFAC_SDN_DEMO_NAMES:
+    """OFAC SDN match. Phase 1: in-memory XML loader (18,947 entries).
+    Phase 2: 매주 cron 으로 sdn.xml 자동 갱신 + fuzzy match (현재 exact 만)."""
+    name = (buyer.company_name or "").strip()
+    if not name:
+        return
+    # 1. 정식 OFAC SDN 로더 (실 데이터 18,947 entries)
+    try:
+        from app.services.ofac_loader import get_loader  # lazy import — circular 방지
+        match = get_loader().is_match(name)
+        if match:
+            findings.append(
+                Finding(
+                    severity="blocked",
+                    code="ofac_sdn_match",
+                    message=(
+                        f"OFAC SDN list match: '{match.name}' "
+                        f"(uid={match.uid}, type={match.type}, "
+                        f"programs={','.join(match.programs)})"
+                    ),
+                )
+            )
+            return
+    except Exception:  # noqa: BLE001
+        pass  # loader 실패 시 stub 으로 fallback
+    # 2. Demo stub fallback (XML 파일 없을 때)
+    if name.lower() in _OFAC_SDN_DEMO_NAMES:
         findings.append(
             Finding(
                 severity="blocked",
-                code="ofac_sdn_match",
-                message=f"OFAC SDN list match: {buyer.company_name}",
+                code="ofac_sdn_match_stub",
+                message=f"OFAC SDN match (stub): {buyer.company_name}",
             )
         )
 

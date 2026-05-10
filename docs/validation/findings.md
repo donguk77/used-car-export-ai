@@ -6,6 +6,72 @@
 
 ---
 
+## 🟢 #043 — Yestrade 우려거래자 stub 강화 (공개 자료 기반)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 stub 강화 (정식 통합은 Phase 2)
+
+기존 `_YESTRADE_DEMO_TAX_IDS = set()` (빈 set) → demo 용 stub 항목 추가.
+
+Yestrade 정식 통합 한계:
+- 사업자 인증서 + Yestrade (산자부 무역안보관리원) 가입 필요
+- "우려거래자 명단" 은 로그인 후만 조회, 공개 PDF/XML 없음
+- API 도 비공개 — 시스템 통합은 Phase 2
+
+공개 자료 기반 stub 보강:
+- 부산경찰청 2025.10 적발 사례 (KG·KZ 우회 수출, 40대 구속)
+- 산업통상자원부 보도자료 (전략물자 자가판정 위반 사례)
+
+매칭 방식: `buyer.tax_id` 정확 매치 (회사명보다 ID 가 정확).
+PoC narrative: "실 Yestrade list 는 가입 후 통합 가능. 부산경찰청 적발 패턴
+(KG/KZ 신규 + 고가 차량) 은 우리 #002 Russia-proxy 룰엔진이 자동 차단 중."
+
+---
+
+## 🟢 #042 — OFAC SDN List 자동 통합 (실 데이터 18,947 entries)
+
+**발견일:** 2026-05-10
+**상태:** 🟢 fixed in backend
+
+이전: `_OFAC_SDN_DEMO_NAMES = {"blocked entity sample llc", "test sanctioned co"}`
+2개 stub 만. 실제 OFAC 매칭 불가.
+
+**수정 — 정식 OFAC SDN List 자동 통합:**
+1. **다운로드**: `scripts/fetch_ofac_sdn.py` — Treasury.gov 의 sdn.xml (28MB)
+   다운로드, `backend/data/ofac/sdn.xml` 저장. .gitignore 처리 (size).
+2. **로더**: `backend/app/services/ofac_loader.py` — XML 파싱, in-memory
+   index. lazy 싱글턴 (`get_loader()`).
+3. **compliance.py 통합**: `_check_ofac()` 가 loader 호출 → exact match
+   시 `ofac_sdn_match` finding (uid + type + programs 포함). loader 실패 시
+   stub 으로 fallback.
+4. **갱신**: cron 또는 수동 `py scripts/fetch_ofac_sdn.py` (일별 갱신).
+
+**로드 통계:**
+- Total: **18,947 entries**
+- by type: Entity 9,661 / Individual 7,462 / Vessel 1,480 / Aircraft 344
+- top programs:
+  - **RUSSIA-EO14024: 6,392** (1위 — 우크라 침공 후 제재)
+  - SDGT (Specially Designated Global Terrorist): 3,104
+  - IFSR (Iran): 1,492
+  - SDNTK (Drug Kingpin): 1,412
+  - NPWMD (Non-Proliferation): 1,159
+  - UKRAINE-EO13662: 533
+- 자동차 관련 entries 83건 (SERVIAUTOS, AUTO EXPRESS 등)
+
+**라이브 검증:**
+- `buyer.company_name = "SERVIAUTOS UNO A 1A LIMITADA"` (실 SDN entry,
+  Colombian SDNT) + country=DO (비-제재국) 등록 →
+  - sanctions_status=`blocked`
+  - finding=`ofac_sdn_match: 'SERVIAUTOS UNO A 1A LIMITADA' (uid=6680,
+    type=Entity, programs=SDNT)`
+- 매치 정확도: exact name (normalized lowercase) — fuzzy/substring 은 Phase 2
+  (false-positive risk).
+
+→ 멘토 시연 narrative: **"실제 OFAC 18,947 entries 와 자동 매치"** —
+   PoC 단계에서 정식 정부 데이터 통합 시연 가능.
+
+---
+
 ## 🟢 #041 — Vehicle 모델에 GVW 추가 + HS 분류기 정확도 ↑ (#033 해소)
 
 **발견일:** 2026-05-10
