@@ -34,6 +34,12 @@ rules:
     doc_translation_lang: null  # 영문 OK
     consular_required: false
     pre_registration: ACID
+    # findings #007 — FIDI Jordan 명시: "Passenger cars operating on diesel" 금지
+    blocked_conditions:
+      - field: fuel_type
+        op: in
+        value: [Diesel, diesel]
+        reason: "요르단 — 디젤 승용차 수입 금지 (FIDI Jordan 2024-01 명시)"
     required_documents:
       - commercial_invoice
       - packing_list
@@ -41,4 +47,4 @@ rules:
       - certificate_of_origin
       - export_declaration
     source_url: https://www.customs.gov.jo
-    last_verified_at: 2026-05-09
+    last_verified_at: 2026-05-10

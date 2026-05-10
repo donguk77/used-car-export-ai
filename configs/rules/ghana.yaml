@@ -29,7 +29,9 @@ rules:
   - body_type_filter: passenger
     age_limit_years: 10
     age_basis: manufacture_year
-    steering_required: LHD_only
+    # findings #008 — FIDI Ghana 2023-09: RHD 허용 (단 항구 핸들 제거 수수료).
+    # 우리가 처음 LHD_only 로 잘못 추정.
+    steering_required: any
     psi_required:
       - DVLA_Inspection
       - Ghana_Standards

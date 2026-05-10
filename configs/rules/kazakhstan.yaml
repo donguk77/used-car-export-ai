@@ -23,6 +23,10 @@ country:
     2023.1~ 외국 차량 등록 합법화 절차 강화.
     러시아어가 비즈니스 표준 (영어 가능 인구 제한적).
     육상 운송 비중 큼 (한국→블라디보스토크→철도).
+    findings #006 — FIDI 명시:
+    - Euro 5 표준 의무 (배기가스, 우리 룰엔진 미반영 — Phase 2)
+    - RHD 차단 since 2007.1.1 (LHD_only 룰로 자연 처리됨)
+    - 카자흐 자국 excise duty 는 engine>3000cc (≠ 우리 한국 전략물자 2000cc)
 
 rules:
   - body_type_filter: null

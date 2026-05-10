@@ -25,7 +25,7 @@ country:
 
 rules:
   - body_type_filter: passenger
-    age_limit_years: 10
+    age_limit_years: 5  # findings #001 — FIDI 2024-10 명시 (이전 10년 잘못됨)
     age_basis: manufacture_year
     steering_required: LHD_only
     max_cylinders: 6

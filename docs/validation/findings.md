@@ -6,9 +6,83 @@
 
 ---
 
-## 🔴 #001 — 도미니카공화국 연식 룰 불일치
+## 🟢 #009 — 케냐 연식 cutoff 날짜 부정확 (FIX 완료)
 
-**발견일:** 2026-05-09
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/kenya/KEBS_2023-12_notice_to_importers.pdf` (1차)
+**상태:** 🟢 fixed in YAML
+
+KEBS 2023-12 공지: "**8 year age limit + RHD only + Year of First Registration
+1st January 2017 and later, effective 1st January 2024**".
+
+우리 YAML `kenya.yaml`: `registration_after_date: 2019-01-01` + `age_effective_from: 2026-01-01` 였음.
+- 2024.1.1 시점: 2017+ (8년 ←) — 1차 자료 일치
+- 2026.1.1 시점: 2018+ (8년 ←) — 우리 2019 잘못됨 (1년 어긋남)
+
+수정: `registration_after_date: 2018-01-01` (8년 룰 직접 적용).
+
+---
+
+## 🟢 #008 — 가나 RHD 허용 (LHD_only 잘못됨, FIX 완료)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/ghana/GHANA_Import_FIDI_Customs_Guide_2023-09.pdf`
+**상태:** 🟢 fixed in YAML
+
+FIDI Ghana 2023-09: "**Right-hand drive vehicles are permitted, BUT a steering
+wheel removal fee is charged at the port prior to the release of the vehicle.**"
+
+우리 YAML `ghana.yaml`: `steering_required: LHD_only` (잘못됨 — 우리가 처음 작성 시
+top20 doc 기준으로 LHD 만 허용으로 잘못 추정).
+
+수정: `steering_required: any` + 노트에 "RHD 시 항구에서 핸들 제거 수수료 필요".
+
+---
+
+## 🟢 #007 — 요르단 디젤 승용차 금지 (FIX 완료)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/jordan/JORDAN_Import_FIDI_Customs_Guide.pdf`
+**상태:** 🟢 fixed in YAML
+
+FIDI Jordan: "**Not allowed: ... Passenger cars operating on diesel.**"
+우리 YAML `jordan.yaml` 5년 룰은 ✓ 일치. RHD 금지 ✓ 일치. 단 디젤 승용차 금지 누락.
+
+수정: `blocked_conditions[fuel_type in [Diesel] AND body_type=passenger]` 추가.
+
+---
+
+## 🟡 #006 — 카자흐스탄 Euro 5 표준 필요 + RHD 차단 (LHD 는 정상 일치)
+
+**발견일:** 2026-05-10
+**검증 자료:** `docs/samples/kazakhstan/KAZAKHSTAN_Import_FIDI_Customs_Guide.pdf`
+**상태:** 🟡 noted (Euro 5 enforcement 는 PoC 스코프 외)
+
+FIDI Kazakhstan:
+- "**They must conform to Euro 5 standard.**" (배기가스 표준)
+- "**Right-side vehicles are prohibited for import to Kazakhstan since January 1, 2007.**"
+- "**Excise-duty for the car with the engine volume more than 3000 cm**" (≠ 우리 2000cc 한국 전략물자 룰)
+
+우리 YAML `kazakhstan.yaml` 의 `LHD_only` ✓, Russia-proxy 조건 (engine>2000cc, HEV/EV,
+price>$50k) 은 한국 전략물자 수출 차단 룰 (KG/KZ 동일) — 카자흐 자국 수입 룰과는 다른
+관점 (둘 다 의미 있음). Euro 5 는 노트에만 추가.
+
+---
+
+## ✅ #001 — 도미니카공화국 연식 룰 불일치 (RESOLVED 2026-05-10)
+
+**발견일:** 2026-05-09 / **해소일:** 2026-05-10
+**검증 자료:** `docs/samples/dominican_republic/DOMINICAN_REPUBLIC_Import_FIDI_Customs_Guide_2024-10.pdf`
+
+FIDI Dominican Republic 2024-10 명시:
+> "**The year of fabrication of the car cannot be older than 5 years; otherwise,
+> customs forbid its importation.**"
+
+→ U.S. Department of Commerce + Contadores Dominicanos 의 5년 룰이 정확.
+   우리 YAML `dominican_republic.yaml` 의 10년은 잘못됨.
+수정 적용: `passenger.age_limit_years: 10 → 5`. 트럭 10년·버스 7년은 차종 범주
+차이로 그대로 유지 (FIDI 는 통합 5년 명시).
+
 **심각도:** HIGH (잘못된 룰로 차 보내면 통관 거부)
 **영향 파일:**
 - `configs/rules/dominican_republic.yaml`

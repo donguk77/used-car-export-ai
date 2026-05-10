@@ -27,7 +27,9 @@ rules:
     age_limit_years: 8
     age_basis: first_registration
     age_effective_from: 2026-01-01
-    registration_after_date: 2019-01-01
+    # findings #009 — KEBS 2023-12 공지: 2024.1.1 시점 2017+. 8년 룰을 2026.1.1
+    # 시점에 적용하면 2018+. 이전 2019-01-01 은 1년 어긋남.
+    registration_after_date: 2018-01-01
     steering_required: RHD_only
     psi_required:
       - JEVIC
