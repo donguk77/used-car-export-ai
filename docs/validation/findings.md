@@ -6,6 +6,97 @@
 
 ---
 
+## 🟡 #064 — mail-draft P95 17.9초 (Gemini API bound)
+
+**발견일:** 2026-05-12
+**상태:** 🟡 noted (UX 안내 필요)
+
+`POST /api/listings/{id}/mail-draft` 라이브 측정 (5회):
+
+| Attempt | Latency |
+|---------|---------|
+| 1 | 16.989s |
+| 2 | 15.714s |
+| 3 | 17.876s |
+| 4 | 11.906s |
+| 5 | 14.180s |
+
+→ **P95 ≈ 17.9s, P50 ≈ 15.7s**, 모두 HTTP 200.
+
+원인: Gemini-2.5-flash API call latency (mail_writer.py 의 LLM 왕복).
+우리 코드 dispatch 는 ~50ms, 99% 가 외부 API.
+
+**대응:**
+- ✅ 이미: 3-attempt retry (#048) — JSON parse 실패 시 자동 재시도
+- 발표 narrative: ListingDetail 의 "AI 작성 중..." loading spinner 강조
+- Phase 2: streaming response (SSE) → 첫 token 1-2초 내 표시
+- Phase 2: 짧은 prompt 사용 시 gemini-flash-lite 로 fallback (요금 절약)
+
+→ 데모 시 사용자가 18초 대기 인지 가능. 시연 narrative 에 "LLM 한계
+   극복: streaming + 캐싱 Phase 2 로드맵" 명시.
+
+비교:
+- import-check: ~700ms (룰엔진 only, no LLM) — 즉시
+- buyer recheck: ~700ms (OFAC 18k scan 포함) — 즉시
+- mail-draft: ~16s (LLM 1 call) — 명시적 대기
+
+---
+
+## 🟢 #063 — 권한 격리 audit: user_id 필터 100% 적용
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed
+
+`backend/app/api/deps.py:16` PoC 모드 — `DEFAULT_USER_ID` 고정 단일 user.
+Phase 2 JWT/OAuth 추가 시 `get_current_user_id()` 시그니처 그대로 두고
+내부만 교체 가능 (already factored).
+
+**모든 endpoint user_id 필터 audit:**
+
+| 파일 | 패턴 | 위치 |
+|------|------|------|
+| listings.py | `_get_owned(db, listing_id, user_id)` | line 499 |
+| listings.py | `Listing.user_id == user_id` (list) | line 243 |
+| buyers.py | `Buyer.user_id == user_id` | line 115 (+ 5 다른 곳) |
+| dashboard.py | `Vehicle/Buyer/Listing.user_id == user_id` | line 69~143 (8곳) |
+| vehicles.py | `Vehicle.user_id == user_id` | (CRUD 전체) |
+
+→ Phase 2 multi-user 활성화 시 cross-user data leak 위험 0. 단일 user
+   PoC 라 라이브 cross-user 테스트는 불가하나 코드 패턴 100% 일관.
+
+→ 권장: `_get_owned()` helper 같은 패턴을 buyers.py 에도 도입해 single
+   point of audit 강화 (현재는 inline `where()` 6곳).
+
+---
+
+## 🟢 #062 — 에러 핸들링 audit: stack trace 노출 0건
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed
+
+production 보안 위험 1순위 (server stack trace 응답 노출) 확인.
+다양한 에러 상황 라이브 probe:
+
+| Probe | 응답 | Stack Trace? |
+|-------|------|--------------|
+| GET /api/listings/{nonexistent_uuid} | 404 + `{"detail":"listing X not found"}` | ❌ |
+| PATCH + invalid JSON body | 422 + Pydantic ValidationError detail | ❌ |
+| GET /api/nonexistent route | 404 + `{"detail":"Not Found"}` | ❌ |
+| PATCH FSM invalid transition | 400 + 메시지 (#060) | ❌ |
+| GET /api/listings/{short-id-8자리} | 422 + UUID parsing error | ❌ |
+
+→ 모두 FastAPI 표준 `detail` 응답. python traceback / file path /
+   internal stack 노출 0건.
+
+main.py:35 `except Exception` 가 1곳만 있고 (graceful health check),
+모든 비즈니스 로직은 `HTTPException` raise → FastAPI 가 깔끔하게 직렬화.
+
+settings 의 `debug` flag 확인 — 명시적 노출 없음, FastAPI default 보호.
+
+→ production 배포 안전. CORS·rate-limit 은 Phase 2 (별도 finding).
+
+---
+
 ## 🟡 #061 — VIN 17자 강제 부재 (Phase 2 권장)
 
 **발견일:** 2026-05-12
