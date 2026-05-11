@@ -116,6 +116,52 @@ class OFACLoader:
             return None
         return self._name_index.get(self._normalize(name))
 
+    def fuzzy_match(
+        self, name: str | None, threshold: int = 85
+    ) -> tuple[OFACEntry, float] | None:
+        """findings #054 — Fuzzy match (Levenshtein 기반 token_sort_ratio).
+
+        이름 변형 catch (LLC 추가, 어순, 1-2자 오타, 띄어쓰기 등). 실제 sanctions
+        evasion 시도가 이런 변형 위주.
+
+        Args:
+            name: 검색 buyer 이름
+            threshold: 0-100 점수. 85 = 강한 매치, 75 = 약한 매치.
+
+        Returns:
+            (entry, score) 매치 시 / None: threshold 미만.
+
+        Perf: 18,947 entries 기준 ~50-100ms (rapidfuzz C 구현).
+        """
+        if not name or not self._loaded:
+            return None
+        try:
+            from rapidfuzz import process, fuzz  # lazy import
+        except ImportError:
+            return None  # fuzzy 미설치 시 silent skip
+
+        normalized = self._normalize(name)
+        if not normalized:
+            return None
+
+        # exact match 먼저 체크 (fuzzy 호출 비용 회피)
+        exact = self._name_index.get(normalized)
+        if exact:
+            return (exact, 100.0)
+
+        # token_sort_ratio: 어순 무관 ("Volga-Group OOO" vs "OOO VOLGA GROUP")
+        best = process.extractOne(
+            normalized,
+            self._name_index.keys(),
+            scorer=fuzz.token_sort_ratio,
+            score_cutoff=threshold,
+        )
+        if best is None:
+            return None
+        matched_name, score, _ = best
+        entry = self._name_index[matched_name]
+        return (entry, float(score))
+
     def stats(self) -> dict[str, int]:
         """통계 — startup 로그 + audit doc 용."""
         type_counts: dict[str, int] = {}

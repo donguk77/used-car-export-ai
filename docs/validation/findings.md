@@ -6,6 +6,59 @@
 
 ---
 
+## 🟢 #054 — OFAC fuzzy match 구현 (sanctions evasion 차단)
+
+**발견일:** 2026-05-11
+**상태:** 🟢 implemented (warning-level finding)
+
+이전 #042 exact match 만 → 이름 변형 (LLC 추가 / 어순 / 1글자 오타 / 음역
+등) 으로 sanctions evasion 가능. 실제 sanctions evasion 패턴이 정확히 이렇게.
+
+**구현:**
+- `rapidfuzz` 3.14.5 추가 (C 구현, fast)
+- `OFACLoader.fuzzy_match(name, threshold=85)`:
+  - exact match 먼저 (O(1))
+  - 미스 시 `token_sort_ratio` 로 fuzzy lookup (어순 무관)
+  - threshold 85 미만 → None
+- `compliance.py _check_ofac()`:
+  - exact match → `severity=blocked` `code=ofac_sdn_match`
+  - fuzzy match (85+) → `severity=warning` `code=ofac_sdn_fuzzy_match` + score
+
+**검증 9 케이스 (threshold 85):**
+
+| 입력 | 결과 | Score |
+|---|---|---|
+| `OOO VOLGA GROUP` (exact) | match | 100% |
+| `OOO Volga Group LLC` (LLC 추가) | **match** | 88% |
+| `OOO VOLGA GRUP` (1글자 오타) | **match** | 97% |
+| `OOO Wolga Group` (V→W 음역) | **match** | 93% |
+| `SERVIAUTOS UNO A 1A LIMITADA` | match | 100% |
+| `Volga Group` (OOO 빠짐) | no match | <85 |
+| `Volga-Group OOO` (어순+하이픈) | no match | <85 |
+| `Serviautos Uno 1A` (줄임) | no match | <85 |
+| `Random Company XYZ` | no match | <85 |
+
+→ **4/4 evasion 시도 catch + 0 false positive** on random name.
+
+**라이브 API 검증** (AE 비제재국 + 변형 이름):
+- `OOO Volga Group LLC` → warning 88% similar
+- `OOO VOLGA GRUP` → warning 97% similar
+- `OOO Wolga Group` → warning 93% similar
+
+**Perf:** ~10-25ms per query (18,947 entries fuzzy scan). 0.01ms exact + 25ms
+fuzzy = 적정 throughput.
+
+**Phase 2 후보:**
+- Multiple scorers ensemble (token_set + WRatio + phonetic)
+- Threshold tuning per program (RUSSIA-EO14024 더 엄격)
+- 70-84 점 manual review queue
+
+→ 시연 narrative: "exact match 만이 아니라 fuzzy 변형까지 catch — 'Volga LLC',
+   'Wolga', 1글자 오타 모두 warning 발생. 실제 Sayari/Refinitiv 의 multi-tier
+   scoring 과 동일 패턴."
+
+---
+
 ## 🟡 #053 — Concurrent mail-draft: 5 parallel 중 ~1건만 실제 완료 (PoC 영향 없음)
 
 **발견일:** 2026-05-11

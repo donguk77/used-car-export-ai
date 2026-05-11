@@ -158,15 +158,21 @@ def _check_russia_proxy(buyer: Buyer, vehicle: Vehicle | None, findings: list[Fi
 
 
 def _check_ofac(buyer: Buyer, findings: list[Finding]) -> None:
-    """OFAC SDN match. Phase 1: in-memory XML loader (18,947 entries).
-    Phase 2: 매주 cron 으로 sdn.xml 자동 갱신 + fuzzy match (현재 exact 만)."""
+    """OFAC SDN match — exact + fuzzy 2단계.
+
+    findings #042 exact match (18,947 entries) + #054 fuzzy match (rapidfuzz
+    token_sort_ratio, threshold 85). 이름 변형 sanctions evasion 도 catch.
+
+    Phase 2: 매주 cron sdn.xml 자동 갱신 + manual review queue for fuzzy 70-85.
+    """
     name = (buyer.company_name or "").strip()
     if not name:
         return
-    # 1. 정식 OFAC SDN 로더 (실 데이터 18,947 entries)
     try:
-        from app.services.ofac_loader import get_loader  # lazy import — circular 방지
-        match = get_loader().is_match(name)
+        from app.services.ofac_loader import get_loader  # lazy — circular 방지
+        loader = get_loader()
+        # 1. Exact match → blocked (highest confidence)
+        match = loader.is_match(name)
         if match:
             findings.append(
                 Finding(
@@ -180,9 +186,26 @@ def _check_ofac(buyer: Buyer, findings: list[Finding]) -> None:
                 )
             )
             return
+        # 2. Fuzzy match → warning (potential evasion attempt)
+        fuzzy = loader.fuzzy_match(name, threshold=85)
+        if fuzzy:
+            entry, score = fuzzy
+            findings.append(
+                Finding(
+                    severity="warning",
+                    code="ofac_sdn_fuzzy_match",
+                    message=(
+                        f"OFAC SDN fuzzy match ({score:.0f}% similar): "
+                        f"'{entry.name}' (uid={entry.uid}, "
+                        f"programs={','.join(entry.programs)}). "
+                        f"Manual review recommended — possible evasion attempt."
+                    ),
+                )
+            )
+            return
     except Exception:  # noqa: BLE001
         pass  # loader 실패 시 stub 으로 fallback
-    # 2. Demo stub fallback (XML 파일 없을 때)
+    # 3. Demo stub fallback (XML 파일 없을 때)
     if name.lower() in _OFAC_SDN_DEMO_NAMES:
         findings.append(
             Finding(
