@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import uuid
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -219,14 +220,19 @@ def seed(*, fresh: bool = False) -> None:
             s.execute(delete(Message).where(Message.listing_id.is_(None)))
             s.flush()
 
-        # Vehicles
+        # Vehicles — findings #051: deterministic UUID (VIN 기반 uuid5)
+        # → fresh re-seed 마다 같은 ID 보장 → image_url 매핑 안정.
+        # generate_vehicle_images.py 가 만드는 PNG 파일도 동일 UUID 사용.
+        DEMO_NS = uuid.UUID("00000000-0000-0000-0000-000000000010")
         vehicles: list[Vehicle] = []
         for v_data in DEMO_VEHICLES:
-            v = Vehicle(user_id=user_id, **v_data)
+            vid = uuid.uuid5(DEMO_NS, v_data["vin"])
+            image_url = f"/vehicle-images/{vid}.png"
+            v = Vehicle(id=vid, user_id=user_id, image_url=image_url, **v_data)
             s.add(v)
             vehicles.append(v)
         s.flush()
-        print(f"  🚗 inserted {len(vehicles)} vehicles")
+        print(f"  🚗 inserted {len(vehicles)} vehicles (deterministic UUIDs from VIN)")
 
         # Buyers + auto compliance
         buyers: list[Buyer] = []

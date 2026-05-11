@@ -17,7 +17,7 @@
 | 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
 | 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
 | Cross-validate 검증 | **32개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **44개** | #001 + #006~#050 |
+| 발견된 finding | **47개** | #001 + #006~#053 |
 | 신규 분석 문서 | **4건** | findings.md (34) · data_audit.md · tariff_matrix.md · shipping_matrix.md |
 | 관세 매트릭스 | **28/28 국가** | duty + VAT + 추가세 + 총 부담 + Sonata 도착 비용 (#038) |
 | 항구 물류 매트릭스 | **28/28 국가** | ETA + RoRo/Container 운임 + 운송 빈도 + Sonata DDP 기간 (#039) |
@@ -33,6 +33,9 @@
 | Status FSM transition | **5/5 정방향 + 역방향 거부** | inquiry→quoted→negotiating→agreed→documenting→shipping (#049) |
 | **PDF 바이너리 무결성** | **20/20 valid PDF** | %PDF- 매직바이트 + 95-156KB (#045) |
 | Message + Doc DB persistence | 5 messages · 28 doc rows | ai_generated=True · content_text 정확 · audit trail 유지 (#050) |
+| Dashboard summary | 10/5/5 정합 ✓ | counts 모두 DB 와 일치 (#051) |
+| **Vehicle 사진 매핑** | **10/10 OK** | deterministic UUID (VIN 기반) + image_url 자동, fresh re-seed 안전 (#052) |
+| Concurrent mail-draft | 1/5 (PoC 한계) | uvicorn single-worker — Phase 2 multi-worker (#053) |
 | YAML 수정 적용 | **9개국** | DO·KE·JO·GH·MX·ZW·KH + NG·AE (룰 변경 또는 docs 추가) |
 | YAML notes 추가 | **10개국** | KZ·DZ·ZA + PH·BD·LK + NG·AE·LK·ZW 보강 |
 | Backend 코드 fix | **3건** | mail-draft 언어 fallback (#026) + HS 분류기 (#034) + LLM 자동 retry (#035) |

@@ -6,6 +6,75 @@
 
 ---
 
+## 🟡 #053 — Concurrent mail-draft: 5 parallel 중 ~1건만 실제 완료 (PoC 영향 없음)
+
+**발견일:** 2026-05-11
+**상태:** 🟡 known limitation
+
+bash 5 parallel curl 로 mail-draft 동시 호출:
+- Total elapsed: 19초 (단일 호출 baseline 15초)
+- 1건 200 OK + body 정상 (SY ar)
+- 4건 200 OK 로그는 일부 보이나 body empty (curl 파일 0B)
+
+원인 추정:
+1. uvicorn default = single worker / sync handler (FastAPI threadpool 40)
+2. Gemini API free tier: 분당 15 req/min — burst 시 rate limit 가능
+3. 단일 LLM 응답 ~10초 동안 다른 thread 가 메모리 압박
+
+PoC 영향: 없음 (single-user 데모, 한 거래씩 순차 처리).
+Phase 2: uvicorn workers 4+ 또는 LLM provider async wrapper + retry policy.
+
+→ 시연 narrative: "PoC sequential 우선. Multi-tenant concurrent 는 Phase 2
+  worker scaling + LLM 비동기 변환".
+
+---
+
+## 🟢 #052 — Vehicle 사진 매핑 fix (deterministic UUID + image_url)
+
+**발견일:** 2026-05-11
+**상태:** 🔴 bug → 🟢 fixed
+
+이전: seed --fresh 마다 vehicle UUIDs 무작위 → image_url 매핑 깨짐.
+- 10/10 image_url empty
+- PNG 파일 10개는 frontend/public/vehicle-images/ 에 존재하나 orphan UUIDs
+
+**수정 (`scripts/seed_demo_data.py`):**
+```python
+DEMO_NS = uuid.UUID("00000000-0000-0000-0000-000000000010")
+for v_data in DEMO_VEHICLES:
+    vid = uuid.uuid5(DEMO_NS, v_data["vin"])  # VIN → deterministic UUID
+    v = Vehicle(id=vid, image_url=f"/vehicle-images/{vid}.png", **v_data)
+```
+
+기존 PNG 10개를 새 deterministic UUID 로 일괄 rename.
+
+**검증:**
+- seed --fresh → 모든 vehicle UUID 가 VIN 기반 deterministic
+- 10/10 PNG 파일 매핑 OK (다양한 sedan 이미지, 932-1118KB)
+- frontend Marketplace catalog 에 사진 정상 노출
+
+→ #A5 (holistic review 의 'orphan PNGs after --fresh') 해소.
+
+---
+
+## 🟢 #051 — Dashboard summary 정합성 검증
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+`GET /api/dashboard/summary`:
+- vehicles_total: 10 ✓ (DB 와 일치)
+- vehicles_available: 10 ✓ (status=available)
+- buyers_total: 5 ✓
+- buyers_blocked: 0 / buyers_warning: 2 (KG + SY)
+- listings_inquiry: 1 / in_progress: 3 / shipping: 1 / delivered: 0 = 5 ✓
+- recent_listings: 4 cards (vehicle_label + buyer_name + status + can_import)
+
+→ Dashboard 데이터 무결성 ✓. recent_listings 가 5건 중 4건만 노출 — limit
+   default 4 (의도된 동작).
+
+---
+
 ## 🟢 #050 — Message + Document persistence 검증 (DB 무결성)
 
 **발견일:** 2026-05-11
