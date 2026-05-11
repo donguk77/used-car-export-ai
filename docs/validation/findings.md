@@ -6,6 +6,39 @@
 
 ---
 
+## 🟢 #055 — CountryMatrix 5국 → 28국 동적 (#A1 해소)
+
+**발견일:** 2026-05-11
+**상태:** 🟢 fixed in frontend + backend
+
+홀리스틱 review #A1 (가장 큰 'you said 20, but…' gap):
+- `CountryMatrix.tsx` 가 `POC_COUNTRIES = ["DO","KE","LY","KG","SY"]` 5국 하드코딩
+- 헤딩 "통관 가능국 (5개국 PoC)" — 마켓플레이스는 "28 destination countries" 광고
+- 멘토 시연 시 "20국이라며?" 즉시 질문 유발
+
+**수정 (frontend):**
+- `useQuery({ queryKey: ['countries-list'] })` 로 백엔드 GET /api/countries 사용
+- `is_blocked: true` 국가 (MM/MY/SD/TH/ZA 5국) 미리 제외
+- 평가 대상: 28 - 5 = **23 국** 동시 import-check
+- 헤딩: "통관 가능국 ({total}국 — 자동차단 {blockedCount}국 제외)"
+- 2-column grid (`grid-cols-1 sm:grid-cols-2`) 로 23 행 컴팩트 표시
+- `name_ko` 백엔드에서 fetch — 28국 한글명 하드코딩 제거
+- is_sanctioned 국가는 ⚠ 아이콘 표시 (SY/MM/SD 자동 noted)
+
+**수정 (backend):**
+- `CountryOut` schema 에 `is_blocked: bool` 추가
+- frontend 가 미리 필터링 가능
+
+라이브 검증:
+- GET /api/countries → 28 entries, is_blocked: [MM/MY/SD/TH/ZA]
+- CountryMatrix → 23 국 동시 import-check 2-column grid
+- 23 parallel import-check perf: **~2.5s** (병렬, 첫 로드)
+- 이후 staleTime 60s 캐시
+
+→ 시연 시 멘토 "왜 5개만?" 질문 사전 차단. 28국 narrative 일관성 확보.
+
+---
+
 ## 🟢 #054 — OFAC fuzzy match 구현 (sanctions evasion 차단)
 
 **발견일:** 2026-05-11

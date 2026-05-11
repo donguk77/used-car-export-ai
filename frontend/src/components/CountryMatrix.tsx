@@ -1,4 +1,5 @@
-import { useQueries, type UseQueryResult } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { useQueries, useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { AlertTriangle, CheckCircle2, Loader2, XCircle } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,15 +8,14 @@ import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { ImportCheckResponse } from "@/types/api";
 
-// PoC 시드된 5개국
-const POC_COUNTRIES = ["DO", "KE", "LY", "KG", "SY"] as const;
-const COUNTRY_NAME: Record<string, string> = {
-  DO: "도미니카공화국",
-  KE: "케냐",
-  LY: "리비아",
-  KG: "키르기스스탄",
-  SY: "시리아",
-};
+// 백엔드 GET /api/countries 응답 shape — name_en/name_ko 만 사용
+interface CountryListItem {
+  code: string;
+  name_en: string | null;
+  name_ko: string | null;
+  is_blocked: boolean;
+  is_sanctioned: boolean;
+}
 
 export interface VehicleSnapshot {
   vin?: string | null;
@@ -38,9 +38,24 @@ export function CountryMatrix({
   vehicle: VehicleSnapshot;
   enabled?: boolean;
 }) {
-  // 5개국에 대해 동시 import-check.
-  // queryKey 는 룰엔진에 영향을 주는 필드만 normalized 객체로 — TanStack 이 구조적 동등 비교.
-  // (이전: JSON.stringify(vehicle) 는 키 순서 변경·매 키스트로크마다 새 캐시 = 폭주.)
+  // findings #055 — 5국 hardcoded → 백엔드 GET /api/countries 28국 동적 fetch.
+  // is_blocked 국가 (ZA/MM/TH/MY/SD) 는 미리 제외해서 import-check 호출 줄임.
+  const countriesQ = useQuery({
+    queryKey: ["countries-list"],
+    queryFn: async (): Promise<CountryListItem[]> => {
+      const r = await api.get<CountryListItem[]>("/api/countries");
+      return r.data;
+    },
+    staleTime: 5 * 60_000,  // 5분 — 국가 마스터 데이터는 자주 안 바뀜
+  });
+
+  // 평가 대상 = is_blocked 아닌 국가 (auto-block 은 따로 표시 안 함)
+  const evaluatable = useMemo(
+    () => (countriesQ.data ?? []).filter((c) => !c.is_blocked),
+    [countriesQ.data],
+  );
+
+  // queryKey 는 룰엔진에 영향을 주는 필드만 normalized 객체로 — TanStack 구조적 동등.
   const ruleAffectingFields = {
     body_type: vehicle.body_type ?? null,
     fuel_type: vehicle.fuel_type ?? null,
@@ -52,40 +67,64 @@ export function CountryMatrix({
     year: vehicle.year ?? null,
   };
   const queries = useQueries({
-    queries: POC_COUNTRIES.map((code) => ({
-      queryKey: ["import-check", code, ruleAffectingFields],
+    queries: evaluatable.map((c) => ({
+      queryKey: ["import-check", c.code, ruleAffectingFields],
       queryFn: async (): Promise<ImportCheckResponse> => {
         const r = await api.post<ImportCheckResponse>("/api/listings/import-check", {
-          destination_country: code,
+          destination_country: c.code,
           vehicle,
         });
         return r.data;
       },
-      enabled: enabled && Boolean(vehicle.steering && vehicle.body_type),
+      enabled:
+        enabled
+        && Boolean(vehicle.steering && vehicle.body_type)
+        && evaluatable.length > 0,
       staleTime: 60_000,
     })),
   });
+
+  const total = countriesQ.data?.length ?? 0;
+  const blockedCount = (countriesQ.data ?? []).filter((c) => c.is_blocked).length;
 
   return (
     <Card>
       <CardContent className="p-4">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold">통관 가능국 (5개국 PoC)</h3>
+          <h3 className="text-sm font-semibold">
+            통관 가능국 ({total}국 — 자동차단 {blockedCount}국 제외)
+          </h3>
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
             Live
           </span>
         </div>
 
-        {!enabled || !vehicle.steering || !vehicle.body_type ? (
+        {countriesQ.isLoading && (
+          <p className="rounded-md bg-muted/50 px-3 py-6 text-center text-xs text-muted-foreground">
+            국가 목록 로딩…
+          </p>
+        )}
+
+        {countriesQ.isError && (
+          <p className="rounded-md bg-destructive/5 px-3 py-6 text-center text-xs text-destructive">
+            국가 목록 로딩 실패 — 백엔드 연결 확인
+          </p>
+        )}
+
+        {countriesQ.data && (!enabled || !vehicle.steering || !vehicle.body_type) && (
           <p className="rounded-md bg-muted/50 px-3 py-6 text-center text-xs text-muted-foreground">
             VIN 입력 또는 핸들·차종 입력 후 자동 평가
           </p>
-        ) : (
-          <div className="space-y-2">
-            {POC_COUNTRIES.map((code, i) => (
+        )}
+
+        {countriesQ.data && enabled && vehicle.steering && vehicle.body_type && (
+          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+            {evaluatable.map((c, i) => (
               <CountryRow
-                key={code}
-                code={code}
+                key={c.code}
+                code={c.code}
+                nameKo={c.name_ko ?? c.name_en ?? c.code}
+                isSanctioned={c.is_sanctioned}
                 query={queries[i] as UseQueryResult<ImportCheckResponse>}
               />
             ))}
@@ -98,13 +137,17 @@ export function CountryMatrix({
 
 function CountryRow({
   code,
+  nameKo,
+  isSanctioned,
   query,
 }: {
   code: string;
+  nameKo: string;
+  isSanctioned: boolean;
   query: UseQueryResult<ImportCheckResponse>;
 }) {
   const flag = COUNTRY_FLAG[code] ?? "🌐";
-  const name = COUNTRY_NAME[code] ?? code;
+  const name = nameKo;
 
   if (query.isLoading) {
     return (
@@ -144,10 +187,13 @@ function CountryRow({
     >
       <summary className="flex cursor-pointer items-center gap-3 px-3 py-2 text-sm">
         <span className="text-base">{flag}</span>
-        <span className="flex-1 font-medium">{name}</span>
+        <span className="min-w-0 flex-1 truncate font-medium">{name}</span>
+        {isSanctioned && (
+          <AlertTriangle className="h-3 w-3 text-warning" aria-label="제재" />
+        )}
         {ok ? (
           <span className="flex items-center gap-1 text-xs font-semibold text-success">
-            <CheckCircle2 className="h-3.5 w-3.5" /> 통관 OK
+            <CheckCircle2 className="h-3.5 w-3.5" /> OK
           </span>
         ) : (
           <span className="flex items-center gap-1 text-xs font-semibold text-destructive">

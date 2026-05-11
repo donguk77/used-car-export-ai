@@ -29,6 +29,7 @@ class CountryOut(BaseModel):
     is_high_risk: bool
     is_russia_proxy_risk: bool
     is_sanctioned: bool
+    is_blocked: bool  # findings #055 — frontend CountryMatrix 에서 미리 제외
     pre_registration_system: str | None
     consular_legalization: bool
 
