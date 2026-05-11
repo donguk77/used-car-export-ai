@@ -6,6 +6,66 @@
 
 ---
 
+## 🟢 #058 — RANDOM_POOL 23/23 평가가능국 커버 (auto-blocked 5국 제외)
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+`frontend/src/lib/demoBuyers.ts` 의 RANDOM_POOL.countries 점검:
+
+23 코드 (라틴 4 / 아프리카 5 / 북아 3 / 중동 3 / 중앙아 3 / 동남아 3 / 남아 2):
+DO·CL·MX·CR·KE·NG·GH·TZ·ZW·LY·EG·DZ·JO·AE·SY·KG·KZ·AZ·KH·VN·PH·BD·LK
+
+5 blocked (intentionally 제외): ZA·MM·TH·MY·SD
+
+→ 28 - 5 = **23 평가가능국 = RANDOM_POOL 23** 정확 매칭. 데모 랜덤 buyer
+생성 시 unseeded 국가 (404) 위험 없음 (#A1 holistic 의 'AE/JO/NG' 우려 해소).
+
+---
+
+## 🟢 #057 — Marketplace Quote Request → admin listing E2E 검증
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+마켓플레이스 narrative 의 핵심 E2E:
+1. 사용자 마켓플레이스 차량 상세 (`/marketplace/{id}`) 방문
+2. "Request Quote" 클릭 → QuoteRequestModal
+3. buyer 선택 + 도착국 + 메모 → POST /api/listings
+4. **새 inquiry 거래 admin 시스템 자동 생성**
+5. 관리자 ListingDetail 에서 메일·PDF 작성
+
+라이브 검증 (POST /api/listings):
+- 입력: vehicle=Sonata 2020 / buyer=Rodriguez DO / notes="Marketplace quote..."
+- 응답: 새 listing ID + status=`inquiry` + can_import=`false` (5년 룰)
+- DB 변화: listings count 5 → 6 (자동 추가) ✓
+- notes 정상 전달 ✓
+
+→ 마켓플레이스 ↔ admin 통합 narrative 완성. 시연 시 "마켓플레이스에서 인콰이어리
+   생성 → admin 패널에서 견적 메일 자동 발송" 1분 flow 가능.
+
+---
+
+## 🟢 #056 — Buyer recheck endpoint 정합성 검증
+
+**발견일:** 2026-05-11
+**상태:** 🟢 confirmed
+
+`POST /api/buyers/{id}/recheck` 가 compliance.py 의 최신 룰 적용해 재평가하는지
+확인:
+
+라이브 검증 (KG buyer 'ABC Auto LLC'):
+- 현재 저장 상태: sanctions=warning, risk=15
+- recheck 호출 → overall=warning, score=85
+- finding: russia_proxy_country — "Buyer in KG (EAEU/CIS) — Russia re-export
+  risk; End-User Certificate recommended"
+
+→ #002 Russia-proxy 룰 정확 발화. recheck 가 최신 compliance.py 코드 사용.
+   compliance.py 코드 변경 시 (예: #042 OFAC 추가, #054 fuzzy match) 기존
+   buyer recheck 호출만으로 새 룰 적용됨 — 데이터 마이그레이션 불필요.
+
+---
+
 ## 🟢 #055 — CountryMatrix 5국 → 28국 동적 (#A1 해소)
 
 **발견일:** 2026-05-11
