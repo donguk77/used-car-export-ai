@@ -6,6 +6,88 @@
 
 ---
 
+## 🟡 #061 — VIN 17자 강제 부재 (Phase 2 권장)
+
+**발견일:** 2026-05-12
+**상태:** 🟡 noted (PoC 영향 적음)
+
+`backend/app/api/vehicles.py:32` POST /vehicles 의
+`vin: str | None = Field(default=None, max_length=17)` —
+**max_length=17 만 있고 min_length 없음**. 16자 VIN 폼 입력 가능.
+
+라이브 검증:
+```
+GET /api/vehicles/decode-vin/KMHE41LBXKA00000  (16자)
+→ HTTP 200, raw=null (NHTSA 가 silent skip)
+GET /api/vehicles/decode-vin/KMHE41LBXKAOOO001  (17자, I/O/Q)
+→ HTTP 200, year=2019 (NHTSA 가 자체 거절 안 함)
+```
+
+`auto_decode_vin` 가드 (`len(payload.vin) == 17`) 는 정확하나, decode-vin
+단독 endpoint 는 길이 체크 없음. NHTSA 가 invalid 처리하므로 PoC 영향 X.
+
+**Phase 2 권장:**
+```python
+vin: str | None = Field(default=None, pattern=r"^[A-HJ-NPR-Z0-9]{17}$")
+```
+(I/O/Q 금지 + 17자 강제 — ISO 3779 표준)
+
+→ PoC: 데모 시나리오에서 16자 VIN 입력 위험 낮음. production 시 추가.
+
+---
+
+## 🟢 #060 — Listing FSM 전환 4/4 라이브 검증 (Round 13 재확인)
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed
+
+`backend/app/api/listings.py:43` `_FSM_TRANSITIONS` 12 상태 머신 라이브 4-case:
+
+| Test | from → to | 기대 | 실제 |
+|------|-----------|------|------|
+| 1 | inquiry → delivered (3-step skip) | 400 | 400 + "Allowed: closed/disputed/negotiating/quoted" ✓ |
+| 2 | agreed → inquiry (backward) | 400 | 400 + "Allowed: closed/disputed/documenting" ✓ |
+| 3 | quoted → quoted (idempotent) | 200 | 200 ✓ (no-op timestamp 안 갱신) |
+| 4 | inquiry → quoted (forward) | 200 | 200 + quoted_at 자동 set ✓ |
+
+→ FSM 거버넌스 견고. 잘못 누른 PM/관리자 보호 + 에러 메시지가
+   "다음 가능 상태" 명시해 UX 친화. Round 13 의 transition matrix 재확인.
+
+---
+
+## 🟢 #059 — DB 인덱스 audit: 핵심 쿼리 컬럼 100% 인덱스됨
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed
+
+PoC 규모 (10 vehicle / 5 buyer / 5 listing) 에선 인덱스 영향 미미하나,
+production 확장 시 N+1 위험 컬럼 audit:
+
+| 테이블 | 컬럼 | 인덱스 | 쿼리 패턴 |
+|--------|------|--------|-----------|
+| listings | user_id | ✓ | dashboard 사용자별 |
+| listings | vehicle_id | ✓ | 차량 history 조회 |
+| listings | destination_country | ✓ | 국가별 통계 |
+| listings | status | ✓ | FSM filter |
+| buyers | user_id | ✓ | dashboard |
+| buyers | country_code | ✓ | 컴플라이언스 추출 |
+| buyers | sanctions_status | ✓ | warning queue |
+| vehicles | user_id | ✓ | dashboard |
+| vehicles | vin | ✓ unique | 디코드 캐시 |
+| vehicles | status | ✓ | available filter |
+| documents | listing_id | ✓ | docs by listing |
+| compliance_checks | buyer_id | ✓ | history per buyer |
+
+**보강 후보 (Phase 2):**
+- `documents (listing_id, doc_type, version)` 복합 인덱스 — listings.py 의
+  `MAX(version) WHERE listing_id=? AND doc_type=?` 자주 호출 (#048 이후 도입).
+  현재 listing_id 단일 인덱스 사용 → 100건 미만이면 OK, 1k+ 부터 효과.
+- `vehicles.hs_code` — HS 분류별 통계 dashboard 추가 시 필요.
+
+→ PoC 단계 인덱스 충분. Phase 2 마이그레이션 plan 에 위 2개 추가 권장.
+
+---
+
 ## 🟢 #058 — RANDOM_POOL 23/23 평가가능국 커버 (auto-blocked 5국 제외)
 
 **발견일:** 2026-05-11

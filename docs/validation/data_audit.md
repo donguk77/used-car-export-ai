@@ -17,7 +17,7 @@
 | 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
 | 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
 | Cross-validate 검증 | **32개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **52개** | #001 + #006~#058 |
+| 발견된 finding | **55개** | #001 + #006~#061 |
 | 신규 분석 문서 | **4건** | findings.md (34) · data_audit.md · tariff_matrix.md · shipping_matrix.md |
 | 관세 매트릭스 | **28/28 국가** | duty + VAT + 추가세 + 총 부담 + Sonata 도착 비용 (#038) |
 | 항구 물류 매트릭스 | **28/28 국가** | ETA + RoRo/Container 운임 + 운송 빈도 + Sonata DDP 기간 (#039) |
@@ -41,6 +41,9 @@
 | Buyer recheck 정합성 | 최신 compliance 적용 | KG buyer → russia_proxy_country 정확 발화 (#056) |
 | **Marketplace E2E** | **Quote→Listing 자동 생성** | POST /api/listings · inquiry status · listings 5→6 (#057) |
 | RANDOM_POOL 커버리지 | 23/23 평가가능국 | 5 auto-blocked 제외 + 23 시드 매칭 (#058) |
+| **DB 인덱스 audit** | **핵심 컬럼 100%** | listings/buyers/vehicles/documents 모두 indexed (#059) |
+| **FSM 4-case 라이브** | **4/4 통과** | skip/backward/idempotent/forward 모두 정상 (#060) |
+| VIN 17자 강제 | Phase 2 권장 | max_length 만 있음, NHTSA 가 silent skip 처리 (#061) |
 | YAML 수정 적용 | **9개국** | DO·KE·JO·GH·MX·ZW·KH + NG·AE (룰 변경 또는 docs 추가) |
 | YAML notes 추가 | **10개국** | KZ·DZ·ZA + PH·BD·LK + NG·AE·LK·ZW 보강 |
 | Backend 코드 fix | **3건** | mail-draft 언어 fallback (#026) + HS 분류기 (#034) + LLM 자동 retry (#035) |
