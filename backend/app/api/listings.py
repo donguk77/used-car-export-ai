@@ -342,6 +342,10 @@ class MailDraftRequest(BaseModel):
         description="en / es / ar / ru / fr — None 이면 buyer.preferred_language 또는 country.primary_language 사용",
     )
     extra_context: str = Field(default="", description="LLM 에 추가로 전달할 맥락 (선택)")
+    include_translation: bool = Field(
+        default=False,
+        description="True 이면 외국어 본문을 한국어로 추가 번역해서 응답에 포함 (검증용, LLM 호출 1회 추가)",
+    )
 
 
 class MailDraftResponse(BaseModel):
@@ -352,6 +356,10 @@ class MailDraftResponse(BaseModel):
     provider: str
     model: str
     message_id: uuid.UUID
+    translation_ko: str | None = Field(
+        default=None,
+        description="include_translation=True 이고 language≠ko 일 때 한국어 번역. 발송 본문은 body 그대로.",
+    )
 
 
 @router.post(
@@ -451,6 +459,17 @@ def draft_mail(
     db.commit()
     db.refresh(message)
 
+    # 선택적 한국어 번역 — 발송 본문은 그대로, 사용자 검증용
+    translation_ko: str | None = None
+    if payload.include_translation and language != "ko":
+        try:
+            translation_ko = writer.translate(
+                body=draft.body, source_language=language, target="ko"
+            )
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"translate to ko failed: {e}")
+            # 번역 실패해도 외국어 메일 자체는 반환 (graceful degradation)
+
     return MailDraftResponse(
         subject=draft.subject,
         body=draft.body,
@@ -459,6 +478,7 @@ def draft_mail(
         provider=draft.provider,
         model=draft.model,
         message_id=message.id,
+        translation_ko=translation_ko,
     )
 
 

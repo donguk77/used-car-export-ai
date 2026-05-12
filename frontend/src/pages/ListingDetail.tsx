@@ -349,11 +349,15 @@ function MailComposerSection({
   const [scenario, setScenario] = useState<MailScenario>("quote");
   const [language, setLanguage] = useState<string>("");
   const [extra, setExtra] = useState("");
+  const [includeTranslation, setIncludeTranslation] = useState(false);
   const [editedSubject, setEditedSubject] = useState("");
   const [editedBody, setEditedBody] = useState("");
   const [copied, setCopied] = useState(false);
 
   const draftMutation = useMailDraft(listingId);
+
+  // 한국어 번역 옵션은 외국어일 때만 의미 — language=ko 면 자동 false
+  const wantsTranslation = includeTranslation && language !== "ko";
 
   const onGenerate = async () => {
     setCopied(false);
@@ -361,6 +365,7 @@ function MailComposerSection({
       scenario,
       language: language || undefined,
       extra_context: extra || undefined,
+      include_translation: wantsTranslation,
     });
     setEditedSubject(r.subject);
     setEditedBody(r.body);
@@ -431,13 +436,43 @@ function MailComposerSection({
           />
         </div>
 
+        {/* 한국어 검증 옵션 — 외국어 메일 시 신뢰성 ↑ (LLM 호출 +1, 시간 약 2배) */}
+        <label className={cn(
+          "flex items-start gap-2 rounded-md border border-dashed p-2.5 text-xs",
+          language === "ko"
+            ? "cursor-not-allowed border-muted-foreground/20 opacity-50"
+            : "cursor-pointer border-primary/30 bg-primary/5",
+        )}>
+          <input
+            type="checkbox"
+            checked={wantsTranslation}
+            disabled={language === "ko"}
+            onChange={(e) => setIncludeTranslation(e.target.checked)}
+            className="mt-0.5 h-3.5 w-3.5 accent-primary"
+          />
+          <span className="flex-1">
+            <span className="font-medium">한국어 번역도 함께 표시 (검증용)</span>
+            {language === "ko" ? (
+              <span className="ml-1 text-muted-foreground">— 한국어 메일에는 불필요</span>
+            ) : (
+              <span className="ml-1 text-muted-foreground">— 외국어 메일을 한국어로 한번 더 검토 (LLM 호출 2배, 약 30초)</span>
+            )}
+          </span>
+        </label>
+
         <Button
           onClick={onGenerate}
           disabled={draftMutation.isPending}
           className="w-full gap-2"
         >
           {draftMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          {draftMutation.isPending ? "Gemini 생성 중... (~5초)" : "AI로 메일 생성하기"}
+          {draftMutation.isPending
+            ? wantsTranslation
+              ? "Gemini 생성 중... (외국어 + 한국어 번역, ~30초)"
+              : "Gemini 생성 중... (~15초)"
+            : wantsTranslation
+              ? "AI로 메일 생성하기 (한국어 검증 포함)"
+              : "AI로 메일 생성하기"}
         </Button>
 
         {draftMutation.isError && (
@@ -459,16 +494,47 @@ function MailComposerSection({
                 className="mt-1 font-medium"
               />
             </div>
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Body</label>
-              <textarea
-                value={editedBody}
-                onChange={(e) => setEditedBody(e.target.value)}
-                rows={Math.min(20, Math.max(8, editedBody.split("\n").length))}
-                className="mt-1 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed"
-                dir={result.language === "ar" ? "rtl" : "ltr"}
-              />
-            </div>
+            {result.translation_ko ? (
+              // 2-column: 외국어 (편집 가능) ↔ 한국어 (read-only 검증용)
+              <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    📤 {result.language.toUpperCase()} (발송용 · 편집 가능)
+                  </label>
+                  <textarea
+                    value={editedBody}
+                    onChange={(e) => setEditedBody(e.target.value)}
+                    rows={Math.min(28, Math.max(12, editedBody.split("\n").length))}
+                    className="mt-1 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed"
+                    dir={result.language === "ar" ? "rtl" : "ltr"}
+                  />
+                </div>
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    🔍 KO (검증용 · 읽기 전용)
+                  </label>
+                  <textarea
+                    value={result.translation_ko}
+                    readOnly
+                    rows={Math.min(28, Math.max(12, result.translation_ko.split("\n").length))}
+                    className="mt-1 flex w-full rounded-md border border-input bg-muted/40 px-3 py-2 text-sm leading-relaxed text-muted-foreground"
+                    dir="ltr"
+                  />
+                </div>
+              </div>
+            ) : (
+              // 단일 column — 한국어 메일 또는 번역 옵션 off
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Body</label>
+                <textarea
+                  value={editedBody}
+                  onChange={(e) => setEditedBody(e.target.value)}
+                  rows={Math.min(20, Math.max(8, editedBody.split("\n").length))}
+                  className="mt-1 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed"
+                  dir={result.language === "ar" ? "rtl" : "ltr"}
+                />
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <Button onClick={onCopy} variant="outline" className="gap-2">
                 {copied ? <ClipboardCheck className="h-4 w-4 text-success" /> : <Clipboard className="h-4 w-4" />}
@@ -476,6 +542,7 @@ function MailComposerSection({
               </Button>
               <span className="text-xs text-muted-foreground">
                 ✓ AI 초안 DB 저장됨 · 편집본은 미저장 (id: {shortId(result.message_id)})
+                {result.translation_ko && " · 한국어 번역은 DB 저장 X (참고용)"}
               </span>
             </div>
           </div>

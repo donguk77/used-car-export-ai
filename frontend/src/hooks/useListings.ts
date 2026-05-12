@@ -117,6 +117,7 @@ export interface MailDraftInput {
   scenario: MailScenario;
   language?: string;
   extra_context?: string;
+  include_translation?: boolean;
 }
 
 export function useMailDraft(listingId: string | undefined) {

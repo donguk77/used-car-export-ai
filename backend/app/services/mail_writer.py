@@ -347,6 +347,33 @@ class MailWriter:
             model=result.model,
         )
 
+    def translate(self, *, body: str, source_language: str, target: str = "ko") -> str:
+        """외국어 메일 본문을 모국어 (default: 한국어) 로 번역 — 검증용 read-only.
+
+        시연 narrative: 사용자가 Arabic/Russian 메일을 한국어로 한번 더 검토하고
+        발송. LLM 1회 추가 호출 (~15초). 발송 본문은 외국어 그대로.
+        """
+        if not body or source_language == target:
+            return body
+        src_name = LANGUAGE_NAMES.get(source_language, source_language)
+        tgt_name = LANGUAGE_NAMES.get(target, target)
+        system = (
+            f"You are a professional translator. Translate the following {src_name} "
+            f"business email body into {tgt_name}, preserving the formatting, layout, "
+            f"label-value cost tables, paragraph structure, and signature block. "
+            f"Do NOT add commentary. Do NOT use markdown. Output ONLY the translated "
+            f"plain-text body."
+        )
+        result = self.provider.complete(
+            system=system,
+            user=body,
+            temperature=0.2,  # 번역은 보수적으로
+        )
+        # 일부 LLM 이 ```text ... ``` 같은 코드 펜스 추가하는 케이스
+        translated = _strip_code_fence(result.text).strip()
+        # 번역에도 markdown 청소 (혹시 LLM 이 강조 추가했을 때 대비)
+        return _strip_markdown(translated)
+
     # ── prompt rendering ────────────────────────────────────────────
     def _render_system(self, req: MailRequest) -> str:
         # sender fallback — User 객체 없으면 데모 default

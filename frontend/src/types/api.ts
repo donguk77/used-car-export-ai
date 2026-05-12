@@ -196,6 +196,7 @@ export interface MailDraftResponse {
   provider: string;
   model: string;
   message_id: UUID;
+  translation_ko: string | null;
 }
 
 // ── Import-check (POST /api/listings/import-check) ─────────
