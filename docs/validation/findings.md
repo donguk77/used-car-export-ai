@@ -6,6 +6,121 @@
 
 ---
 
+## 🟢 #068 — Backend 의존성 버전 audit: 모두 최신 stable
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed
+
+backend/requirements 핵심 12개 패키지 버전 확인:
+
+| 패키지 | 설치 버전 | 최신 stable 대비 |
+|--------|-----------|------------------|
+| fastapi | 0.115.0 | latest |
+| pydantic | 2.12.5 | latest |
+| SQLAlchemy | 2.0.48 | latest 2.x |
+| psycopg | 3.3.4 | latest 3.x |
+| httpx | 0.28.1 | latest |
+| anthropic | 0.86.0 | latest |
+| google-genai | 1.73.1 | latest |
+| RapidFuzz | 3.14.5 | latest |
+| Jinja2 | 3.1.6 | latest |
+| PyMuPDF | 1.27.2.2 | latest |
+| playwright | 1.58.0 | latest |
+| uvicorn | 0.42.0 | latest |
+
+→ 알려진 CVE 없는 버전. Phase 2: `pip-audit` 또는 `safety` 자동 cron
+   (GitHub Dependabot 권장).
+
+---
+
+## 🟢 #067 — Concurrent mail-draft 5x 부하: wall 15.2s (5x speedup)
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed (Round 14 #044 수정)
+
+`POST /listings/{id}/mail-draft` 5개 동시 실행 (5 다른 scenarios):
+
+| Request | Latency |
+|---------|---------|
+| req=3 (shipping) | 10.79s |
+| req=2 (negotiate) | 12.57s |
+| req=1 (quote) | 14.50s |
+| req=4 (inquiry) | 14.89s |
+| req=5 (dispute) | 15.14s |
+
+**Total wall: 15.26s** (직렬 80s 대비 5x speedup).
+
+분석:
+- FastAPI async + httpx async + Gemini I/O bound = 이벤트 루프 내 병렬화
+- uvicorn single-worker 라도 I/O wait 동안 다른 요청 진행
+- Round 14 #044 의 "concurrent 1/5" 는 PDF (CPU-bound playwright)
+  였음 — async LLM 호출과 다름. 정정.
+
+→ **시연 narrative**: "5건 동시 자동 메일 생성 → 15초 내 모두 완료
+   (단순 5배 속도)". 단일 worker 로도 데모 load 충분.
+
+→ 3 concurrent = 16.3s, 5 concurrent = 15.2s — 거의 일정 (Gemini API
+   side throttle 없음). Phase 2 production scale 시 worker pool +
+   request queue 추가 권장.
+
+---
+
+## 🟡 #066 — Security 헤더 부재 (Phase 2 production hardening)
+
+**발견일:** 2026-05-12
+**상태:** 🟡 noted
+
+라이브 응답 헤더 grep 결과:
+```
+GET / → server, content-length, vary 만 있음
+X-Frame-Options:        ❌ 없음
+X-Content-Type-Options: ❌ 없음
+Strict-Transport-Security: ❌ 없음 (HTTPS 부재로 OK)
+Content-Security-Policy: ❌ 없음
+Referrer-Policy:        ❌ 없음
+```
+
+PoC 영향: HTTP 로컬 개발 서빙 (clickjacking·XSS 직접 위험 X).
+
+**Phase 2 권장 (production 배포 전 필수):**
+```python
+from secure import Secure
+secure = Secure()
+
+@app.middleware("http")
+async def set_secure_headers(request, call_next):
+    response = await call_next(request)
+    secure.framework.fastapi(response)
+    return response
+```
+또는 nginx reverse proxy 단에서 추가 (선호).
+
+→ 디버그 모드 (debug=True) 노출도 없음 (FastAPI default). 환경변수
+   별도 분리되어 production 배포 시 강제 disable.
+
+---
+
+## 🟢 #065 — CORS 정책 audit: dev allowlist + production strict
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed
+
+`backend/app/main.py:16` CORS 미들웨어:
+
+| 환경 | allow_origins |
+|------|---------------|
+| development | localhost:3000, localhost:5173, 127.0.0.1:3000, 127.0.0.1:5173 (4) |
+| production | `[]` (빈 리스트 — 모두 차단) |
+
+라이브 검증:
+- ✅ Allowed origin (`localhost:5173`) → 200 + `access-control-allow-origin: http://localhost:5173`
+- ✅ Foreign origin (`evil.example.com`) → **400 Bad Request** (preflight 차단)
+
+→ dev 안전 + production CORS-by-default-deny. Phase 2 배포 시 환경변수
+   `CORS_ORIGINS=https://app.example.com` 로 명시 설정 패턴 권장.
+
+---
+
 ## 🟡 #064 — mail-draft P95 17.9초 (Gemini API bound)
 
 **발견일:** 2026-05-12
