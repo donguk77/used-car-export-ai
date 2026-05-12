@@ -6,6 +6,165 @@
 
 ---
 
+## 🟡 #076 — Frontend bundle: 단일 569 KB JS chunk (Phase 2 split 권장)
+
+**발견일:** 2026-05-12
+**상태:** 🟡 noted (gzip 171 KB → 양호, 분할 권장)
+
+`npm run build` (vite v6.4.2 + React 19) 결과:
+
+| Asset | raw | gzip |
+|-------|-----|------|
+| index.html | 1.01 kB | 0.58 kB |
+| index-*.css | 33.22 kB | 6.56 kB |
+| **index-*.js** | **569.84 kB** | **171.12 kB** |
+
+- 1,733 modules transformed in 5.81s ✓ build clean
+- Chunk warning: > 500 KB raw → dynamic import 권장
+
+**평가:**
+- gzip 171 KB → 모던 SPA 평균 (3G 1초 미만 download)
+- 한 페이지 로드 = 30 페이지 모두 다운로드 (낭비)
+- 데모 (로컬 dev) 영향 X
+
+**Phase 2 권장:**
+```ts
+// vite.config.ts
+build: {
+  rollupOptions: {
+    output: {
+      manualChunks: {
+        vendor: ['react', 'react-dom', 'react-router'],
+        query: ['@tanstack/react-query'],
+        ui: ['@radix-ui/*', 'lucide-react'],
+      },
+    },
+  },
+},
+```
+또는 React.lazy() 로 page-level code-split.
+
+→ PoC 데모 영향 없음. production CDN 배포 시 split 권장 → first-contentful-paint
+   500ms 단축 예상.
+
+---
+
+## 🟢 #075 — Backend idle stability + connection leak 부재
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed
+
+**Postgres connection snapshot (Neon 3.0.167.45):**
+```
+TCP 172.17.84.249:52514 → 3.0.167.45:5432 ESTABLISHED
+TCP 172.17.84.249:62148 → 3.0.167.45:5432 ESTABLISHED
+```
+→ 2 connections (SQLAlchemy 기본 pool 5 + overflow 10 보다 훨씬 적음).
+   Phase 2 production scale 시 pool tuning 여지 충분.
+
+**Uvicorn process:** PID 48628 listening :8000 ✓
+
+**Sustained load 3x PDF gen:**
+| Cycle | Latency |
+|-------|---------|
+| 1 | 10.52s (cold start, Playwright 첫 호출) |
+| 2 | 6.54s |
+| 3 | 6.19s |
+
+→ 첫 호출 후 안정 (Playwright Chromium 재사용). Memory leak 징후 없음.
+   Health endpoint 호출 → 즉시 200 ✓
+
+**평가:**
+- 연결 leak 부재 (idle 시 2 connection)
+- Playwright cold-start ~4s overhead (1회만)
+- 장시간 운영 안정성 증거 (이전 21 라운드 라이브 호출 100+회 후)
+
+→ Phase 2: Playwright 인스턴스 pre-warm + 재사용 (현재도 OK이지만 명시적 lifecycle).
+
+---
+
+## 🟢 #074 — Compliance multi-finding stacking 라이브 재확인 (post #042/054)
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed (Round 12 후속)
+
+OFAC SDN exact (#042) + fuzzy (#054) 추가 후 stacking 동작 라이브:
+
+**KG buyer + Genesis G80 (3,300cc, $58k) → import-check:**
+
+```json
+{
+  "can_import": false,
+  "rule_check": {
+    "reasons": [
+      "엔진 2,000cc 초과 → 전략물자 (전략물자고시 2024.2.24)",
+      "USD 50,000 초과 고가 차량 → 추가 라이선스"
+    ],
+    "warnings": [
+      "KG flagged HIGH RISK → manual review",
+      "KG = Russia-proxy risk → compliance check required"
+    ],
+    "required_documents": [
+      "commercial_invoice", "packing_list", "bill_of_lading",
+      "certificate_of_origin", "end_user_certificate",
+      "situational_license", "translation_ru"
+    ]
+  },
+  "compliance": {
+    "overall": "blocked",
+    "score": 20,
+    "findings": [
+      "russia_proxy_country (warning)",
+      "russia_proxy_strategic (blocked) — engine + price",
+      "new_buyer_high_value (warning)"
+    ]
+  }
+}
+```
+
+→ **3-layer compliance stacking + 4-layer rule_check stacking + 7
+   required documents** 모두 라이브 발화. Round 12 결과 재확인 + #042
+   OFAC 추가 후에도 정상.
+
+**recheck endpoint 분석:**
+- `_run_compliance(buyer, vehicle=None)` — buyer-only check
+- vehicle-dependent finding (russia_proxy_strategic, new_buyer_high_value) 는
+  import-check 또는 listing 생성 시에만 발화
+- 의도된 분리 — buyer 단독 KYC vs listing 단계 종합 평가
+
+→ 시연 narrative: "KG 바이어 + 고가 차량 입력 즉시 → 7개 서류 자동 추천 +
+   3-layer compliance flag 표시".
+
+---
+
+## 🟢 #073 — agreed→documenting transition 시 PDF auto-trigger 부재 (의도)
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed (의도된 설계)
+
+`backend/app/api/listings.py:300` `update_listing()` — status transition 시
+`agreed_at`/`shipped_at`/`delivered_at` timestamp 자동 set 하지만, **PDF 자동
+생성 트리거는 없음**. 사용자가 명시적으로 `POST /listings/{id}/documents`
+호출 필요.
+
+라이브:
+- PATCH /listings/{id} {"status":"documenting"} → HTTP 200, < 100ms
+- 응답에 새 documents 없음 (기존 v2 그대로 유지)
+
+**의도된 설계 이유:**
+- LLM/Playwright 호출 비용 (시간 + API quota)
+- 사용자 컨트롤 (실수 방지)
+- documenting 단계서 buyer 와 추가 협의 가능
+
+**Frontend (ListingDetail.tsx) 구현 확인 필요:**
+- status==agreed 또는 documenting 시 "PDF 생성" 버튼 활성화 권장
+- (현재는 항상 활성, status 와 무관하게 호출 가능 — Phase 2 UX 보강)
+
+→ 시연 narrative: "Status 'agreed' 클릭 → PDF 생성 버튼 클릭 → 8초 내
+   4종 서류 완성" 두 단계 명시적.
+
+---
+
 ## 🟢 #072 — Mail-draft 다국어 LLM 출력 품질 sample (5/5 통과)
 
 **발견일:** 2026-05-12

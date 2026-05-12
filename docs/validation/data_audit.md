@@ -17,7 +17,7 @@
 | 1차 자료 PDF (실제 보유) | **47** | 27/28 국가 + 공통 자료 5종 |
 | 1차 자료 URL 인덱스 (REGISTRY) | **89 entries** | 62 pdf + 27 ref |
 | Cross-validate 검증 | **32개 PDF** | findings 식별을 위한 실제 텍스트 검토 |
-| 발견된 finding | **66개** | #001 + #006~#072 |
+| 발견된 finding | **70개** | #001 + #006~#076 |
 | 신규 분석 문서 | **4건** | findings.md (34) · data_audit.md · tariff_matrix.md · shipping_matrix.md |
 | 관세 매트릭스 | **28/28 국가** | duty + VAT + 추가세 + 총 부담 + Sonata 도착 비용 (#038) |
 | 항구 물류 매트릭스 | **28/28 국가** | ETA + RoRo/Container 운임 + 운송 빈도 + Sonata DDP 기간 (#039) |
@@ -57,6 +57,10 @@
 | **Dashboard 정합성** | **9/9 카운트 일치** | DB 진실 vs API 응답 100% 매칭 (#070) |
 | **PDF 동시 생성** | **lock+병렬 둘 다 ✓** | diff listings 7.5s 병렬, same listing 16.2s 직렬 (#071) |
 | **다국어 mail 품질** | **5/5 sample 통과** | ar/es/ru/en 격식 표현 + 평균 2,006 chars (#072) |
+| Auto PDF trigger | 부재 (의도) | manual /documents 호출 필요, 사용자 컨트롤 (#073) |
+| **3-layer stacking** | **라이브 재확인** | KG+Genesis G80 → 7 docs + blocked score 20 (#074) |
+| Idle stability | 2 conn, leak 없음 | Playwright cold start 1회만 4s overhead (#075) |
+| **Frontend bundle** | **gzip 171 KB** | raw 569 KB single chunk, Phase 2 split 권장 (#076) |
 | YAML 수정 적용 | **9개국** | DO·KE·JO·GH·MX·ZW·KH + NG·AE (룰 변경 또는 docs 추가) |
 | YAML notes 추가 | **10개국** | KZ·DZ·ZA + PH·BD·LK + NG·AE·LK·ZW 보강 |
 | Backend 코드 fix | **3건** | mail-draft 언어 fallback (#026) + HS 분류기 (#034) + LLM 자동 retry (#035) |
