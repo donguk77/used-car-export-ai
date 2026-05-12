@@ -42,6 +42,35 @@
 
 ---
 
+## 다음 단계 (Phase 2)
+
+PoC 검증을 마치고, 실 사업화 / 추가 협업으로 넘어가기 전 풀어야 할 항목과 확장 아이디어.
+
+### 사업화 직전 풀어야 할 것
+
+- **실제 SMTP 발송** — Mock 콘솔 로그 → `aiosmtplib` + Mailgun/SendGrid (1줄 교체)
+- **JWT 인증 + Multi-tenant 격리** — 모든 endpoint user_id 필터 검증 완료, 내부만 JWT 로 교체
+- **OFAC SDN 자동 갱신** — cron 또는 startup background task
+- **Yestrade 정식 API** — 사업자 인증서 + 우려거래자 자동 차단
+- **WhatsApp Business API** — 메일 외 채널, AI 응대로 BeForward/SBT 대비 차별화
+- **실시간 shipment tracking** — MarineTraffic/Maersk + 도착 24h 전 자동 알림
+- **Security headers + HSTS + Dependabot** — 표준 보안 헤더, 의존성 모니터링
+
+### 확장 아이디어 — 들어가면 좋을 기능
+
+영세업체 사장님의 일상 업무를 더 좁혀가는 방향:
+
+- **차량 사진 자동 보정** — 배경 제거·색감 보정 (Imagen·Firefly), 카탈로그 퀄리티 균질화
+- **동급 차량 시세 가이드** — 매물 등록 시 적정 FOB 자동 추천 (엔카·KB차차차 시세 + 자체 통계)
+- **환율·환차손 자동 처리** — KRW↔USD 자동 환산, 메일/Invoice 발송 시점 환율 lock
+- **클레임/분쟁 관리 모듈** — 도착 후 바이어 클레임 사진/영상 업로드 → 대응 메일 자동
+- **매출/운영 리포트** — 월별·국가별·차종별 listings 통계 + 수익 분석
+- **다중 셀러 협업 모드** — 영세업체 N개 한 플랫폼 공유 (장기, 시장 검증 후)
+
+> 세부 공수 추정·우선순위 매트릭스는 [docs/PHASE_2_ROADMAP.md](docs/PHASE_2_ROADMAP.md) 참조.
+
+---
+
 ## 기술 스택
 
 | 영역 | 기술 |
