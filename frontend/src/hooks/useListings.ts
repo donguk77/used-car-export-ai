@@ -125,9 +125,12 @@ export function useMailDraft(listingId: string | undefined) {
   return useMutation({
     mutationFn: async (input: MailDraftInput): Promise<MailDraftResponse> => {
       if (!listingId) throw new Error("listingId required for mail-draft");
+      // axios 기본 30s timeout 은 LLM 호출에 부족 — 특히 include_translation=true
+      // 시 약 25-30s 소요. 3-attempt retry 까지 합치면 90s+ 가능. 여유로 120s.
       const r = await api.post<MailDraftResponse>(
         `/api/listings/${listingId}/mail-draft`,
         input,
+        { timeout: 120_000 },
       );
       return r.data;
     },
