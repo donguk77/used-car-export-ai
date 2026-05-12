@@ -134,14 +134,14 @@ export function CreateListingModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-brand-700/40 p-4 backdrop-blur-[2px]"
       onClick={safeClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="cl-modal-title"
     >
       <div
-        className="w-full max-w-lg rounded-lg border bg-card shadow-2xl"
+        className="w-full max-w-lg rounded-lg border border-border/50 bg-white shadow-[0_20px_60px_-15px_rgba(15,34,54,0.5)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
