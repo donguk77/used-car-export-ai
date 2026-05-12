@@ -31,6 +31,7 @@ import {
   useListingDocuments,
   useListingMessages,
   useMailDraft,
+  useMailRegenerateFromKorean,
   useSendMessage,
   useUpdateListingStatus,
   useVehicle,
@@ -352,9 +353,12 @@ function MailComposerSection({
   const [includeTranslation, setIncludeTranslation] = useState(false);
   const [editedSubject, setEditedSubject] = useState("");
   const [editedBody, setEditedBody] = useState("");
+  const [editedKorean, setEditedKorean] = useState("");
+  const [originalKorean, setOriginalKorean] = useState("");
   const [copied, setCopied] = useState(false);
 
   const draftMutation = useMailDraft(listingId);
+  const regenerateMutation = useMailRegenerateFromKorean(listingId);
 
   // 한국어 번역 옵션은 외국어일 때만 의미 — language=ko 면 자동 false
   const wantsTranslation = includeTranslation && language !== "ko";
@@ -369,7 +373,29 @@ function MailComposerSection({
     });
     setEditedSubject(r.subject);
     setEditedBody(r.body);
+    setEditedKorean(r.translation_ko ?? "");
+    setOriginalKorean(r.translation_ko ?? "");
   };
+
+  const onRegenerateFromKorean = async () => {
+    if (!editedKorean.trim()) return;
+    setCopied(false);
+    // language 자동 감지 결과를 사용 — language state 가 빈 문자열이면 result.language
+    const target = language || draftMutation.data?.language;
+    if (!target || target === "ko") return;
+    const r = await regenerateMutation.mutateAsync({
+      scenario,
+      target_language: target,
+      korean_body: editedKorean,
+    });
+    setEditedSubject(r.subject);
+    setEditedBody(r.body);
+    setEditedKorean(r.translation_ko ?? "");
+    setOriginalKorean(r.translation_ko ?? "");
+  };
+
+  // 한국어가 dirty (사용자가 수정함) 이고 외국어 메일이 있을 때만 재생성 버튼 활성
+  const koreanDirty = editedKorean !== originalKorean;
 
   const onCopy = async () => {
     const text = `Subject: ${editedSubject}\n\n${editedBody}`;
@@ -495,32 +521,72 @@ function MailComposerSection({
               />
             </div>
             {result.translation_ko ? (
-              // 2-column: 외국어 (편집 가능) ↔ 한국어 (read-only 검증용)
-              <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                <div>
-                  <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    📤 {result.language.toUpperCase()} (발송용 · 편집 가능)
-                  </label>
-                  <textarea
-                    value={editedBody}
-                    onChange={(e) => setEditedBody(e.target.value)}
-                    rows={Math.min(28, Math.max(12, editedBody.split("\n").length))}
-                    className="mt-1 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed"
-                    dir={result.language === "ar" ? "rtl" : "ltr"}
-                  />
+              // 2-column: 외국어 (발송용) ↔ 한국어 (편집 가능 → 외국어 재생성)
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                  <div>
+                    <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      📤 {result.language.toUpperCase()} (발송용)
+                      {result.language === "ar" && (
+                        <span className="text-[9px] normal-case text-muted-foreground/70">— RTL 자연 정렬</span>
+                      )}
+                    </label>
+                    <textarea
+                      value={editedBody}
+                      onChange={(e) => setEditedBody(e.target.value)}
+                      rows={Math.min(28, Math.max(12, editedBody.split("\n").length))}
+                      className="mt-1 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed"
+                      dir={result.language === "ar" ? "rtl" : "ltr"}
+                    />
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      🇰🇷 KO (검증·편집 가능)
+                      {koreanDirty && (
+                        <span className="text-[9px] normal-case font-bold text-warning">● 수정됨</span>
+                      )}
+                    </label>
+                    <textarea
+                      value={editedKorean}
+                      onChange={(e) => setEditedKorean(e.target.value)}
+                      rows={Math.min(28, Math.max(12, editedKorean.split("\n").length))}
+                      className={cn(
+                        "mt-1 flex w-full rounded-md border px-3 py-2 text-sm leading-relaxed",
+                        koreanDirty ? "border-warning bg-warning/5" : "border-input bg-muted/40 text-muted-foreground",
+                      )}
+                      dir="ltr"
+                      placeholder="이 한국어 본문을 수정한 뒤 아래 '한국어로 외국어 재생성' 버튼을 누르면 외국어 메일이 다시 만들어집니다."
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    🔍 KO (검증용 · 읽기 전용)
-                  </label>
-                  <textarea
-                    value={result.translation_ko}
-                    readOnly
-                    rows={Math.min(28, Math.max(12, result.translation_ko.split("\n").length))}
-                    className="mt-1 flex w-full rounded-md border border-input bg-muted/40 px-3 py-2 text-sm leading-relaxed text-muted-foreground"
-                    dir="ltr"
-                  />
+                {/* Level 2 재생성 버튼 */}
+                <div className="flex items-center justify-between gap-2 rounded-md border border-dashed border-primary/30 bg-primary/5 p-3">
+                  <p className="flex-1 text-xs text-muted-foreground">
+                    {koreanDirty
+                      ? "한국어를 수정하셨습니다 — 외국어 메일을 새로 생성해 반영하세요."
+                      : "한국어 패널을 직접 수정한 뒤, 그 의도로 외국어 메일을 다시 만들 수 있습니다."}
+                  </p>
+                  <Button
+                    onClick={onRegenerateFromKorean}
+                    disabled={!koreanDirty || regenerateMutation.isPending}
+                    size="sm"
+                    className="gap-2"
+                  >
+                    {regenerateMutation.isPending ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3.5 w-3.5" />
+                    )}
+                    {regenerateMutation.isPending
+                      ? "외국어 재생성 + 한국어 재번역 중... (~30초)"
+                      : "한국어로 외국어 재생성"}
+                  </Button>
                 </div>
+                {regenerateMutation.isError && (
+                  <p role="alert" className="text-xs text-destructive">
+                    재생성 실패: {formatApiError(regenerateMutation.error)}
+                  </p>
+                )}
               </div>
             ) : (
               // 단일 column — 한국어 메일 또는 번역 옵션 off

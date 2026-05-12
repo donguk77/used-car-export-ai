@@ -482,6 +482,108 @@ def draft_mail(
     )
 
 
+# ── Level 2: 한국어 수정 → 외국어 재생성 → 다시 한국어 번역 ─────
+class MailRegenerateRequest(BaseModel):
+    """사용자가 한국어 검증 패널에서 직접 수정한 내용을 LLM 의도로 사용."""
+    scenario: str = Field(description="inquiry/quote/negotiate/shipping/dispute")
+    target_language: str = Field(
+        description="재생성할 외국어 (en/es/ar/ru/fr). 한국어(ko) 자체로 재생성은 의미 없음.",
+    )
+    korean_body: str = Field(min_length=1, description="사용자가 수정한 한국어 본문")
+
+
+@router.post(
+    "/{listing_id}/mail-regenerate-from-korean",
+    response_model=MailDraftResponse,
+    summary="한국어 의도 → 외국어 재생성 (Level 2)",
+)
+def regenerate_mail_from_korean(
+    listing_id: uuid.UUID,
+    payload: MailRegenerateRequest,
+    db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],
+) -> MailDraftResponse:
+    listing = _get_owned(db, listing_id, user_id)
+    if listing.buyer_id is None or listing.destination_country is None:
+        raise HTTPException(400, "listing must have buyer_id and destination_country set")
+    if payload.target_language == "ko":
+        raise HTTPException(400, "target_language must NOT be ko (use mail-draft instead)")
+
+    vehicle = db.get(Vehicle, listing.vehicle_id)
+    buyer = db.get(Buyer, listing.buyer_id)
+    country = _load_country(db, listing.destination_country)
+    sender = db.get(User, user_id)
+
+    writer = MailWriter()
+    mail_req = MailRequest(
+        scenario=payload.scenario,
+        language=payload.target_language,
+        vehicle=vehicle,
+        buyer=buyer,
+        country=country,
+        rules=country.rules,
+        sender=sender,
+    )
+    # 1. 한국어 의도 → 외국어 재생성 (mail-draft 와 동일 3-attempt retry)
+    last_parse_err: MailDraftParseError | None = None
+    draft = None
+    for attempt in range(1, 4):
+        try:
+            draft = writer.regenerate_from_korean(mail_req, korean_body=payload.korean_body)
+            if attempt > 1:
+                logger.info(f"regenerate-from-korean succeeded on retry {attempt}/3")
+            break
+        except MailDraftParseError as e:
+            last_parse_err = e
+            logger.warning(f"regenerate JSON parse fail attempt {attempt}/3: {e}")
+            continue
+        except Exception as e:  # noqa: BLE001
+            logger.exception("regenerate_from_korean failed")
+            raise HTTPException(503, f"LLM provider unavailable: {type(e).__name__}") from e
+    if draft is None:
+        raise HTTPException(
+            502,
+            f"LLM returned malformed JSON in all 3 attempts. ({last_parse_err})",
+        ) from last_parse_err
+
+    # 2. 외국어 → 한국어 다시 번역 (사용자가 변경사항이 반영됐는지 확인)
+    new_translation_ko: str | None = None
+    try:
+        new_translation_ko = writer.translate(
+            body=draft.body, source_language=payload.target_language, target="ko"
+        )
+    except Exception as e:  # noqa: BLE001
+        logger.warning(f"re-translate to ko failed: {e}")
+
+    # 3. 새 Message row 저장 (audit trail — 원본 draft 도 보존)
+    message = Message(
+        listing_id=listing.id,
+        buyer_id=listing.buyer_id,
+        channel="email",
+        direction="outbound",
+        scenario=payload.scenario,
+        language=payload.target_language,
+        content_text=f"Subject: {draft.subject}\n\n{draft.body}",
+        ai_generated=True,
+        ai_model=draft.model,
+        ai_prompt_id=f"{payload.scenario}_{payload.target_language}_regenerated",
+    )
+    db.add(message)
+    db.commit()
+    db.refresh(message)
+
+    return MailDraftResponse(
+        subject=draft.subject,
+        body=draft.body,
+        scenario=payload.scenario,
+        language=payload.target_language,
+        provider=draft.provider,
+        model=draft.model,
+        message_id=message.id,
+        translation_ko=new_translation_ko,
+    )
+
+
 # ── /listings/{id}/documents (시연 시나리오 4) ──────────────────
 class DocumentOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)

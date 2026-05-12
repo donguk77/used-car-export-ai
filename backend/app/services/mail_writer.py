@@ -374,6 +374,97 @@ class MailWriter:
         # 번역에도 markdown 청소 (혹시 LLM 이 강조 추가했을 때 대비)
         return _strip_markdown(translated)
 
+    def regenerate_from_korean(self, req: MailRequest, *, korean_body: str) -> MailDraft:
+        """한국어 본문을 사용자 의도로 받아 외국어 메일을 다시 생성.
+
+        Level 2 — 사용자가 한국어 검증 패널에서 직접 수정한 내용을 LLM 이
+        해석해 외국어로 자연스럽게 다시 작성. 단순 번역이 아니라 비즈니스
+        매너·격식·country-specific compliance 까지 다시 적용.
+
+        다시 검증할 수 있도록 후속 translate() 호출 권장 (API 레이어에서).
+        """
+        system = self._render_regenerate_system(req)
+        user = self._render_regenerate_user(req, korean_body)
+        result = self.provider.complete(system=system, user=user, temperature=0.4)
+        subject, body = self._parse_json(result.text)
+        subject = _strip_markdown(subject)
+        body = _strip_markdown(body)
+        body = _replace_signature_placeholders(body, req.sender)
+        return MailDraft(
+            subject=subject,
+            body=body,
+            scenario=req.scenario,
+            language=req.language,
+            provider=result.provider,
+            model=result.model,
+        )
+
+    def _render_regenerate_system(self, req: MailRequest) -> str:
+        """Level 2 시스템 프롬프트 — 기본 draft 와 동일하지만 '한국어 의도 우선' 강조."""
+        s = req.sender
+        base = SYSTEM_PROMPT_TEMPLATE.format(
+            country_code=req.country.code,
+            country_name_en=req.country.name_en,
+            language_name=LANGUAGE_NAMES.get(req.language, req.language),
+            scenario_brief=SCENARIO_BRIEFS[req.scenario],
+            compliance_hints=self._compliance_hints(req),
+            sender_company=(s.company_name if s else "Korean Used-Car Export Co."),
+            sender_email=(s.email if s else "export@example.kr"),
+            sender_phone=(s.phone if s and s.phone else "+82-32-555-0000"),
+            sender_port=(s.port_of_loading if s else "Incheon"),
+        )
+        regen_note = (
+            "\n# IMPORTANT — Regeneration mode\n"
+            "The user has reviewed an earlier draft in Korean and edited it. "
+            "The Korean text below represents the user's final intent. Translate "
+            "and rewrite this content naturally in {language_name}, preserving the "
+            "user's structure (sections, cost breakdown, payment terms, shipping "
+            "schedule, etc.). You may polish phrasing and apply formal business "
+            "register for {language_name}, but do NOT add new content the user did "
+            "not include, and do NOT drop content the user did include. Keep all "
+            "numbers, dates, and proper nouns EXACTLY as written."
+        ).format(language_name=LANGUAGE_NAMES.get(req.language, req.language))
+        return base + regen_note
+
+    def _render_regenerate_user(self, req: MailRequest, korean_body: str) -> str:
+        v = req.vehicle
+        b = req.buyer
+        # 기본 user prompt 의 vehicle/buyer 컨텍스트는 유지 (LLM 이 사실 점검용으로
+        # 사용). 다만 끝에 'Korean intent' 섹션 추가.
+        base = USER_PROMPT_TEMPLATE.format(
+            make=v.make or "?",
+            model=v.model or "?",
+            year=v.year or "?",
+            vin=v.vin or "?",
+            body_type=v.body_type or "?",
+            engine_cc=v.engine_cc or "?",
+            fuel_type=v.fuel_type or "?",
+            transmission=v.transmission or "A/T",
+            steering=v.steering or "?",
+            mileage_km=v.mileage_km or "?",
+            color_exterior=v.color_exterior or "?",
+            hs_code=v.hs_code or "?",
+            list_price_usd=v.list_price_usd or "?",
+            buyer_company=b.company_name or "?",
+            buyer_contact=b.contact_person or "?",
+            buyer_country=b.country_code,
+            preferred_port=b.preferred_port or "?",
+            preferred_incoterm=b.preferred_incoterm or "CIF",
+            preferred_payment=b.preferred_payment or "T/T 100% advance",
+            landing_cost_block=self._landing_cost_block(req),
+            shipping_block=self._shipping_block(req),
+            extra_context=req.extra_context or "(none)",
+            scenario=req.scenario,
+            language_name=LANGUAGE_NAMES.get(req.language, req.language),
+        )
+        return (
+            base
+            + "\n\n# Korean intent (user's edited version — translate/rewrite into target language)\n"
+            + korean_body
+            + "\n\nWrite the email in the target language now, based on this Korean intent. "
+            + "Respond with ONLY the JSON object."
+        )
+
     # ── prompt rendering ────────────────────────────────────────────
     def _render_system(self, req: MailRequest) -> str:
         # sender fallback — User 객체 없으면 데모 default

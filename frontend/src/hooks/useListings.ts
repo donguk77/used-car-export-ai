@@ -137,6 +137,31 @@ export function useMailDraft(listingId: string | undefined) {
   });
 }
 
+// ── Level 2: 한국어 의도 → 외국어 재생성 ──────────────────────
+export interface MailRegenerateInput {
+  scenario: MailScenario;
+  target_language: string;
+  korean_body: string;
+}
+
+export function useMailRegenerateFromKorean(listingId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: MailRegenerateInput): Promise<MailDraftResponse> => {
+      if (!listingId) throw new Error("listingId required for regenerate");
+      const r = await api.post<MailDraftResponse>(
+        `/api/listings/${listingId}/mail-regenerate-from-korean`,
+        input,
+        { timeout: 90_000 },  // 두 번 LLM (외국어 생성 + 다시 번역) — 여유 timeout
+      );
+      return r.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["listing-messages", listingId] });
+    },
+  });
+}
+
 // ── 서류 ──────────────────────────────────────────────────
 export function useListingDocuments(listingId: string | undefined) {
   return useQuery({
