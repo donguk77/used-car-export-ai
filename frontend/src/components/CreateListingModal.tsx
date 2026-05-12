@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, FileText, Loader2, ShieldAlert, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import { CountrySelect } from "@/components/CountrySelect";
 import { useBuyers } from "@/hooks/useBuyers";
 import { useCreateListing } from "@/hooks/useListings";
 import { useVehicles } from "@/hooks/useVehicles";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { COUNTRY_FLAG, SANCTIONS_LABEL } from "@/lib/constants";
 import { cn, formatApiError } from "@/lib/utils";
 
@@ -134,7 +134,7 @@ export function CreateListingModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       onClick={safeClose}
       role="dialog"
       aria-modal="true"
@@ -253,20 +253,16 @@ export function CreateListingModal({
           {/* Destination */}
           <div>
             <label htmlFor="cl-dest" className="text-sm font-medium">
-              도착국 (ISO-2) <span className="text-destructive">*</span>
+              도착국 <span className="text-destructive">*</span>
             </label>
-            <Input
+            <CountrySelect
               id="cl-dest"
-              type="text"
               value={destination}
-              onChange={(e) => setDestination(e.target.value.toUpperCase())}
-              maxLength={2}
-              placeholder="DO"
-              className="mt-1 w-24 uppercase"
+              onChange={setDestination}
               required
             />
             <p className="mt-1 text-[10px] text-muted-foreground">
-              바이어 선택 시 자동입력 — 다른 국가로 수출 시 변경 가능
+              바이어 선택 시 자동입력 — 자동차단 5국 (ZA·MM·TH·MY·SD) 은 비활성
             </p>
           </div>
 

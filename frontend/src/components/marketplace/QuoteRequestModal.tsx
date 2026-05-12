@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, Loader2, ShieldAlert, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { CountrySelect } from "@/components/CountrySelect";
 import { useBuyers } from "@/hooks/useBuyers";
 import { useCreateListing } from "@/hooks/useListings";
 import { COUNTRY_FLAG, SANCTIONS_LABEL } from "@/lib/constants";
@@ -96,7 +97,7 @@ export function QuoteRequestModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       onClick={safeClose}
       role="dialog"
       aria-modal="true"
@@ -175,20 +176,16 @@ export function QuoteRequestModal({
 
             <div>
               <label htmlFor="qm-dest" className="text-sm font-medium">
-                도착국 (ISO-2) <span className="text-red-500">*</span>
+                도착국 <span className="text-red-500">*</span>
               </label>
-              <input
+              <CountrySelect
                 id="qm-dest"
-                type="text"
                 value={destination}
-                onChange={(e) => setDestination(e.target.value.toUpperCase())}
-                maxLength={2}
-                placeholder="DO"
-                className="mt-1 block w-24 rounded-md border border-slate-300 px-3 py-2 text-sm uppercase focus:border-slate-900 focus:outline-none"
+                onChange={setDestination}
                 required
               />
               <p className="mt-1 text-[10px] text-slate-500">
-                바이어 선택 시 자동입력 — 다른 국가로 수출 시 변경 가능
+                바이어 선택 시 자동입력 — 자동차단 5국 (ZA·MM·TH·MY·SD) 은 비활성
               </p>
             </div>
 
