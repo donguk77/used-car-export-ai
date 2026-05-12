@@ -108,17 +108,71 @@ BENCHMARK_SLIDES = [
 """,
     },
     {
+        "no": "B-0",
+        "label": "BENCHMARK 2-tour",
+        "title": "Autobell Global UI 라이브 투어 — 우리 reference",
+        "tags": "autobellglobal.com 라이브 캡처 · 2026-05-12",
+        "route": "https://www.autobellglobal.com/",
+        "html": """
+<div class="narrative">
+  현대글로비스 자체 운영 수출 플랫폼. <strong>24,801대 등록</strong> · 영어 단일언어 ·
+  해외 바이어 B2B 전용. 우리 marketplace shell 의 디자인·메뉴 패턴 reference.
+  <strong>실제 라이브 사이트를 4 섹션으로 캡처</strong>.
+</div>
+
+<div class="ui-grid">
+  <div class="ui-cell">
+    <img src="{autobell_hero}" alt="autobell hero">
+    <div class="ui-cap">
+      <strong>① Hero</strong> — "Autobell Global, Your Reliable Ride, Explore with Pride!" ·
+      HYUNDAI GLOVIS 로고 · Used Car / About Autobell / Login / WhatsApp · Warranty Service 배너
+    </div>
+  </div>
+  <div class="ui-cell">
+    <img src="{autobell_section2}" alt="special cars">
+    <div class="ui-cap">
+      <strong>② Special used cars</strong> — Autobell Stock / Condition Reported / Autobell X X Car / New Arrivals 탭 ·
+      차량 카드 (Mini Countryman 2.0 D 등) + FOB 가격 + Condition report 표시
+    </div>
+  </div>
+  <div class="ui-cell">
+    <img src="{autobell_section3}" alt="popular vehicles + warranty">
+    <div class="ui-cap">
+      <strong>③ Quality Assurance + Most popular</strong> — 101 검사항목 · Warranty Service · Global Reach 3-카드 +
+      "Most popular used vehicles now" 차량 그리드 (E-Class Coupe, K3, Focus, Sonic Elina)
+    </div>
+  </div>
+  <div class="ui-cell">
+    <img src="{autobell_inventory}" alt="inventory list">
+    <div class="ui-cap">
+      <strong>④ Used Car 진입 페이지</strong> — "Recommended by Autobell Global" 5-카드 +
+      <strong>26,885 Units in Total</strong> · 좌측 필터 (Autobell Global Special / Condition Reported / Autobell X X Car)
+    </div>
+  </div>
+</div>
+
+<div class="differentiator-list">
+  <h4>📍 우리가 reference 로 가져갈 점</h4>
+  <ol>
+    <li>Used Car / Auction / About 3-tab 메뉴 → 우리도 동일 (단순화)</li>
+    <li>차량 카드 ⇒ <strong>FOB 가격 + Condition 토글 + 좌측 필터</strong> 구조 그대로</li>
+    <li>Warranty / Global Reach 3-카드 trust badge → 우리는 "100+ Countries Shipped"</li>
+    <li><strong>차이점</strong>: Autobell 은 자체 차량 보유, 우리는 셀러 위탁 · AI 자동화 5종 추가</li>
+  </ol>
+</div>
+""",
+    },
+    {
         "no": "B-1",
         "label": "BENCHMARK 2",
         "title": "Autobell Global (현대글로비스) — 우리 reference UI",
-        "tags": "autobellglobal.com · Wayback Machine 2025-01 archive",
-        "route": "한국 IP 차단 → archive 캡처",
+        "tags": "autobellglobal.com 라이브 캡처 · 2026-05-12",
+        "route": "직접 hero 비교",
         "html": """
 <div class="narrative">
   <strong>우리 marketplace shell 의 reference UI</strong>는 <strong>현대글로비스의 Autobell Global</strong>.
   영세업체용 마켓플레이스 (오토위니) 가 아닌, <strong>대기업이 운영하는 해외 바이어 전용 수출 플랫폼</strong> 디자인을 따라감.
-  한국 IP 차단 + 봇 차단으로 라이브 캡처 불가 → Wayback Machine archive 활용
-  (CSS 깨졌지만 UI 구조·텍스트 콘텐츠는 보존됨).
+  바로 앞 슬라이드에서 Autobell 의 4-섹션 라이브 UI 를 봤으니, 여기서는 우리 marketplace 와 직접 비교.
 </div>
 
 <div class="compare-pair">
@@ -640,6 +694,10 @@ def generate_pdf() -> None:
         "{compare_marketplace}": _to_data_url(CAPTURES_DIR / "02_marketplace_landing.png"),
         "{compare_admin}": _to_data_url(CAPTURES_DIR / "07_mail_korean_panel.png"),
         "{competitor_autobell}": _to_data_url(CAPTURES_DIR / "competitor_autobell.png"),
+        "{autobell_hero}": _to_data_url(CAPTURES_DIR / "competitor_autobell.png"),
+        "{autobell_section2}": _to_data_url(CAPTURES_DIR / "competitor_autobell_section2.png"),
+        "{autobell_section3}": _to_data_url(CAPTURES_DIR / "competitor_autobell_section3.png"),
+        "{autobell_inventory}": _to_data_url(CAPTURES_DIR / "competitor_autobell_inventory.png"),
         "{competitor_autowini}": _to_data_url(CAPTURES_DIR / "competitor_autowini.png"),
         "{competitor_encar}": _to_data_url(CAPTURES_DIR / "competitor_encar.png"),
         "{competitor_beforward}": _to_data_url(CAPTURES_DIR / "competitor_beforward.png"),

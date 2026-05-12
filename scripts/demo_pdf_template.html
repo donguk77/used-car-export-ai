@@ -333,6 +333,36 @@ table.compact th {
   line-height: 1.6;
 }
 .differentiator-list ol li { margin-bottom: 4px; }
+
+/* Autobell UI tour 슬라이드 전용 grid */
+.ui-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0;
+}
+.ui-grid .ui-cell {
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+.ui-grid .ui-cell img {
+  width: 100%;
+  display: block;
+  height: 70mm;
+  object-fit: cover;
+  object-position: top center;
+}
+.ui-grid .ui-cell .ui-cap {
+  padding: 5px 8px;
+  font-size: 8.5pt;
+  color: #475569;
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+  line-height: 1.4;
+}
+.ui-grid .ui-cell .ui-cap strong { color: #1a3a5c; }
 </style>
 </head>
 <body>
