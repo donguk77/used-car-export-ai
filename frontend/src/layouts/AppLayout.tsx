@@ -1,15 +1,22 @@
+import { useEffect, useRef, useState } from "react";
 import {
   Bell,
   Building2,
   Car,
+  CheckCircle2,
+  Clock,
   FileText,
   Globe2,
   LayoutDashboard,
   Mail,
+  Settings as SettingsIcon,
   Users,
+  XCircle,
 } from "lucide-react";
-import { NavLink, Outlet } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
+import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -42,8 +49,7 @@ const NAV: { section: string; items: NavItem[] }[] = [
     section: "기타",
     items: [
       { label: "벤치마크 미리보기", to: "/marketplace", icon: Globe2 },
-      // 설정 페이지는 PoC 스코프 밖 — Phase 2. 시연 시 사이드바에서 숨김.
-      // { label: "설정", to: "/settings", icon: Settings },
+      { label: "설정", to: "/settings", icon: SettingsIcon },
     ],
   },
 ];
@@ -128,26 +134,120 @@ function Header() {
         </span>
       </div>
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          disabled
-          title="알림 — Phase 2 에서 구현"
-          className="rounded-md p-2 text-muted-foreground/50 cursor-not-allowed"
-          aria-label="알림 (준비중)"
-        >
-          <Bell className="h-4 w-4" />
-        </button>
-        <select
-          disabled
-          title="다국어 UI — Phase 2 에서 구현"
-          className="h-8 rounded-md border border-input bg-muted px-2 text-xs text-muted-foreground/60 cursor-not-allowed"
-          defaultValue="ko"
-          aria-label="언어 (준비중)"
-        >
-          <option value="ko">한국어</option>
-          <option value="en">English</option>
-        </select>
+        <RecentActivityBell />
       </div>
     </header>
+  );
+}
+
+interface RecentListing {
+  id: string;
+  vehicle_label: string;
+  buyer_name: string | null;
+  destination_country: string | null;
+  status: string;
+  can_import: boolean | null;
+}
+interface DashboardSummary {
+  recent_listings: RecentListing[];
+}
+
+function RecentActivityBell() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["dashboard-summary"],
+    queryFn: async (): Promise<DashboardSummary> => {
+      const r = await api.get<DashboardSummary>("/api/dashboard/summary");
+      return r.data;
+    },
+    staleTime: 30_000,
+  });
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const onPointer = (e: PointerEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [open]);
+
+  const items = data?.recent_listings ?? [];
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((s) => !s)}
+        className="relative rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+        aria-label="최근 활동"
+        aria-haspopup="menu"
+        aria-expanded={open}
+      >
+        <Bell className="h-4 w-4" />
+        {items.length > 0 && (
+          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-primary" />
+        )}
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-50 mt-1 w-80 rounded-md border bg-card shadow-lg"
+        >
+          <div className="flex items-center justify-between border-b px-3 py-2">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              최근 거래
+            </p>
+            <Link
+              to="/listings"
+              onClick={() => setOpen(false)}
+              className="text-[11px] text-primary hover:underline"
+            >
+              모두 보기
+            </Link>
+          </div>
+          {isLoading ? (
+            <p className="px-3 py-4 text-center text-xs text-muted-foreground">로딩…</p>
+          ) : items.length === 0 ? (
+            <p className="px-3 py-6 text-center text-xs text-muted-foreground">
+              최근 거래가 없습니다
+            </p>
+          ) : (
+            <ul className="max-h-80 overflow-y-auto py-1">
+              {items.slice(0, 5).map((it) => (
+                <li key={it.id}>
+                  <Link
+                    to={`/listings/${it.id}`}
+                    onClick={() => setOpen(false)}
+                    className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-accent"
+                  >
+                    {it.can_import === false ? (
+                      <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                    ) : it.status === "delivered" || it.status === "closed" ? (
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                    ) : (
+                      <Clock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-medium">{it.vehicle_label}</p>
+                      <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                        {it.buyer_name ?? "—"} · {it.destination_country ?? "—"} · {it.status}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
   );
 }

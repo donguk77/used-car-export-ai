@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowRight, Award, Car, Gavel, Globe, Search, ShieldCheck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { DemoModeModal } from "@/components/marketplace/DemoModeModal";
 import { useVehicles } from "@/hooks/useVehicles";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ export function MarketplaceLanding() {
   const { data: vehicles } = useVehicles();
   const featured = vehicles?.slice(0, 4) ?? [];
   const [heroSearch, setHeroSearch] = useState("");
+  const [auctionDemo, setAuctionDemo] = useState(false);
   const navigate = useNavigate();
 
   const submitSearch = () => {
@@ -77,9 +79,8 @@ export function MarketplaceLanding() {
               </Link>
               <button
                 type="button"
-                aria-disabled
-                title="Auction module — Phase 2"
-                className="inline-flex cursor-not-allowed items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white/60"
+                onClick={() => setAuctionDemo(true)}
+                className="inline-flex items-center gap-2 rounded-md border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/80 transition hover:border-white/60 hover:text-white"
               >
                 <Gavel className="h-4 w-4" /> Next Auction
               </button>
@@ -264,14 +265,15 @@ export function MarketplaceLanding() {
           </div>
           <button
             type="button"
-            aria-disabled
-            title="Auction module — Phase 2"
-            className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-white/30 px-6 py-3 text-sm font-semibold text-slate-200"
+            onClick={() => setAuctionDemo(true)}
+            className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
           >
             <Gavel className="h-4 w-4" /> Check the next Auction
           </button>
         </div>
       </section>
+
+      <DemoModeModal open={auctionDemo} feature="Live Auction" onClose={() => setAuctionDemo(false)} />
     </div>
   );
 }

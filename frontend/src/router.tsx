@@ -17,6 +17,7 @@ import { NotFoundPage } from "./pages/NotFound";
 import { RouteErrorPage } from "./pages/RouteError";
 import { SettingsPage } from "./pages/Settings";
 import { VehicleDetailPage } from "./pages/VehicleDetail";
+import { VehicleEditPage } from "./pages/VehicleEdit";
 import { VehicleNewPage } from "./pages/VehicleNew";
 import { VehiclesPage } from "./pages/Vehicles";
 
@@ -30,6 +31,7 @@ export const router = createBrowserRouter([
       { path: "vehicles", element: <VehiclesPage /> },
       { path: "vehicles/new", element: <VehicleNewPage /> },
       { path: "vehicles/:id", element: <VehicleDetailPage /> },
+      { path: "vehicles/:id/edit", element: <VehicleEditPage /> },
       { path: "buyers", element: <BuyersPage /> },
       { path: "buyers/new", element: <BuyerNewPage /> },
       { path: "buyers/:id", element: <BuyerDetailPage /> },

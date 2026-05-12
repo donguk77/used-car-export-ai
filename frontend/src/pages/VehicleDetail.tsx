@@ -100,9 +100,12 @@ export function VehicleDetailPage() {
             <Button onClick={() => setCreateListingOpen(true)} className="gap-2">
               <Plus className="h-4 w-4" /> 이 매물로 거래 만들기
             </Button>
-            <Button variant="outline" disabled className="gap-2">
+            <Link
+              to={`/vehicles/${vehicle.id}/edit`}
+              className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-4 text-sm font-medium hover:bg-accent"
+            >
               <Pencil className="h-4 w-4" /> 수정
-            </Button>
+            </Link>
             <Button
               variant="destructive"
               onClick={() => {

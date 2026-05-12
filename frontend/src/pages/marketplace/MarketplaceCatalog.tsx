@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Car, ChevronDown, Heart, MapPin, Search, X } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 
+import { DemoModeModal } from "@/components/marketplace/DemoModeModal";
 import { useVehicles } from "@/hooks/useVehicles";
 import { cn } from "@/lib/utils";
 import type { Vehicle } from "@/types/api";
@@ -292,7 +293,9 @@ function FilterGroup({
 }
 
 function MarketplaceCard({ vehicle }: { vehicle: Vehicle }) {
+  const [demoOpen, setDemoOpen] = useState(false);
   return (
+    <>
     <Link
       to={`/marketplace/${vehicle.id}`}
       className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-lg"
@@ -312,7 +315,7 @@ function MarketplaceCard({ vehicle }: { vehicle: Vehicle }) {
         )}
         <button
           type="button"
-          onClick={(e) => { e.preventDefault(); }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDemoOpen(true); }}
           className="absolute right-3 top-3 rounded-full bg-white/90 p-1.5 text-slate-600 backdrop-blur transition hover:bg-white hover:text-rose-500"
           aria-label="Save to favorites"
         >
@@ -345,6 +348,8 @@ function MarketplaceCard({ vehicle }: { vehicle: Vehicle }) {
         </div>
       </div>
     </Link>
+    <DemoModeModal open={demoOpen} feature="Save to Favorites" onClose={() => setDemoOpen(false)} />
+    </>
   );
 }
 
