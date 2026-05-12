@@ -153,14 +153,16 @@ export function useMailRegenerateFromKorean(listingId: string | undefined) {
   return useMutation({
     mutationFn: async (input: MailRegenerateInput): Promise<MailDraftResponse> => {
       if (!listingId) throw new Error("listingId required for regenerate");
+      // 두 번 LLM (외국어 생성 + 다시 번역) — 120s 여유 (mail-draft 와 동일)
       const r = await api.post<MailDraftResponse>(
         `/api/listings/${listingId}/mail-regenerate-from-korean`,
         input,
-        { timeout: 90_000 },  // 두 번 LLM (외국어 생성 + 다시 번역) — 여유 timeout
+        { timeout: 120_000 },
       );
       return r.data;
     },
     onSuccess: () => {
+      // 새 Message row 가 DB 에 추가되므로 history 재조회. (review #4)
       qc.invalidateQueries({ queryKey: ["listing-messages", listingId] });
     },
   });

@@ -672,6 +672,7 @@ function MailHistorySection({ listingId }: { listingId: string }) {
                 onToggle={() => setExpanded(expanded === m.id ? null : m.id)}
                 onSend={() => sendMutation.mutate(m.id)}
                 sending={sendMutation.isPending && sendMutation.variables === m.id}
+                anyPending={sendMutation.isPending}
               />
             ))}
           </ul>
@@ -692,12 +693,14 @@ function MailHistoryRow({
   onToggle,
   onSend,
   sending,
+  anyPending,
 }: {
   message: MessageRecord;
   expanded: boolean;
   onToggle: () => void;
   onSend: () => void;
   sending: boolean;
+  anyPending: boolean;
 }) {
   const sent = Boolean(message.sent_at);
   const subject = (message.content_text ?? "").split("\n", 1)[0].replace(/^Subject:\s*/, "");
@@ -732,9 +735,10 @@ function MailHistoryRow({
           <Button
             type="button"
             size="sm"
-            disabled={sending}
+            disabled={anyPending}
             onClick={(e) => { e.stopPropagation(); onSend(); }}
             className="shrink-0 gap-1"
+            title={anyPending && !sending ? "다른 메일 전송 중 — 잠시 대기" : undefined}
           >
             {sending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
             {sending ? "전송중" : "보내기"}

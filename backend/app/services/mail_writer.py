@@ -648,7 +648,9 @@ def _strip_code_fence(text: str) -> str:
 
 # ── Post-processing: LLM 의 markdown 출력을 강제로 plain-text 화 ─────
 _MD_BOLD_RE = re.compile(r"\*\*([^\*\n]+?)\*\*")
-_MD_ITALIC_RE = re.compile(r"(?<!\*)\*(?!\*|\s)([^\*\n]+?)(?<!\s)\*(?!\*)")
+# italic: review #1 — 너무 공격적이면 cost table 의 도트 패딩 또는 Arabic
+# 텍스트의 단발 * 를 제거할 위험. 보수적으로 양쪽 다 단어 문자 (\w) 인 경우만.
+_MD_ITALIC_RE = re.compile(r"(?<![\w\*])\*(\w[^\*\n]*?\w)\*(?![\w\*])")
 _MD_HEADING_RE = re.compile(r"^#{1,6}\s+", re.MULTILINE)
 _MD_BULLET_RE = re.compile(r"^(\s*)\*\s+", re.MULTILINE)
 
@@ -665,7 +667,7 @@ def _strip_markdown(text: str) -> str:
     """
     if not text:
         return text
-    # 1. bold/italic
+    # 1. bold/italic — italic 은 단어경계 양쪽 보호 (Arabic/숫자/표 보호)
     text = _MD_BOLD_RE.sub(r"\1", text)
     text = _MD_ITALIC_RE.sub(r"\1", text)
     # 2. heading 마커
@@ -729,4 +731,18 @@ def _replace_signature_placeholders(body: str, sender: User | None) -> str:
         return body
     for pat in _PLACEHOLDER_PATTERNS:
         body = re.sub(pat, sender.company_name, body, flags=re.IGNORECASE)
-    return body
+    # Review #2 fallback — 알려진 패턴 못 잡은 [...] 잔존 placeholder 가 있으면
+    # 마지막 5줄 (signature 영역) 에서 회사명으로 교체 + warning 로그.
+    # 본문에는 [VIN], [날짜] 등 정상 대괄호가 있을 수 있어 signature 만 처리.
+    import logging
+    logger_local = logging.getLogger(__name__)
+    lines = body.split("\n")
+    tail_start = max(0, len(lines) - 8)  # 마지막 8줄
+    for i in range(tail_start, len(lines)):
+        if re.search(r"\[[^\]\n]{1,60}\]", lines[i]):
+            original = lines[i]
+            lines[i] = re.sub(r"\[[^\]\n]{1,60}\]", sender.company_name, lines[i])
+            logger_local.info(
+                f"replaced unknown placeholder in signature line: {original!r} → {lines[i]!r}"
+            )
+    return "\n".join(lines)
