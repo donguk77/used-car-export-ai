@@ -54,59 +54,55 @@ BENCHMARK_SLIDES = [
     {
         "no": "A",
         "label": "BENCHMARK 1",
-        "title": "벤치마크 — 경쟁사 4 카테고리 분석",
-        "tags": "📚 docs/competitor_analysis_and_features.md",
+        "title": "한국 중고차 수출 시장 — 3-tier 구조 분석",
+        "tags": "📚 시장 조사 + 멘토 ㈜하이쓰리디 인터뷰",
         "route": "사전 조사 단계",
         "html": """
 <div class="narrative">
-  <strong>결정적 발견</strong>: 한국 측 직접 경쟁자 <strong>오토위니 (Autowini)</strong>가 이미 No.1.
-  16개 언어 · 100개국 바이어 · 셀러 모바일 앱 까지 운영. <em>같은 마켓플레이스 형태로는 못 이김.</em>
-  대신 <strong>그 위에서 동작하는 AI 자동화 도구</strong> 포지션이 빈 공간.
+  한국 중고차 수출 시장은 <strong>3 계층</strong>으로 구분.
+  대기업 (현대글로비스·롯데) 운영 자체 플랫폼은 <strong>해외 IP only</strong> · <strong>자체 차량 보유</strong>.
+  영세업체는 마켓플레이스 (오토위니 등) 에 매물 올리고 메일·서류·번역은 본인이 처리.
+  <strong>빈 공간 = 영세업체용 AI 자동화 SaaS.</strong>
 </div>
 
 <table class="benchmark-table">
   <thead>
     <tr>
-      <th style="width:22%">플레이어</th>
-      <th>포지션</th>
-      <th style="width:32%">강점</th>
-      <th style="width:32%">약점 (우리 차별화)</th>
+      <th style="width:18%">계층</th>
+      <th style="width:24%">대표 플랫폼</th>
+      <th>특징</th>
+      <th style="width:25%">접근성</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td><strong>BeForward</strong><br><span style="font-size:8.5pt;color:#94a3b8">일본 · 400K+ 차량</span></td>
-      <td>글로벌 1위 마켓플레이스</td>
-      <td>WhatsApp 영업 · BF Points · 30개국</td>
-      <td>사후관리·클레임 회피 평판 (Trustpilot)</td>
+    <tr style="background:#fff7ed">
+      <td><strong>🏢 1. 대기업<br>자체 플랫폼</strong></td>
+      <td><strong>Autobell Global</strong> (현대글로비스)<br>LOTTE AUTO GLOBAL (롯데렌탈)</td>
+      <td>자체 차량 보유 · 검수·통관·운송 통합 · 해외 바이어 B2B 전용</td>
+      <td>한국 IP 차단<br>(해외 IP only)</td>
     </tr>
     <tr>
-      <td><strong>SBT Japan</strong><br><span style="font-size:8.5pt;color:#94a3b8">일본 · 5K 차량</span></td>
-      <td>중규모 마켓플레이스</td>
-      <td>옥션 검사 시트 통합</td>
-      <td>다국어 자동화·AI 자동화 거의 없음</td>
-    </tr>
-    <tr>
-      <td><strong>오토위니 (Autowini)</strong><br><span style="font-size:8.5pt;color:#94a3b8">한국 No.1 · SK엔카 출신</span></td>
-      <td>한국 No.1 B2B 마켓플레이스</td>
-      <td>16개 언어 · 셀러 모바일 앱 · 100개국</td>
-      <td><strong>AI 자동화 거의 없음</strong> · 사람 의존 ↑</td>
+      <td><strong>🛒 2. 마켓플레이스</strong></td>
+      <td><strong>Autowini</strong> (한국 No.1, SK엔카 출신)<br>BeForward (일본 1위, 400K차)<br>SBT Japan (중규모)<br>CarFromJapan</td>
+      <td>영세 셀러가 매물 올리는 채널 · 16~30개 언어 · WhatsApp 영업 (사람) · <strong>AI 자동화 거의 없음</strong></td>
+      <td>Autowini Cloudflare 차단<br>나머지 캡처 OK</td>
     </tr>
     <tr style="background:#dcfce7">
-      <td><strong>우리 (AutoExport AI)</strong><br><span style="font-size:8.5pt;color:#166534">한국 영세 SME</span></td>
-      <td><strong>오토위니 위에서 동작하는 AI SaaS</strong></td>
-      <td>다국어 메일 · 통관 룰 · 컴플라이언스 · 서류 자동화</td>
-      <td>(빈 공간 채움)</td>
+      <td><strong>⭐ 3. 우리 (PoC)</strong></td>
+      <td><strong>AutoExport AI</strong></td>
+      <td>마켓플레이스 위에서 동작하는 <strong>영세업체용 AI SaaS</strong> — 다국어 메일·통관·컴플라이언스·4종 서류 자동화 + 한국어 검증 패널</td>
+      <td>웹·로컬 사용<br>(영세 1~2인)</td>
     </tr>
   </tbody>
 </table>
 
 <div class="differentiator-list">
-  <h4>📍 빈 공간 (영세 수출업체의 실제 부담)</h4>
+  <h4>📍 우리 포지셔닝 (멘토 ㈜하이쓰리디 인터뷰 기반)</h4>
   <ol>
-    <li>오토위니에 매물 올리는 영세업체 1,000여 곳 (인천 송도 중심)</li>
-    <li>이들은 매물은 마켓플레이스에 있지만, <strong>메일 응답·서류·번역·컴플라이언스 추적은 다 본인이 처리</strong></li>
-    <li>2025.10 부산경찰청 적발 — 영세업체는 OFAC·Russia-proxy 검증 사실상 불가</li>
+    <li><strong>대기업과 경쟁 X</strong> — 그들은 자체 차량 보유 + 해외 IP only, 영세업체는 접근 X</li>
+    <li><strong>마켓플레이스와 경쟁 X</strong> — 그 위에서 작동하는 도구 (재고 경쟁 X)</li>
+    <li><strong>영세업체 1~2인 사장님</strong>이 메일·서류·번역 부담 안 지고 거래할 수 있게 함</li>
+    <li>2025.10 부산경찰청 적발 — 영세업체는 OFAC·Russia-proxy 검증 사실상 불가 → AI 가 대신</li>
   </ol>
 </div>
 """,
@@ -114,89 +110,100 @@ BENCHMARK_SLIDES = [
     {
         "no": "B-1",
         "label": "BENCHMARK 2",
-        "title": "경쟁사 실제 UI — 한국 Encar · 일본 BeForward · SBT",
-        "tags": "encar.com · beforward.jp · sbtjapan.com · 라이브 캡처",
-        "route": "외부 사이트 실시간 캡처",
+        "title": "Autobell Global (현대글로비스) — 우리 reference UI",
+        "tags": "autobellglobal.com · Wayback Machine 2025-01 archive",
+        "route": "한국 IP 차단 → archive 캡처",
         "html": """
 <div class="narrative">
-  <strong>경쟁사 3곳 실제 메인 화면</strong>. 모두 <strong>마켓플레이스 모델</strong> — buyer 가 차량 검색 / 카드 클릭 / 메일 문의.
-  AI 자동화 기능 (다국어 메일 · 통관 룰 · 서류 · 컴플라이언스) 은 <strong>모두 없음</strong>.
-  영세 셀러는 매물만 올리고 메일·번역·서류는 본인이 처리.
+  <strong>우리 marketplace shell 의 reference UI</strong>는 <strong>현대글로비스의 Autobell Global</strong>.
+  영세업체용 마켓플레이스 (오토위니) 가 아닌, <strong>대기업이 운영하는 해외 바이어 전용 수출 플랫폼</strong> 디자인을 따라감.
+  한국 IP 차단 + 봇 차단으로 라이브 캡처 불가 → Wayback Machine archive 활용
+  (CSS 깨졌지만 UI 구조·텍스트 콘텐츠는 보존됨).
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0;">
+<div class="compare-pair">
   <div class="compare-card competitor">
-    <div class="compare-header" style="font-size:9pt">🇰🇷 Encar (한국 No.1 매매)</div>
-    <img src="{competitor_encar}" alt="encar" style="max-height:70mm">
-    <div class="compare-caption" style="font-size:8pt;padding:6px 8px">
-      엔카 — 4M+ 내수 차량. 검색·카드 위주.
-      셀러는 매물만 올림.
+    <div class="compare-header">🏢 Autobell Global (현대글로비스)</div>
+    <img src="{competitor_autobell}" alt="autobell global">
+    <div class="compare-caption">
+      <strong>"Autobell Global, Your Reliable Ride, Explore with Pride!"</strong><br>
+      <strong>"Trusted Used Car Marketplace by Hyundai Motor Group."</strong><br>
+      메뉴: Used Car · Auction · About Autobell · WhatsApp<br>
+      필터: Certified Vehicles · Warranty · SUV+Diesel · 4wd 등<br>
+      대기업 신뢰감 · 자체 검수·통관·운송 · 해외 IP only
     </div>
   </div>
-  <div class="compare-card competitor">
-    <div class="compare-header" style="font-size:9pt">🇯🇵 BeForward (글로벌 1위)</div>
-    <img src="{competitor_beforward}" alt="beforward" style="max-height:70mm">
-    <div class="compare-caption" style="font-size:8pt;padding:6px 8px">
-      400K차 · 30개 언어 · WhatsApp 영업.
-      <strong>Trustpilot 사후관리 약점</strong>.
-    </div>
-  </div>
-  <div class="compare-card competitor">
-    <div class="compare-header" style="font-size:9pt">🇯🇵 SBT Japan (중규모)</div>
-    <img src="{competitor_sbtjapan}" alt="sbtjapan" style="max-height:70mm">
-    <div class="compare-caption" style="font-size:8pt;padding:6px 8px">
-      5K차 · 옥션 검사 통합.
-      AI 자동화 거의 없음.
+  <div class="compare-card us">
+    <div class="compare-header">📦 우리 Marketplace shell</div>
+    <img src="{compare_marketplace}" alt="our marketplace">
+    <div class="compare-caption">
+      <strong>"Korea's Trusted Used Car Marketplace"</strong><br>
+      <strong>"Korean Used Cars, Inspected & Globally Shipped"</strong><br>
+      메뉴: Browse Inventory · Auction · About · Language<br>
+      필터: Category · Fuel · Body · Year · Steering · Sort<br>
+      <strong>Autobell Global 의 UI 패턴 따라 + 영세업체 사용 가능</strong>
     </div>
   </div>
 </div>
 
-<div class="differentiator-list" style="margin-top:6px">
-  <h4>📍 경쟁사 3곳 공통 한계 (우리 차별화 빈 공간)</h4>
-  <ol>
-    <li>모두 <strong>마켓플레이스 UI</strong> — 차량 검색 / 카드 / 문의 폼만 제공</li>
-    <li>다국어 사이트 UI 잘 됨 (16~30개 언어) 그러나 <strong>메일 본문은 buyer/seller 가 직접 작성</strong></li>
-    <li>국가별 통관 룰 · OFAC SDN · Yestrade · 4종 서류 자동화 등 <strong>AI 자동화 0건</strong></li>
-    <li>한국 B2B 수출 No.1 <strong>오토위니 (Autowini)</strong> 도 동일 패턴 — 16개 언어 / 100개국 / 셀러 모바일 앱은 있으나 AI 자동화 없음</li>
-  </ol>
-</div>
+<table class="benchmark-table" style="margin-top:6px;font-size:9pt">
+  <thead>
+    <tr><th style="width:22%">UI 요소</th><th>Autobell Global</th><th class="us-col">우리</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>운영주체</td><td>현대글로비스 (대기업)</td><td class="us-col">영세 1~2인 업체용 SaaS</td></tr>
+    <tr><td>차량 보유</td><td>자체 (검수·통관·운송 통합)</td><td class="us-col">오토위니 등 마켓플레이스에서 끌어옴</td></tr>
+    <tr><td>UI 패턴</td><td>Used Car / Auction / About</td><td class="us-col yes">동일 (Browse / Auction / About)</td></tr>
+    <tr><td>다국어</td><td>English (해외 IP only)</td><td class="us-col yes">English + KR + 5 LLM 언어</td></tr>
+    <tr><td>채팅</td><td>WhatsApp (사람)</td><td class="us-col yes">Quote Request → admin SaaS 자동</td></tr>
+    <tr><td>차량 보증</td><td>현대 그룹 보증</td><td class="us-col">28국 1차 자료 검증 + 영세 셀러 책임</td></tr>
+    <tr><td>AI 자동화</td><td class="no">0건</td><td class="us-col star">★ 5종 차별화 (메일·서류·통관·컴플라이언스)</td></tr>
+  </tbody>
+</table>
 """,
     },
     {
         "no": "B-2",
         "label": "BENCHMARK 2",
-        "title": "우리 차별화 UI — Marketplace shell + Admin AI SaaS",
-        "tags": "2-shell architecture",
+        "title": "우리 2-Shell 아키텍처 — Autobell UI + AI 자동화",
+        "tags": "Marketplace shell + Admin AI SaaS",
         "route": "/marketplace ↔ /listings",
         "html": """
 <div class="narrative">
-  <strong>2-Shell 설계</strong>. 왼쪽은 오토위니/BeForward 와 동일한 marketplace 진입점 (buyer-facing).
-  오른쪽이 <strong>우리의 진짜 차별화</strong> — 셀러가 사용하는 Admin AI SaaS.
-  <strong>경쟁사는 왼쪽만, 우리는 양쪽 + 오른쪽이 핵심.</strong>
+  <strong>이전 슬라이드 Autobell Global UI 패턴을 따라가되</strong>, 영세업체용으로 단순화.
+  왼쪽은 Autobell 스타일 buyer 진입점, 오른쪽은 <strong>경쟁사에 없는 Admin AI SaaS</strong>
+  (다국어 메일·서류·통관·컴플라이언스 자동화).
 </div>
 
 <div class="compare-pair">
   <div class="compare-card us">
-    <div class="compare-header">📦 Buyer 진입점 — Marketplace shell (벤치마크 동등)</div>
+    <div class="compare-header">📦 우리 Marketplace shell (Autobell-style)</div>
     <img src="{compare_marketplace}" alt="our marketplace">
     <div class="compare-caption">
-      Autobell/오토위니 스타일. 33대 카드 · 6 필터 · 견적 요청 모달.
-      오토위니/BeForward 와 <strong>UI 동등</strong> (벤치마크 따라가기).
+      <strong>"Korea's Trusted Used Car Marketplace"</strong><br>
+      Autobell Global 메뉴 구조 (Browse / Auction / About) 따라감.
+      차량 카드 · 통관 매트릭스 · 33대 시드.<br>
+      <strong>대기업 corporate 톤 + 영세 SME 접근성</strong>.
     </div>
   </div>
   <div class="compare-card us">
-    <div class="compare-header">🤖 Seller 도구 — Admin AI SaaS ⭐ 차별화</div>
+    <div class="compare-header">🤖 우리 Admin AI SaaS ⭐ 진짜 차별화</div>
     <img src="{compare_admin}" alt="our admin">
     <div class="compare-caption">
-      다국어 메일 작성 + <strong>한국어 검증 패널</strong> + 4종 PDF 자동 +
-      OFAC/Russia-proxy 자동 차단. <strong>경쟁사에 없는 영역</strong>.
+      Autobell Global · 오토위니 · BeForward <strong>어디에도 없음</strong>.<br>
+      다국어 메일 + 한국어 검증 패널 + 4종 PDF + OFAC/Russia-proxy 자동 차단.<br>
+      <strong>"오토위니에 매물 올린 영세 사장님이 사용하는 AI 비서"</strong>.
     </div>
   </div>
 </div>
 
-<div class="narrative" style="margin-top:6px">
-  <strong>narrative</strong>: "우리는 오토위니/BeForward 와 마켓플레이스로 경쟁하지 않는다.
-  오토위니에 매물 올리는 <strong>영세업체의 영업·서류·번역·컴플라이언스 부담</strong>을 AI 가 대신 처리한다."
+<div class="differentiator-list" style="margin-top:6px">
+  <h4>🎯 narrative 한 줄</h4>
+  <ol>
+    <li><strong>UI</strong>: Autobell Global (현대글로비스) 디자인 패턴 따라감 (corporate 톤, Used Car / Auction / About)</li>
+    <li><strong>기능</strong>: AI 자동화 5종 추가 — 어떤 경쟁사도 안 함</li>
+    <li><strong>타겟</strong>: 오토위니에 매물 올리는 영세업체 1~2인 (1,000여곳, 인천 송도 중심)</li>
+  </ol>
 </div>
 """,
     },
@@ -630,9 +637,11 @@ def generate_pdf() -> None:
 
     # 벤치마크 슬라이드의 image placeholder 치환
     placeholders = {
-        "{compare_marketplace}": _to_data_url(CAPTURES_DIR / "03_marketplace_catalog.png"),
+        "{compare_marketplace}": _to_data_url(CAPTURES_DIR / "02_marketplace_landing.png"),
         "{compare_admin}": _to_data_url(CAPTURES_DIR / "07_mail_korean_panel.png"),
+        "{competitor_autobell}": _to_data_url(CAPTURES_DIR / "competitor_autobell.png"),
         "{competitor_autowini}": _to_data_url(CAPTURES_DIR / "competitor_autowini.png"),
+        "{competitor_encar}": _to_data_url(CAPTURES_DIR / "competitor_encar.png"),
         "{competitor_beforward}": _to_data_url(CAPTURES_DIR / "competitor_beforward.png"),
         "{competitor_sbtjapan}": _to_data_url(CAPTURES_DIR / "competitor_sbtjapan.png"),
     }
