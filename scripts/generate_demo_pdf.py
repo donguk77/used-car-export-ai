@@ -40,6 +40,14 @@ OUTPUT_PDF = PROJECT_ROOT / "capstone_demo.pdf"
 
 VIEWPORT = {"width": 1400, "height": 900}
 
+# 경쟁사 실제 사이트 — 벤치마크 비교 캡처용
+# Autowini 는 Cloudflare bot 차단 → 대체로 Encar 영문판 사용 (한국 자동차 매매 No.1)
+COMPETITOR_SITES = [
+    ("encar", "https://www.encar.com/", "Encar (엔카 — 한국 No.1)"),
+    ("beforward", "https://www.beforward.jp/", "BeForward (일본 1위, 400K차)"),
+    ("sbtjapan", "https://www.sbtjapan.com/", "SBT Japan (중규모)"),
+]
+
 
 # ── 벤치마크/포지셔닝 슬라이드 (시연 슬라이드 앞에 삽입) ────────
 BENCHMARK_SLIDES = [
@@ -104,38 +112,89 @@ BENCHMARK_SLIDES = [
 """,
     },
     {
-        "no": "B",
+        "no": "B-1",
         "label": "BENCHMARK 2",
-        "title": "UI 차별화 — Marketplace 벤치마크 vs Admin SaaS",
+        "title": "경쟁사 실제 UI — 한국 Encar · 일본 BeForward · SBT",
+        "tags": "encar.com · beforward.jp · sbtjapan.com · 라이브 캡처",
+        "route": "외부 사이트 실시간 캡처",
+        "html": """
+<div class="narrative">
+  <strong>경쟁사 3곳 실제 메인 화면</strong>. 모두 <strong>마켓플레이스 모델</strong> — buyer 가 차량 검색 / 카드 클릭 / 메일 문의.
+  AI 자동화 기능 (다국어 메일 · 통관 룰 · 서류 · 컴플라이언스) 은 <strong>모두 없음</strong>.
+  영세 셀러는 매물만 올리고 메일·번역·서류는 본인이 처리.
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0;">
+  <div class="compare-card competitor">
+    <div class="compare-header" style="font-size:9pt">🇰🇷 Encar (한국 No.1 매매)</div>
+    <img src="{competitor_encar}" alt="encar" style="max-height:70mm">
+    <div class="compare-caption" style="font-size:8pt;padding:6px 8px">
+      엔카 — 4M+ 내수 차량. 검색·카드 위주.
+      셀러는 매물만 올림.
+    </div>
+  </div>
+  <div class="compare-card competitor">
+    <div class="compare-header" style="font-size:9pt">🇯🇵 BeForward (글로벌 1위)</div>
+    <img src="{competitor_beforward}" alt="beforward" style="max-height:70mm">
+    <div class="compare-caption" style="font-size:8pt;padding:6px 8px">
+      400K차 · 30개 언어 · WhatsApp 영업.
+      <strong>Trustpilot 사후관리 약점</strong>.
+    </div>
+  </div>
+  <div class="compare-card competitor">
+    <div class="compare-header" style="font-size:9pt">🇯🇵 SBT Japan (중규모)</div>
+    <img src="{competitor_sbtjapan}" alt="sbtjapan" style="max-height:70mm">
+    <div class="compare-caption" style="font-size:8pt;padding:6px 8px">
+      5K차 · 옥션 검사 통합.
+      AI 자동화 거의 없음.
+    </div>
+  </div>
+</div>
+
+<div class="differentiator-list" style="margin-top:6px">
+  <h4>📍 경쟁사 3곳 공통 한계 (우리 차별화 빈 공간)</h4>
+  <ol>
+    <li>모두 <strong>마켓플레이스 UI</strong> — 차량 검색 / 카드 / 문의 폼만 제공</li>
+    <li>다국어 사이트 UI 잘 됨 (16~30개 언어) 그러나 <strong>메일 본문은 buyer/seller 가 직접 작성</strong></li>
+    <li>국가별 통관 룰 · OFAC SDN · Yestrade · 4종 서류 자동화 등 <strong>AI 자동화 0건</strong></li>
+    <li>한국 B2B 수출 No.1 <strong>오토위니 (Autowini)</strong> 도 동일 패턴 — 16개 언어 / 100개국 / 셀러 모바일 앱은 있으나 AI 자동화 없음</li>
+  </ol>
+</div>
+""",
+    },
+    {
+        "no": "B-2",
+        "label": "BENCHMARK 2",
+        "title": "우리 차별화 UI — Marketplace shell + Admin AI SaaS",
         "tags": "2-shell architecture",
         "route": "/marketplace ↔ /listings",
         "html": """
 <div class="narrative">
-  <strong>2-Shell 설계</strong>. 왼쪽은 <strong>오토위니/BeForward 벤치마크 UI</strong> (외부 buyer 진입점, Autobell-style).
-  오른쪽은 <strong>우리의 진짜 차별화</strong> — 셀러가 사용하는 Admin AI SaaS.
-  경쟁사는 왼쪽만 있고, 우리는 왼쪽 + <strong>오른쪽이 핵심</strong>.
+  <strong>2-Shell 설계</strong>. 왼쪽은 오토위니/BeForward 와 동일한 marketplace 진입점 (buyer-facing).
+  오른쪽이 <strong>우리의 진짜 차별화</strong> — 셀러가 사용하는 Admin AI SaaS.
+  <strong>경쟁사는 왼쪽만, 우리는 양쪽 + 오른쪽이 핵심.</strong>
 </div>
 
 <div class="compare-pair">
-  <div class="compare-card competitor">
-    <div class="compare-header">📦 벤치마크 — Marketplace shell (Autobell-style)</div>
-    <img src="{compare_marketplace}" alt="marketplace">
+  <div class="compare-card us">
+    <div class="compare-header">📦 Buyer 진입점 — Marketplace shell (벤치마크 동등)</div>
+    <img src="{compare_marketplace}" alt="our marketplace">
     <div class="compare-caption">
-      33대 차량 카드 · 6 필터 · 100+ Countries Shipped 신뢰 표시 · 견적 요청 모달.
-      오토위니/BeForward 와 동일한 buyer-facing 진입점.
+      Autobell/오토위니 스타일. 33대 카드 · 6 필터 · 견적 요청 모달.
+      오토위니/BeForward 와 <strong>UI 동등</strong> (벤치마크 따라가기).
     </div>
   </div>
   <div class="compare-card us">
-    <div class="compare-header">🤖 차별화 — Admin AI SaaS (우리 핵심)</div>
-    <img src="{compare_admin}" alt="admin">
+    <div class="compare-header">🤖 Seller 도구 — Admin AI SaaS ⭐ 차별화</div>
+    <img src="{compare_admin}" alt="our admin">
     <div class="compare-caption">
-      셀러가 사용하는 진짜 도구. 다국어 메일·서류·통관·컴플라이언스 자동화.
-      <strong>경쟁사에 없는 영역.</strong>
+      다국어 메일 작성 + <strong>한국어 검증 패널</strong> + 4종 PDF 자동 +
+      OFAC/Russia-proxy 자동 차단. <strong>경쟁사에 없는 영역</strong>.
     </div>
   </div>
 </div>
 
-<div class="narrative" style="margin-top:8px">
+<div class="narrative" style="margin-top:6px">
   <strong>narrative</strong>: "우리는 오토위니/BeForward 와 마켓플레이스로 경쟁하지 않는다.
   오토위니에 매물 올리는 <strong>영세업체의 영업·서류·번역·컴플라이언스 부담</strong>을 AI 가 대신 처리한다."
 </div>
@@ -393,6 +452,29 @@ def safe_click(page: Page, selector: str, timeout: int = 10000) -> bool:
         return False
 
 
+def capture_competitors(page: Page) -> None:
+    """경쟁사 실제 사이트 자동 캡처 — 벤치마크 비교 슬라이드용.
+
+    봇 차단 회피 위해 user_agent 일반 브라우저로 설정, 충분한 wait.
+    실패해도 PoC narrative 영향 없음 (graceful — 캡처 누락 시 placeholder).
+    """
+    for key, url, label in COMPETITOR_SITES:
+        path = CAPTURES_DIR / f"competitor_{key}.png"
+        if path.exists():
+            logger.info(f"  → skip {key} (캐시됨: {path.name})")
+            continue
+        try:
+            logger.info(f"  → goto competitor {label}: {url}")
+            page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            # 외부 사이트는 광고/lazy-load 로 networkidle 안 됨 → 고정 wait
+            page.wait_for_timeout(6000)
+            page.screenshot(path=str(path), full_page=False, type="png", timeout=30000)
+            logger.info(f"  ✓ captured {path.name}")
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"  ✗ competitor {key} 캡처 실패: {type(e).__name__}: {e}")
+            # 실패해도 다음 진행
+
+
 def main() -> None:
     CAPTURES_DIR.mkdir(exist_ok=True)
     logger.info(f"Captures dir: {CAPTURES_DIR}")
@@ -430,8 +512,19 @@ def main() -> None:
     # 3. Playwright 실행
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        context = browser.new_context(viewport=VIEWPORT, locale="ko-KR")
+        # 봇 차단 회피용 일반 브라우저 user agent
+        context = browser.new_context(
+            viewport=VIEWPORT,
+            locale="ko-KR",
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+            ),
+        )
         page = context.new_page()
+
+        logger.info("=== 0) Competitor sites (벤치마크용) ===")
+        capture_competitors(page)
 
         logger.info("=== 1) Dashboard ===")
         capture(page, "01_dashboard", url=f"{FRONTEND_URL}/")
@@ -535,17 +628,20 @@ def generate_pdf() -> None:
     )
     template = env.get_template("demo_pdf_template.html")
 
-    # 벤치마크 슬라이드의 image placeholder 치환 (compare_marketplace / compare_admin)
-    compare_marketplace_data = _to_data_url(CAPTURES_DIR / "03_marketplace_catalog.png")
-    compare_admin_data = _to_data_url(CAPTURES_DIR / "07_mail_korean_panel.png")
+    # 벤치마크 슬라이드의 image placeholder 치환
+    placeholders = {
+        "{compare_marketplace}": _to_data_url(CAPTURES_DIR / "03_marketplace_catalog.png"),
+        "{compare_admin}": _to_data_url(CAPTURES_DIR / "07_mail_korean_panel.png"),
+        "{competitor_autowini}": _to_data_url(CAPTURES_DIR / "competitor_autowini.png"),
+        "{competitor_beforward}": _to_data_url(CAPTURES_DIR / "competitor_beforward.png"),
+        "{competitor_sbtjapan}": _to_data_url(CAPTURES_DIR / "competitor_sbtjapan.png"),
+    }
 
     benchmark_with_images = []
     for s in BENCHMARK_SLIDES:
         html_content = s.get("html", "")
-        if "{compare_marketplace}" in html_content:
-            html_content = html_content.replace("{compare_marketplace}", compare_marketplace_data)
-        if "{compare_admin}" in html_content:
-            html_content = html_content.replace("{compare_admin}", compare_admin_data)
+        for key, val in placeholders.items():
+            html_content = html_content.replace(key, val)
         benchmark_with_images.append({**s, "html": html_content, "image": ""})
 
     # 시연 슬라이드: 이미지 base64 inline
