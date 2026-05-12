@@ -21,7 +21,9 @@ class GeminiProvider:
         *,
         system: str,
         user: str,
-        max_tokens: int = 4096,  # 2048 → 4096: AR/long quote 응답 truncate 방지
+        # 4096 → 8192: Arabic/Russian 1자=2~3토큰, 긴 quote 본문 + JSON wrapping 시
+        # 4096 자주 도달해 truncate ('Unterminated string'). Gemini 2.5 flash 는 8192 안전.
+        max_tokens: int = 8192,
         temperature: float = 0.4,
     ) -> LLMResponse:
         config = self._types.GenerateContentConfig(

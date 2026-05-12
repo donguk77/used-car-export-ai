@@ -385,7 +385,11 @@ class MailWriter:
         """
         system = self._render_regenerate_system(req)
         user = self._render_regenerate_user(req, korean_body)
-        result = self.provider.complete(system=system, user=user, temperature=0.4)
+        # 명시적으로 큰 토큰 한도 — 한국어 의도 + 외국어 본문 + JSON wrapping
+        # 동시 처리 시 4096 부족 (Arabic 1자 = 2~3 token). 8192 안전.
+        result = self.provider.complete(
+            system=system, user=user, temperature=0.4, max_tokens=8192,
+        )
         subject, body = self._parse_json(result.text)
         subject = _strip_markdown(subject)
         body = _strip_markdown(body)
