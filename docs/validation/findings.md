@@ -6,6 +6,51 @@
 
 ---
 
+## 🟢 #072 — Mail-draft 다국어 LLM 출력 품질 sample (5/5 통과)
+
+**발견일:** 2026-05-12
+**상태:** 🟢 confirmed
+
+5 listings × 4 언어 × 4 scenarios 라이브 sample. 각 결과 subject + body
+일부 발췌:
+
+| # | 국가 | 언어 | Scenario | Subject (실제 출력) |
+|---|------|------|----------|---------------------|
+| 1 | LY | ar | quote | عرض سعر لسيارة هيونداي سوناتا 2018 - لشركة صحارى |
+| 2 | DO | es | quote | Cotización CIF/FOB - Hyundai Sonata 2020 - VIN KMHE41LBXLA000001 |
+| 3 | KG | ru | negotiate | Re: Запрос цены на Genesis G80 2022 (VIN: KMHHU81KMNA000004) |
+| 4 | KE | en | inquiry | Inquiry Response: Hyundai Tucson 2017 (VIN: KMHJ381BFHU000007) |
+| 5 | SY | ar | shipping | إشعار شحن المركبة - Kia Bongo 2020 - إلى السيد كريم هادي |
+
+**Body opening 격식 표현 (각 언어 native):**
+- 🇸🇦 Arabic: "السيد كريم هادي المحترم،\nتحية طيبة وبعد،"
+- 🇪🇸 Spanish: "Estimado Sr. Carlos Rodríguez,\nEsperamos que este correo lo encuentre bien."
+- 🇷🇺 Russian: "Уважаемый г-н Аибек Ташов,\nБлагодарим Вас за Ваш запрос..."
+- 🇬🇧 English: "Dear Mr. James Kamau,\nThank you for your inquiry regarding..."
+
+**검증 통과 항목:**
+- ✅ 5/5 HTTP 200, JSON parse 성공
+- ✅ 평균 body length **2,006 chars** (적절한 비즈니스 메일 분량)
+  - Arabic: 1,743 / Spanish: 2,308 / Russian: 2,282 / English: 1,755
+- ✅ Scenario 별 톤 다름 (quote 가격 강조 / inquiry 답변 / negotiate 협상 /
+  shipping 운송 알림)
+- ✅ Vehicle make/model/year/VIN, buyer.contact_person, company_name
+  정확히 inject (모든 5 샘플 확인)
+- ✅ Arabic 출력 fallback to ASCII = **False** (실제 RTL 문자 정상)
+
+**시연 narrative**:
+> "5국 4언어 (ar/es/ru/en) × 4 시나리오 → 1분 내 자동 생성. 각 언어별
+> 격식 표현 (Уважаемый, Estimado, السيد) + 차량 사양 + 회사명 자동 inject."
+
+**Round 21 cumulative LLM 검증 (Round 8 후속):**
+- Round 8: 기본 다국어 mail-draft 작동 확인
+- Round 21: 실제 출력 품질 sample → 비즈니스 사용 가능 수준 검증
+
+→ Phase 2 권장: 사용자가 작성한 메일 1-2건을 Few-shot example 로
+   prompt 에 inject → 회사 톤 학습 (현재는 generic 격식체).
+
+---
+
 ## 🟢 #071 — PDF 동시 생성 정합성 + 성능 (Round 14 #044 정정)
 
 **발견일:** 2026-05-12
