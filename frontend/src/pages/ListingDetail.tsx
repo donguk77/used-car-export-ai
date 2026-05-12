@@ -355,6 +355,7 @@ function MailComposerSection({
   const [editedBody, setEditedBody] = useState("");
   const [editedKorean, setEditedKorean] = useState("");
   const [originalKorean, setOriginalKorean] = useState("");
+  const [strictRegen, setStrictRegen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const draftMutation = useMailDraft(listingId);
@@ -387,6 +388,7 @@ function MailComposerSection({
       scenario,
       target_language: target,
       korean_body: editedKorean,
+      strict: strictRegen,
     });
     setEditedSubject(r.subject);
     setEditedBody(r.body);
@@ -559,28 +561,41 @@ function MailComposerSection({
                     />
                   </div>
                 </div>
-                {/* Level 2 재생성 버튼 */}
-                <div className="flex items-center justify-between gap-2 rounded-md border border-dashed border-primary/30 bg-primary/5 p-3">
-                  <p className="flex-1 text-xs text-muted-foreground">
-                    {koreanDirty
-                      ? "한국어를 수정하셨습니다 — 외국어 메일을 새로 생성해 반영하세요."
-                      : "한국어 패널을 직접 수정한 뒤, 그 의도로 외국어 메일을 다시 만들 수 있습니다."}
-                  </p>
-                  <Button
-                    onClick={onRegenerateFromKorean}
-                    disabled={!koreanDirty || regenerateMutation.isPending}
-                    size="sm"
-                    className="gap-2"
-                  >
-                    {regenerateMutation.isPending ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <RefreshCw className="h-3.5 w-3.5" />
-                    )}
-                    {regenerateMutation.isPending
-                      ? "외국어 재생성 + 한국어 재번역 중... (~30초)"
-                      : "한국어로 외국어 재생성"}
-                  </Button>
+                {/* Level 2 재생성 컨트롤 — Strict 토글 + 버튼 */}
+                <div className="space-y-2 rounded-md border border-dashed border-primary/30 bg-primary/5 p-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="flex-1 text-xs text-muted-foreground">
+                      {koreanDirty
+                        ? "한국어를 수정하셨습니다 — 외국어 메일을 새로 생성해 반영하세요."
+                        : "한국어 패널을 직접 수정한 뒤, 그 의도로 외국어 메일을 다시 만들 수 있습니다."}
+                    </p>
+                    <Button
+                      onClick={onRegenerateFromKorean}
+                      disabled={!koreanDirty || regenerateMutation.isPending}
+                      size="sm"
+                      className="gap-2"
+                    >
+                      {regenerateMutation.isPending ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <RefreshCw className="h-3.5 w-3.5" />
+                      )}
+                      {regenerateMutation.isPending
+                        ? "재생성 중... (~30초)"
+                        : "한국어로 외국어 재생성"}
+                    </Button>
+                  </div>
+                  <label className="flex items-start gap-2 text-[11px] text-muted-foreground cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={strictRegen}
+                      onChange={(e) => setStrictRegen(e.target.checked)}
+                      className="mt-0.5 h-3 w-3 accent-primary"
+                    />
+                    <span>
+                      <strong>Strict literal 모드</strong> — 한국어 톤·오타·구두점을 그대로 번역 (off: 비즈니스 격식체로 자동 polish + 오타 보정)
+                    </span>
+                  </label>
                 </div>
                 {regenerateMutation.isError && (
                   <p role="alert" className="text-xs text-destructive">

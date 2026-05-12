@@ -374,21 +374,32 @@ class MailWriter:
         # 번역에도 markdown 청소 (혹시 LLM 이 강조 추가했을 때 대비)
         return _strip_markdown(translated)
 
-    def regenerate_from_korean(self, req: MailRequest, *, korean_body: str) -> MailDraft:
+    def regenerate_from_korean(
+        self, req: MailRequest, *, korean_body: str, strict: bool = False,
+    ) -> MailDraft:
         """한국어 본문을 사용자 의도로 받아 외국어 메일을 다시 생성.
 
         Level 2 — 사용자가 한국어 검증 패널에서 직접 수정한 내용을 LLM 이
-        해석해 외국어로 자연스럽게 다시 작성. 단순 번역이 아니라 비즈니스
-        매너·격식·country-specific compliance 까지 다시 적용.
+        해석해 외국어로 자연스럽게 다시 작성.
+
+        strict=False (default, auto-polish):
+            비즈니스 격식 + 톤 polish + 오타 자연 보정. 영세업체 친화.
+        strict=True (literal):
+            한국어 원문 그대로 충실히 번역. 톤·오타·구두점 보정 X.
+            사용자 워딩이 법적·계약적으로 중요한 경우.
 
         다시 검증할 수 있도록 후속 translate() 호출 권장 (API 레이어에서).
         """
-        system = self._render_regenerate_system(req)
+        system = self._render_regenerate_system(req, strict=strict)
         user = self._render_regenerate_user(req, korean_body)
         # 명시적으로 큰 토큰 한도 — 한국어 의도 + 외국어 본문 + JSON wrapping
         # 동시 처리 시 4096 부족 (Arabic 1자 = 2~3 token). 8192 안전.
+        # strict 모드는 자유도 낮춰 더 보수적 (0.4 → 0.2)
         result = self.provider.complete(
-            system=system, user=user, temperature=0.4, max_tokens=8192,
+            system=system,
+            user=user,
+            temperature=0.2 if strict else 0.4,
+            max_tokens=8192,
         )
         subject, body = self._parse_json(result.text)
         subject = _strip_markdown(subject)
@@ -403,8 +414,8 @@ class MailWriter:
             model=result.model,
         )
 
-    def _render_regenerate_system(self, req: MailRequest) -> str:
-        """Level 2 시스템 프롬프트 — 기본 draft 와 동일하지만 '한국어 의도 우선' 강조."""
+    def _render_regenerate_system(self, req: MailRequest, *, strict: bool = False) -> str:
+        """Level 2 시스템 프롬프트 — strict 모드면 polish 비활성."""
         s = req.sender
         base = SYSTEM_PROMPT_TEMPLATE.format(
             country_code=req.country.code,
@@ -417,17 +428,32 @@ class MailWriter:
             sender_phone=(s.phone if s and s.phone else "+82-32-555-0000"),
             sender_port=(s.port_of_loading if s else "Incheon"),
         )
-        regen_note = (
-            "\n# IMPORTANT — Regeneration mode\n"
-            "The user has reviewed an earlier draft in Korean and edited it. "
-            "The Korean text below represents the user's final intent. Translate "
-            "and rewrite this content naturally in {language_name}, preserving the "
-            "user's structure (sections, cost breakdown, payment terms, shipping "
-            "schedule, etc.). You may polish phrasing and apply formal business "
-            "register for {language_name}, but do NOT add new content the user did "
-            "not include, and do NOT drop content the user did include. Keep all "
-            "numbers, dates, and proper nouns EXACTLY as written."
-        ).format(language_name=LANGUAGE_NAMES.get(req.language, req.language))
+        if strict:
+            regen_note = (
+                "\n# IMPORTANT — Regeneration mode (STRICT literal)\n"
+                "The user has reviewed an earlier draft in Korean and edited it. "
+                "Translate the Korean text below into {language_name} LITERALLY, "
+                "preserving the user's original tone, register, and word choice — "
+                "even if the tone is casual, terse, or grammatically informal. "
+                "Do NOT polish phrasing. Do NOT auto-correct typos or missing "
+                "punctuation. Do NOT promote casual writing to formal business "
+                "register. Do NOT add greetings/closings the user did not include. "
+                "Keep all numbers, dates, proper nouns, AND tone EXACTLY as written. "
+                "Override the 'formal/courteous' style requirement from the top "
+                "section — STRICT literal translation takes priority here."
+            ).format(language_name=LANGUAGE_NAMES.get(req.language, req.language))
+        else:
+            regen_note = (
+                "\n# IMPORTANT — Regeneration mode (auto-polish)\n"
+                "The user has reviewed an earlier draft in Korean and edited it. "
+                "The Korean text below represents the user's final intent. Translate "
+                "and rewrite this content naturally in {language_name}, preserving the "
+                "user's structure (sections, cost breakdown, payment terms, shipping "
+                "schedule, etc.). You may polish phrasing and apply formal business "
+                "register for {language_name}, but do NOT add new content the user did "
+                "not include, and do NOT drop content the user did include. Keep all "
+                "numbers, dates, and proper nouns EXACTLY as written."
+            ).format(language_name=LANGUAGE_NAMES.get(req.language, req.language))
         return base + regen_note
 
     def _render_regenerate_user(self, req: MailRequest, korean_body: str) -> str:

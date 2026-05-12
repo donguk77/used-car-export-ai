@@ -490,6 +490,10 @@ class MailRegenerateRequest(BaseModel):
         description="재생성할 외국어 (en/es/ar/ru/fr). 한국어(ko) 자체로 재생성은 의미 없음.",
     )
     korean_body: str = Field(min_length=1, description="사용자가 수정한 한국어 본문")
+    strict: bool = Field(
+        default=False,
+        description="True 이면 톤/오타/구두점 보정 없이 한국어 원문 충실 번역. False (default) 면 비즈니스 격식체 polish.",
+    )
 
 
 @router.post(
@@ -529,7 +533,11 @@ def regenerate_mail_from_korean(
     draft = None
     for attempt in range(1, 4):
         try:
-            draft = writer.regenerate_from_korean(mail_req, korean_body=payload.korean_body)
+            draft = writer.regenerate_from_korean(
+                mail_req,
+                korean_body=payload.korean_body,
+                strict=payload.strict,
+            )
             if attempt > 1:
                 logger.info(f"regenerate-from-korean succeeded on retry {attempt}/3")
             break

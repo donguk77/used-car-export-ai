@@ -145,6 +145,7 @@ export interface MailRegenerateInput {
   scenario: MailScenario;
   target_language: string;
   korean_body: string;
+  strict?: boolean;
 }
 
 export function useMailRegenerateFromKorean(listingId: string | undefined) {
