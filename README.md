@@ -1,260 +1,135 @@
-# 중고차 수출 AI 에이전트 — 산학캡스톤 프로젝트
+# 중고차 수출 AI 에이전트
 
-> **프로젝트명:** LLM Wiki 기반 수출특화 AI 에이전트 (Claude Code 활용)
-> **산학파트너:** ㈜하이쓰리디 (이정욱 대표)
-> **작성자:** 조우진 (한양대 ERICA 수리데이터사이언스, 22학번)
-> **시작일:** 2026.05.09
+> 한국 영세 중고차 수출업체용 AI 자동화 SaaS — 한양대학교 ERICA × ㈜하이쓰리디 캡스톤 PoC
 
----
-
-## 📂 프로젝트 자료 인덱스
-
-이 폴더의 5개 리포트는 빌드 시작 전 모든 사전 조사·설계의 결과물입니다.
-
-| # | 파일명 | 분량 | 내용 |
-|---|--------|------|------|
-| 1 | `used_car_export_research.md` | 472줄 | **시장 리서치 v1** (초안). 정정·확장된 v2 사용 권장 |
-| 2 | `used_car_export_research_v2.md` | 690줄 | **시장 리서치 v2 (정식판)**. v1의 7가지 정정 + 시리아·남미 추가 |
-| 3 | `used_car_export_top20_countries.md` | 514줄 | **상위 20개국 가이드**. 언어/PSI/영사관/사전등록 매트릭스 |
-| 4 | `competitor_analysis_and_features.md` | 444줄 | **경쟁사 분석 + 기능 정의**. MVP 10개 + Phase 1·2·3 로드맵 |
-| 5 | `userflow_and_erd.md` | 912줄 | **User Flow + ERD**. 페르소나, 시나리오 5개, 와이어프레임, 12개 테이블 |
-
-### 읽기 권장 순서
-
-처음 읽는다면:
-1. `used_car_export_research_v2.md` — 시장 전체 그림
-2. `used_car_export_top20_countries.md` — 국가별 디테일
-3. `competitor_analysis_and_features.md` — 우리가 만들 것의 차별화·범위
-4. `userflow_and_erd.md` — 어떻게 만들 것인가
-
-빠르게 핵심만 파악하려면:
-- `competitor_analysis_and_features.md`의 "0. 가장 먼저 — 결정적 발견" 섹션
-- `userflow_and_erd.md`의 "1.3 핵심 시나리오 5개" 섹션
+[![Status](https://img.shields.io/badge/Status-PoC%20Demo%20Ready-success)]() [![Findings](https://img.shields.io/badge/Validated%20Findings-70+-blue)]() [![Coverage](https://img.shields.io/badge/Countries-28-orange)]()
 
 ---
 
-## 🎯 프로젝트 핵심 요약 (캡스톤 발표용 30초 컷)
+## 30초 컷
 
-**문제:**
-- 한국 중고차 수출 시장 글로벌 4위 (8% 점유율)
-- 인천 송도 영세 수출업체 1,000여 곳, 대부분 1~2인 운영
-- 영어/아랍어/스페인어/러시아어 응대 + 국가별 통관 규제 + 컴플라이언스를 사람이 다 처리
-
-**위협:**
-- 2025.10 부산경찰청, 키르기스스탄 우회수출 적발 (40대 구속)
-- 2026.1.1 케냐 8년 룰 강화, 2024 러시아 상황허가 798→1,159개 품목 확대
-- 영세업체는 규제 변화 추적 안 됨
-
-**해결책:**
-> 한국 영세 중고차 수출업체용 **AI 자동화 SaaS**
-> (오토위니/BeForward 같은 마켓플레이스 위에서 동작하는 도구)
-
-**5대 차별화:**
-1. 국가별 통관 사전 검증
-2. 다국어 격식 메일 자동 작성 (영/아/스/러/불)
-3. 수출 서류 자동 생성 (인보이스/PL/SI/CO)
-4. 컴플라이언스 자동 차단 (러시아 우회/OFAC/Yestrade)
-5. 선적 후 24/7 추적·알림
-
-**PoC 5개국:**
-도미니카공화국 / 케냐 / 리비아 / 키르기스스탄 / 시리아
+| 문제 | 해결 |
+|------|------|
+| 한국 영세 중고차 수출업체 1~2인 운영 — 영어/아랍어/스페인어/러시아어 응대 + 28국 통관 규제 + 컴플라이언스 추적 사람이 다 처리 | **AI Agent** 가 다국어 메일·수출 서류·통관 룰 평가·컴플라이언스 차단을 자동화 |
+| 2025.10 부산경찰청 키르기스스탄 우회수출 적발 — 영세업체 OFAC/Yestrade 검증 사실상 불가 | **OFAC SDN 18,947건 + fuzzy match + Russia-proxy 5국** 자동 차단 |
+| Arabic/Russian 메일이 잘 작성됐는지 사용자가 검증 불가 | **한국어 검증 패널** — 외국어 ↔ 한국어 양방향 (Level 2: 한국어 수정 → 외국어 재생성) |
 
 ---
 
-## 🛠️ 기술 스택 (계획)
+## 핵심 기능 5종 (시연 시나리오)
+
+| # | 기능 | 동작 시간 |
+|---|------|----------|
+| 1 | **차량 등록 + NHTSA VIN 자동 디코딩** | ~2초 (NHTSA vPIC API) |
+| 2 | **바이어 등록 + 자동 컴플라이언스** (OFAC SDN exact/fuzzy, Russia-proxy, Yestrade) | ~700ms |
+| 3 | **AI 다국어 메일 작성** (5국 4언어: en/es/ar/ru) — 옵션: 한국어 검증 패널 | ~15초 (단일) / ~30초 (한국어 번역 포함) |
+| 4 | **수출 서류 4종 자동 생성 PDF** (Invoice/PL/SI/CO) | ~7초 (5건 동시 → 8초 병렬화) |
+| 5 | **거래 상태 머신 12 단계** (inquiry → quoted → ... → delivered) + Mock SMTP send | <100ms (전환) |
+
+---
+
+## 검증 완료
+
+21 라운드 ⨯ **70+ findings** 라이브 검증 (`docs/validation/findings.md`)
+
+- ✅ **28국 1차 자료** cross-validate (관세·운임·통관·언어 매트릭스)
+- ✅ **컴플라이언스 multi-finding stacking** (KG+Genesis G80 → 3-layer blocked, 7 documents)
+- ✅ **5x mail 동시 생성**: wall 15.2초 (5x speedup, async I/O)
+- ✅ **PDF 동시성**: 다른 listings 7.5s 병렬, 같은 listing `with_for_update` 직렬화 (16.2s)
+- ✅ **다국어 품질 sample**: AR/ES/RU/EN 격식 표현 native, 평균 2,006 chars
+- ✅ **권한 격리**: 모든 endpoint user_id 필터 100% 적용
+- ✅ **에러 stack trace 노출 0건**, CORS dev/prod allowlist, dependency 12개 latest stable
+
+---
+
+## 기술 스택
 
 | 영역 | 기술 |
 |------|------|
-| **백엔드** | Python 3.11+ / FastAPI |
-| **DB** | PostgreSQL 16 + JSONB |
-| **LLM** | Claude API (Anthropic) — 메일 작성·번역·문서 생성 |
-| **VIN 디코딩** | NHTSA vPIC API (무료) |
-| **PDF 생성** | reportlab |
-| **프론트엔드** | React 18 + Tailwind CSS |
-| **컴플라이언스** | OFAC SDN List API + Yestrade 수동 통합 |
-| **번역** | Claude 직접 |
-| **메시지** | (Phase 2) WhatsApp Business API |
-| **배포** | Vercel (프론트) + Railway 또는 Fly.io (백엔드) |
+| **Backend** | FastAPI · SQLAlchemy 2.0 sync · Pydantic v2 · psycopg 3 |
+| **DB** | Neon PostgreSQL (managed, ap-southeast-1) |
+| **LLM** | **Gemini 2.5 Flash** (default) · Anthropic Claude · Stub (자동 fallback) |
+| **VIN** | NHTSA vPIC API (무료, 인증 불필요) |
+| **PDF** | Jinja2 + Playwright (headless Chromium) |
+| **OFAC** | sdn.xml (28MB, 18,947 entries) — in-memory + rapidfuzz fuzzy match |
+| **Frontend** | React 19 · Vite 6 · TypeScript strict · TanStack Query v5 · Tailwind 3.4 |
+| **Routing** | React Router v7 |
 
 ---
 
-## 📋 다음 작업 체크리스트
-
-빌드 시작 전 마무리할 설계 작업:
-
-- [ ] **(c) 5개국 룰엔진 YAML** — 도미니카·케냐·리비아·키르기스스탄·시리아
-- [ ] **(d) 다국어 메일 템플릿 15개** — 영/아/스 × 5시나리오
-- [ ] **(b) 백엔드 API 명세** — REST endpoints
-
-빌드 단계:
-
-- [ ] Git 저장소 초기화 + GitHub 연결
-- [ ] FastAPI 프로젝트 구조 셋업
-- [ ] PostgreSQL 로컬 + Docker
-- [ ] ERD → SQLAlchemy 모델 변환
-- [ ] 룰엔진 YAML 로더 + 통관 판정 함수
-- [ ] Claude API 통합 (메일 자동 작성)
-- [ ] PDF 자동 생성 (인보이스부터)
-- [ ] React 프론트 5개 화면 (시연용)
-- [ ] 시연 데모 데이터 시드
-- [ ] 배포
-
----
-
-## 🚀 VS Code + Claude Code 셋업 가이드
+## 빠른 시작
 
 ### 1. 사전 준비
+- Python 3.11+ / Node 18+
+- Gemini API 키 ([Google AI Studio](https://aistudio.google.com/app/apikey) 무료)
+- Neon Postgres 또는 로컬 PostgreSQL
 
+### 2. Backend
 ```bash
-# Node.js 18+ 확인 (Claude Code 요구사항)
-node --version
+cd backend
+python -m venv venv
+.\venv\Scripts\activate   # Windows
+pip install -r requirements.txt
+cp .env.example .env
+# .env 편집: GEMINI_API_KEY, DATABASE_URL
 
-# 없으면 설치
-# macOS: brew install node
-# Windows: https://nodejs.org에서 LTS 다운로드
+# 마이그레이션 + 시드
+alembic upgrade head
+python -m scripts.seed_demo_data --fresh
+
+# 서버 시작
+uvicorn app.main:app --reload --port 8000
 ```
 
-### 2. Claude Code 설치
-
+### 3. Frontend
 ```bash
-npm install -g @anthropic-ai/claude-code
+cd frontend
+npm install
+npm run dev  # http://localhost:5173
 ```
 
-설치 후 인증:
-
+### 4. Playwright (PDF 생성용, 1회)
 ```bash
-claude
-# 첫 실행 시 Anthropic 계정 로그인 안내됨
+python -m playwright install chromium
 ```
 
-### 3. 프로젝트 폴더 셋업
+---
 
-```bash
-# 작업 폴더 생성 (예시 경로)
-mkdir -p ~/projects/used-car-export-ai
-cd ~/projects/used-car-export-ai
+## 시연 가이드
 
-# Git 초기화
-git init
+→ **[docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md)** — 5분 시연 step-by-step 스크립트
 
-# 다운받은 5개 markdown 파일을 docs/ 폴더에 넣기
-mkdir docs
-mv ~/Downloads/used_car_export_research_v2.md docs/
-mv ~/Downloads/used_car_export_top20_countries.md docs/
-mv ~/Downloads/competitor_analysis_and_features.md docs/
-mv ~/Downloads/userflow_and_erd.md docs/
-mv ~/Downloads/README.md ./
+## 발표 자료
 
-# VS Code로 열기
-code .
-```
+| 문서 | 용도 |
+|------|------|
+| [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) | 1-page 요약 (멘토/심사위원용) |
+| [docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md) | 5분 라이브 시연 스크립트 |
+| [docs/PHASE_2_ROADMAP.md](docs/PHASE_2_ROADMAP.md) | 미구현 항목 + 우선순위 (멘토 Q&A 대비) |
+| [docs/validation/findings.md](docs/validation/findings.md) | 21 라운드 검증 70+ findings |
+| [docs/validation/data_audit.md](docs/validation/data_audit.md) | 데이터 정합성 종합 audit |
 
-### 4. VS Code 안에서 Claude Code 사용
+## 1차 자료 (사전 조사)
 
-VS Code 터미널 (Ctrl+\` / Cmd+\`) 열고:
-
-```bash
-claude
-```
-
-이러면 우진님이 만든 5개 markdown을 Claude Code가 다 읽고 컨텍스트로 잡습니다. 그 다음 부탁할 수 있는 것 예시:
-
-```
-"docs/userflow_and_erd.md 읽고 ERD 기반으로
-SQLAlchemy 모델 파일들 생성해줘. 
-PostgreSQL 16 기준, FastAPI 프로젝트 구조로."
-```
-
-```
-"docs/competitor_analysis_and_features.md 보고
-MVP 10개 기능 중 1, 2, 8번 기능부터 구현하자.
-백엔드 FastAPI 라우트 먼저 잡아줘."
-```
-
-```
-"docs의 5개 리포트를 다 읽고,
-프로젝트 폴더 구조와 첫 README.md를 작성해줘.
-backend/, frontend/, docs/ 분리하고."
-```
-
-### 5. .gitignore 처음부터
-
-루트에 `.gitignore` 만들어 두세요:
-
-```gitignore
-# Python
-__pycache__/
-*.pyc
-.venv/
-venv/
-.env
-.env.local
-
-# Node
-node_modules/
-.next/
-dist/
-build/
-
-# IDE
-.vscode/settings.json
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Project
-*.log
-*.sqlite
-*.db
-secrets/
-credentials/
-```
-
-### 6. 환경변수 (.env.example)
-
-```env
-# Anthropic API
-ANTHROPIC_API_KEY=sk-ant-...
-
-# Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/used_car_export
-
-# 외부 API
-NHTSA_VPIC_BASE=https://vpic.nhtsa.dot.gov/api
-OFAC_SDN_URL=https://www.treasury.gov/ofac/downloads/sdn.xml
-
-# 앱 설정
-APP_ENV=development
-APP_PORT=8000
-```
-
-`.env.example`은 git에 올리고, 실제 키가 든 `.env`는 절대 올리지 말기.
+| 파일 | 내용 |
+|------|------|
+| [docs/used_car_export_research_v2.md](docs/used_car_export_research_v2.md) | 시장 리서치 정식판 (690줄) |
+| [docs/used_car_export_top20_countries.md](docs/used_car_export_top20_countries.md) | 28국 매트릭스 (언어/PSI/영사관/사전등록) |
+| [docs/competitor_analysis_and_features.md](docs/competitor_analysis_and_features.md) | 경쟁사 분석 + MVP 10개 + 로드맵 |
+| [docs/userflow_and_erd.md](docs/userflow_and_erd.md) | User flow + ERD + 페르소나 (912줄) |
 
 ---
 
 ## 📞 컨택
 
-- **산학파트너:** ㈜하이쓰리디 이정욱 대표
-- **위치:** 안산
-- **이메일:** jeong9004@gmail.com
-- **연락처:** 010-7366-9867
+- **산학 파트너**: ㈜하이쓰리디 이정욱 대표 (jeong9004@gmail.com / 010-7366-9867)
+- **개발**: 조우진 (한양대 ERICA 수리데이터사이언스 22학번)
 
 ---
 
-## 📅 주요 마일스톤
+## License & 보안
 
-(작성 시 업데이트)
-
-- [x] 2026.05.09 — 사전 조사 완료 (5개 리포트)
-- [ ] 2026.05.?? — 룰엔진 YAML + 메일 템플릿 + API 명세 완료
-- [ ] 2026.0?.?? — VS Code 환경 셋업 + Git 초기화
-- [ ] 2026.0?.?? — 백엔드 MVP (시나리오 1, 2 구현)
-- [ ] 2026.0?.?? — 프론트엔드 5개 화면 완료
-- [ ] 2026.0?.?? — 시연 영상 촬영
-- [ ] 2026.??.?? — 캡스톤 발표
-
----
-
-*프로젝트 인덱스 끝.*
+- `.env`, `backend/data/ofac/sdn.xml` 은 `.gitignore` 처리
+- OFAC SDN List 는 [Treasury 공개 데이터](https://www.treasury.gov/ofac/downloads/sdn.xml) 사용
+- LLM 메일 본문은 사용자가 발송 전 검토·편집 가능 (한국어 검증 패널 권장)
+- Mock SMTP — 실제 발송은 Phase 2 (aiosmtplib + Mailgun/SendGrid)
