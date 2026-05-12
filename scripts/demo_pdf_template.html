@@ -234,6 +234,105 @@ table.compact th {
   display: flex;
   justify-content: space-between;
 }
+
+/* 벤치마크 비교 슬라이드 전용 */
+.benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 9.5pt;
+}
+.benchmark-table th {
+  background: #1a3a5c;
+  color: #ffffff;
+  padding: 6px 8px;
+  text-align: center;
+  font-weight: 600;
+}
+.benchmark-table th:first-child { text-align: left; }
+.benchmark-table th.us-col {
+  background: #166534;
+}
+.benchmark-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  text-align: center;
+}
+.benchmark-table td:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: #475569;
+  background: #f8fafc;
+}
+.benchmark-table td.us-col {
+  background: #dcfce7;
+  font-weight: 600;
+  color: #14532d;
+}
+.benchmark-table .yes { color: #16a34a; font-weight: bold; }
+.benchmark-table .no { color: #dc2626; font-weight: bold; }
+.benchmark-table .partial { color: #ca8a04; font-weight: bold; }
+.benchmark-table .star { color: #b45309; font-weight: bold; }
+
+.compare-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0;
+}
+.compare-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.compare-card .compare-header {
+  padding: 6px 10px;
+  font-size: 9.5pt;
+  font-weight: 600;
+  text-align: center;
+}
+.compare-card.competitor .compare-header {
+  background: #fef3c7;
+  color: #92400e;
+}
+.compare-card.us .compare-header {
+  background: #d1fae5;
+  color: #065f46;
+}
+.compare-card img {
+  width: 100%;
+  display: block;
+  max-height: 95mm;
+  object-fit: contain;
+  background: #f8fafc;
+}
+.compare-card .compare-caption {
+  padding: 8px 10px;
+  font-size: 9pt;
+  color: #475569;
+  background: #fafafa;
+  border-top: 1px solid #e2e8f0;
+}
+
+.differentiator-list {
+  background: #fef3c7;
+  border-left: 4px solid #b45309;
+  padding: 10px 14px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+.differentiator-list h4 {
+  color: #92400e;
+  font-size: 11pt;
+  margin-bottom: 6px;
+}
+.differentiator-list ol {
+  margin-left: 20px;
+  font-size: 9.5pt;
+  color: #78350f;
+  line-height: 1.6;
+}
+.differentiator-list ol li { margin-bottom: 4px; }
 </style>
 </head>
 <body>
@@ -296,11 +395,14 @@ table.compact th {
 <div class="page">
   <div class="slide-header">
     <h2>{{ slide.title }}</h2>
-    <span class="step-no">STEP {{ slide.no }}</span>
+    <span class="step-no">{{ slide.label or ('STEP ' + slide.no|string) }}</span>
   </div>
   {% if slide.image %}
   <img class="screenshot" src="{{ slide.image }}" alt="{{ slide.title }}">
   {% endif %}
+  {% if slide.html %}
+  <div>{{ slide.html | safe }}</div>
+  {% else %}
   <div class="narrative">{{ slide.narrative | safe }}</div>
   {% if slide.bullets %}
   <ul class="bullets">
@@ -308,6 +410,7 @@ table.compact th {
     <li>{{ b | safe }}</li>
     {% endfor %}
   </ul>
+  {% endif %}
   {% endif %}
   <div class="footer-note">
     <span>{{ slide.route or '' }}</span>

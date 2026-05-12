@@ -41,6 +41,153 @@ OUTPUT_PDF = PROJECT_ROOT / "capstone_demo.pdf"
 VIEWPORT = {"width": 1400, "height": 900}
 
 
+# ── 벤치마크/포지셔닝 슬라이드 (시연 슬라이드 앞에 삽입) ────────
+BENCHMARK_SLIDES = [
+    {
+        "no": "A",
+        "label": "BENCHMARK 1",
+        "title": "벤치마크 — 경쟁사 4 카테고리 분석",
+        "tags": "📚 docs/competitor_analysis_and_features.md",
+        "route": "사전 조사 단계",
+        "html": """
+<div class="narrative">
+  <strong>결정적 발견</strong>: 한국 측 직접 경쟁자 <strong>오토위니 (Autowini)</strong>가 이미 No.1.
+  16개 언어 · 100개국 바이어 · 셀러 모바일 앱 까지 운영. <em>같은 마켓플레이스 형태로는 못 이김.</em>
+  대신 <strong>그 위에서 동작하는 AI 자동화 도구</strong> 포지션이 빈 공간.
+</div>
+
+<table class="benchmark-table">
+  <thead>
+    <tr>
+      <th style="width:22%">플레이어</th>
+      <th>포지션</th>
+      <th style="width:32%">강점</th>
+      <th style="width:32%">약점 (우리 차별화)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>BeForward</strong><br><span style="font-size:8.5pt;color:#94a3b8">일본 · 400K+ 차량</span></td>
+      <td>글로벌 1위 마켓플레이스</td>
+      <td>WhatsApp 영업 · BF Points · 30개국</td>
+      <td>사후관리·클레임 회피 평판 (Trustpilot)</td>
+    </tr>
+    <tr>
+      <td><strong>SBT Japan</strong><br><span style="font-size:8.5pt;color:#94a3b8">일본 · 5K 차량</span></td>
+      <td>중규모 마켓플레이스</td>
+      <td>옥션 검사 시트 통합</td>
+      <td>다국어 자동화·AI 자동화 거의 없음</td>
+    </tr>
+    <tr>
+      <td><strong>오토위니 (Autowini)</strong><br><span style="font-size:8.5pt;color:#94a3b8">한국 No.1 · SK엔카 출신</span></td>
+      <td>한국 No.1 B2B 마켓플레이스</td>
+      <td>16개 언어 · 셀러 모바일 앱 · 100개국</td>
+      <td><strong>AI 자동화 거의 없음</strong> · 사람 의존 ↑</td>
+    </tr>
+    <tr style="background:#dcfce7">
+      <td><strong>우리 (AutoExport AI)</strong><br><span style="font-size:8.5pt;color:#166534">한국 영세 SME</span></td>
+      <td><strong>오토위니 위에서 동작하는 AI SaaS</strong></td>
+      <td>다국어 메일 · 통관 룰 · 컴플라이언스 · 서류 자동화</td>
+      <td>(빈 공간 채움)</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="differentiator-list">
+  <h4>📍 빈 공간 (영세 수출업체의 실제 부담)</h4>
+  <ol>
+    <li>오토위니에 매물 올리는 영세업체 1,000여 곳 (인천 송도 중심)</li>
+    <li>이들은 매물은 마켓플레이스에 있지만, <strong>메일 응답·서류·번역·컴플라이언스 추적은 다 본인이 처리</strong></li>
+    <li>2025.10 부산경찰청 적발 — 영세업체는 OFAC·Russia-proxy 검증 사실상 불가</li>
+  </ol>
+</div>
+""",
+    },
+    {
+        "no": "B",
+        "label": "BENCHMARK 2",
+        "title": "UI 차별화 — Marketplace 벤치마크 vs Admin SaaS",
+        "tags": "2-shell architecture",
+        "route": "/marketplace ↔ /listings",
+        "html": """
+<div class="narrative">
+  <strong>2-Shell 설계</strong>. 왼쪽은 <strong>오토위니/BeForward 벤치마크 UI</strong> (외부 buyer 진입점, Autobell-style).
+  오른쪽은 <strong>우리의 진짜 차별화</strong> — 셀러가 사용하는 Admin AI SaaS.
+  경쟁사는 왼쪽만 있고, 우리는 왼쪽 + <strong>오른쪽이 핵심</strong>.
+</div>
+
+<div class="compare-pair">
+  <div class="compare-card competitor">
+    <div class="compare-header">📦 벤치마크 — Marketplace shell (Autobell-style)</div>
+    <img src="{compare_marketplace}" alt="marketplace">
+    <div class="compare-caption">
+      33대 차량 카드 · 6 필터 · 100+ Countries Shipped 신뢰 표시 · 견적 요청 모달.
+      오토위니/BeForward 와 동일한 buyer-facing 진입점.
+    </div>
+  </div>
+  <div class="compare-card us">
+    <div class="compare-header">🤖 차별화 — Admin AI SaaS (우리 핵심)</div>
+    <img src="{compare_admin}" alt="admin">
+    <div class="compare-caption">
+      셀러가 사용하는 진짜 도구. 다국어 메일·서류·통관·컴플라이언스 자동화.
+      <strong>경쟁사에 없는 영역.</strong>
+    </div>
+  </div>
+</div>
+
+<div class="narrative" style="margin-top:8px">
+  <strong>narrative</strong>: "우리는 오토위니/BeForward 와 마켓플레이스로 경쟁하지 않는다.
+  오토위니에 매물 올리는 <strong>영세업체의 영업·서류·번역·컴플라이언스 부담</strong>을 AI 가 대신 처리한다."
+</div>
+""",
+    },
+    {
+        "no": "C",
+        "label": "BENCHMARK 3",
+        "title": "기능 매트릭스 — 경쟁사 vs 우리 5종 차별화",
+        "tags": "Trade.gov · Trustpilot · 오토위니 공식 자료 분석",
+        "route": "차별화 지점 도출",
+        "html": """
+<table class="benchmark-table">
+  <thead>
+    <tr>
+      <th style="width:32%">기능</th>
+      <th>BeForward</th>
+      <th>SBT Japan</th>
+      <th>오토위니</th>
+      <th class="us-col">우리 (PoC ✓)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>검색·필터</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="us-col yes">✓</td></tr>
+    <tr><td>다국어 사이트 UI</td><td>30개 언어</td><td>다국어</td><td>16개 언어</td><td class="us-col">5 LLM 언어</td></tr>
+    <tr><td>WhatsApp 채팅</td><td>사람</td><td>사람</td><td class="partial">△</td><td class="us-col">AI 24/7 (Phase 2)</td></tr>
+    <tr><td>VIN 디코딩</td><td class="partial">△</td><td class="partial">△</td><td class="partial">△</td><td class="us-col yes">✓ NHTSA</td></tr>
+    <tr style="background:#fef9c3"><td><strong>국가별 통관 사전 검증</strong></td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="us-col star">★ 차별화 1</td></tr>
+    <tr style="background:#fef9c3"><td><strong>다국어 격식 메일 자동 작성</strong></td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="us-col star">★ 차별화 2</td></tr>
+    <tr style="background:#fef9c3"><td><strong>수출 서류 4종 자동 생성</strong></td><td class="partial">수동</td><td class="partial">수동</td><td class="partial">수동</td><td class="us-col star">★ 차별화 3</td></tr>
+    <tr style="background:#fef9c3"><td><strong>컴플라이언스 자동 검사</strong></td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="us-col star">★ 차별화 4 (OFAC+Yestrade)</td></tr>
+    <tr style="background:#fef9c3"><td><strong>한국어 검증 패널 (Level 2)</strong></td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="us-col star">★ 차별화 5 ⭐ 신규</td></tr>
+    <tr><td>선적 후 추적·알림</td><td class="partial">수동</td><td class="partial">수동</td><td class="partial">수동</td><td class="us-col">Phase 2</td></tr>
+    <tr><td>재고 규모</td><td>400K</td><td>5K</td><td>다수</td><td class="us-col" style="font-size:8.5pt;color:#64748b">N/A (별도)</td></tr>
+  </tbody>
+</table>
+
+<div class="differentiator-list">
+  <h4>🎯 우리 5종 차별화 핵심</h4>
+  <ol>
+    <li><strong>오토위니/BeForward 등 모든 경쟁사가 안 하는 5가지를 자동화</strong></li>
+    <li>한국 측 No.1 (오토위니) 이 16개 언어 사이트 운영하지만, <strong>메일은 본인 작성</strong></li>
+    <li>일본 측 BeForward 가 400K 차량 보유하지만, <strong>사후관리 평판 악화</strong> (Trustpilot)</li>
+    <li>우리는 <strong>재고 경쟁 안 함</strong> — 매물은 오토위니에, 자동화는 우리에</li>
+    <li><strong>한국어 검증 패널</strong>은 어디에도 없는 신규 UX (외국어 ↔ 한국어 양방향)</li>
+  </ol>
+</div>
+""",
+    },
+]
+
+
 # ── 시연 슬라이드 정의 ──────────────────────────────────────────
 SLIDES = [
     {
@@ -369,28 +516,52 @@ def main() -> None:
     generate_pdf()
 
 
+def _to_data_url(img_path: Path) -> str:
+    if not img_path.exists():
+        return ""
+    with img_path.open("rb") as f:
+        return "data:image/png;base64," + base64.b64encode(f.read()).decode("ascii")
+
+
 def generate_pdf() -> None:
-    """캡처된 PNG 를 HTML 에 base64 inline → Playwright PDF."""
+    """캡처된 PNG 를 HTML 에 base64 inline → Playwright PDF.
+
+    슬라이드 순서: 표지 → 30초 컷 → BENCHMARK 3 슬라이드 → 시연 11 슬라이드
+    → 핵심 지표 → 차별화 결론.
+    """
     env = Environment(
         loader=FileSystemLoader(str(SCRIPTS_DIR)),
         autoescape=select_autoescape(enabled_extensions=("html",)),
     )
     template = env.get_template("demo_pdf_template.html")
 
-    # 슬라이드별 이미지 base64 inline
-    slides_with_images = []
+    # 벤치마크 슬라이드의 image placeholder 치환 (compare_marketplace / compare_admin)
+    compare_marketplace_data = _to_data_url(CAPTURES_DIR / "03_marketplace_catalog.png")
+    compare_admin_data = _to_data_url(CAPTURES_DIR / "07_mail_korean_panel.png")
+
+    benchmark_with_images = []
+    for s in BENCHMARK_SLIDES:
+        html_content = s.get("html", "")
+        if "{compare_marketplace}" in html_content:
+            html_content = html_content.replace("{compare_marketplace}", compare_marketplace_data)
+        if "{compare_admin}" in html_content:
+            html_content = html_content.replace("{compare_admin}", compare_admin_data)
+        benchmark_with_images.append({**s, "html": html_content, "image": ""})
+
+    # 시연 슬라이드: 이미지 base64 inline
+    demo_with_images = []
     for s in SLIDES:
         img_path = CAPTURES_DIR / f"{s['image_key']}.png"
-        img_data = ""
-        if img_path.exists():
-            with img_path.open("rb") as f:
-                img_data = "data:image/png;base64," + base64.b64encode(f.read()).decode("ascii")
+        img_data = _to_data_url(img_path)
+        if img_data:
             logger.info(f"  inline {img_path.name}: {img_path.stat().st_size // 1024} KB")
-        slides_with_images.append({**s, "image": img_data})
+        demo_with_images.append({**s, "image": img_data})
+
+    all_slides = benchmark_with_images + demo_with_images
 
     html = template.render(
-        slides=slides_with_images,
-        total_pages=len(SLIDES) + 4,
+        slides=all_slides,
+        total_pages=len(all_slides) + 4,
     )
 
     # 디버그용 HTML 저장
@@ -418,4 +589,22 @@ def generate_pdf() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="자동 UI 캡처 + 발표 PDF 생성 (Playwright + Jinja2)"
+    )
+    parser.add_argument(
+        "--pdf-only",
+        action="store_true",
+        help="캡처 단계 건너뛰고 기존 demo_captures/ 의 PNG 로 PDF 만 재생성 (backend 불필요)",
+    )
+    args = parser.parse_args()
+
+    if args.pdf_only:
+        if not CAPTURES_DIR.exists() or not list(CAPTURES_DIR.glob("*.png")):
+            logger.error(f"{CAPTURES_DIR} 에 PNG 없음. --pdf-only 사용 전 한번은 전체 실행 필요.")
+            sys.exit(1)
+        logger.info("PDF only 모드 — 캡처 단계 건너뜀.")
+        generate_pdf()
+    else:
+        main()
