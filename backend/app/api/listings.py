@@ -633,6 +633,81 @@ def delete_listing(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+# ── /listings/{id}/messages — mail history + send ─────────────
+class MessageOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    channel: str
+    direction: str
+    scenario: str | None
+    language: str | None
+    content_text: str | None
+    ai_generated: bool
+    ai_model: str | None
+    sent_at: datetime | None
+
+
+@router.get("/{listing_id}/messages", response_model=list[MessageOut])
+def list_messages(
+    listing_id: uuid.UUID,
+    db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],
+) -> list[Message]:
+    """해당 listing 의 메일 history (최신순). draft + sent 모두 포함."""
+    _get_owned(db, listing_id, user_id)
+    return list(db.execute(
+        select(Message)
+        .where(Message.listing_id == listing_id)
+        .order_by(Message.sent_at.desc().nulls_last(), Message.id.desc())
+    ).scalars())
+
+
+@router.post("/{listing_id}/messages/{message_id}/send", response_model=MessageOut)
+def send_message(
+    listing_id: uuid.UUID,
+    message_id: uuid.UUID,
+    db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],
+) -> Message:
+    """메일 전송 — sent_at 타임스탬프 마킹.
+
+    PoC: mock SMTP. 실제 발송은 Phase 2 (aiosmtplib + Mailgun/SendGrid).
+    이 endpoint 호출 시 console 로 메일 본문 로그 + DB sent_at = now.
+    """
+    _get_owned(db, listing_id, user_id)
+    msg = db.get(Message, message_id)
+    if msg is None or msg.listing_id != listing_id:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            f"message {message_id} not found in listing {listing_id}",
+        )
+    if msg.sent_at is not None:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"message already sent at {msg.sent_at.isoformat()}",
+        )
+    if msg.direction != "outbound":
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            "only outbound messages can be sent",
+        )
+
+    # PoC: console 출력 — Phase 2 에서 실제 SMTP 호출로 교체
+    logger.info(
+        f"[MOCK SMTP] Sending message {msg.id} (channel={msg.channel}, "
+        f"language={msg.language}, scenario={msg.scenario})"
+    )
+    if msg.content_text:
+        # 첫 줄 (Subject) 만 로그 — body 전체는 너무 길 수 있음
+        first_line = msg.content_text.split("\n", 1)[0][:120]
+        logger.info(f"[MOCK SMTP]   {first_line}")
+
+    msg.sent_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(msg)
+    return msg
+
+
 # ── helpers ────────────────────────────────────────────────────
 def _get_owned(db: Session, listing_id: uuid.UUID, user_id: uuid.UUID) -> Listing:
     listing = db.get(Listing, listing_id)

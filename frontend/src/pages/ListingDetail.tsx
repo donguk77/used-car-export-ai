@@ -7,9 +7,11 @@ import {
   ClipboardCheck,
   Download,
   FileText,
+  History,
   Loader2,
   Mail,
   RefreshCw,
+  Send,
   ShieldAlert,
   ShieldCheck,
   ShieldX,
@@ -27,9 +29,12 @@ import {
   useGenerateDocuments,
   useListing,
   useListingDocuments,
+  useListingMessages,
   useMailDraft,
+  useSendMessage,
   useUpdateListingStatus,
   useVehicle,
+  type MessageRecord,
 } from "@/hooks/useListings";
 import {
   COUNTRY_FLAG,
@@ -201,6 +206,9 @@ export function ListingDetailPage() {
 
           {/* 메일 작성 (Gemini) */}
           <MailComposerSection listingId={listing.id} buyer={buyer} />
+
+          {/* 메일 history (draft + sent) */}
+          <MailHistorySection listingId={listing.id} />
 
           {/* 서류 4종 자동 생성 */}
           <DocumentsSection listingId={listing.id} canGenerate={Boolean(listing.buyer_id && listing.destination_country)} />
@@ -474,6 +482,126 @@ function MailComposerSection({
         )}
       </CardContent>
     </Card>
+  );
+}
+
+// ── Mail history (draft + sent + 보내기 버튼) ──────────────
+function MailHistorySection({ listingId }: { listingId: string }) {
+  const messagesQ = useListingMessages(listingId);
+  const sendMutation = useSendMessage(listingId);
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  const items = messagesQ.data ?? [];
+  const draftCount = items.filter((m) => !m.sent_at).length;
+  const sentCount = items.filter((m) => m.sent_at).length;
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <History className="h-4 w-4" /> 메일 history
+        </CardTitle>
+        {!messagesQ.isLoading && items.length > 0 && (
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            draft {draftCount} · sent {sentCount}
+          </span>
+        )}
+      </CardHeader>
+      <CardContent>
+        {messagesQ.isLoading ? (
+          <p className="text-xs text-muted-foreground">로딩…</p>
+        ) : items.length === 0 ? (
+          <p className="rounded-md bg-muted/50 px-3 py-6 text-center text-xs text-muted-foreground">
+            아직 작성된 메일이 없습니다 — 위 "AI로 메일 생성하기" 버튼 클릭
+          </p>
+        ) : (
+          <ul className="space-y-2">
+            {items.map((m) => (
+              <MailHistoryRow
+                key={m.id}
+                message={m}
+                expanded={expanded === m.id}
+                onToggle={() => setExpanded(expanded === m.id ? null : m.id)}
+                onSend={() => sendMutation.mutate(m.id)}
+                sending={sendMutation.isPending && sendMutation.variables === m.id}
+              />
+            ))}
+          </ul>
+        )}
+        {sendMutation.isError && (
+          <p role="alert" className="mt-2 text-xs text-destructive">
+            전송 실패: {formatApiError(sendMutation.error)}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function MailHistoryRow({
+  message,
+  expanded,
+  onToggle,
+  onSend,
+  sending,
+}: {
+  message: MessageRecord;
+  expanded: boolean;
+  onToggle: () => void;
+  onSend: () => void;
+  sending: boolean;
+}) {
+  const sent = Boolean(message.sent_at);
+  const subject = (message.content_text ?? "").split("\n", 1)[0].replace(/^Subject:\s*/, "");
+  const body = (message.content_text ?? "").split("\n").slice(1).join("\n").trim();
+
+  return (
+    <li className={cn(
+      "rounded-md border transition-colors",
+      sent ? "border-success/30 bg-success/5" : "border-warning/30 bg-warning/5",
+    )}>
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-start gap-2.5 px-3 py-2.5 text-left"
+      >
+        <Mail className={cn("mt-0.5 h-4 w-4 shrink-0", sent ? "text-success" : "text-warning")} />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium">{subject || "(제목 없음)"}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            {message.scenario ?? "—"} · {message.language?.toUpperCase() ?? "—"}
+            {message.ai_model && ` · ${message.ai_model}`}
+            {sent
+              ? ` · sent ${new Date(message.sent_at!).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}`
+              : " · draft"}
+          </p>
+        </div>
+        {sent ? (
+          <span className="flex shrink-0 items-center gap-1 text-[10px] font-semibold text-success">
+            <CheckCircle2 className="h-3 w-3" /> SENT
+          </span>
+        ) : (
+          <Button
+            type="button"
+            size="sm"
+            disabled={sending}
+            onClick={(e) => { e.stopPropagation(); onSend(); }}
+            className="shrink-0 gap-1"
+          >
+            {sending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+            {sending ? "전송중" : "보내기"}
+          </Button>
+        )}
+      </button>
+      {expanded && body && (
+        <div
+          className="border-t bg-background px-3 py-3 text-xs leading-relaxed whitespace-pre-wrap"
+          dir={message.language === "ar" ? "rtl" : "ltr"}
+        >
+          {body}
+        </div>
+      )}
+    </li>
   );
 }
 

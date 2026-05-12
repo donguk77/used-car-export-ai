@@ -148,6 +148,46 @@ export function useListingDocuments(listingId: string | undefined) {
   });
 }
 
+// ── 메일 history (draft + sent) ─────────────────────────────
+export interface MessageRecord {
+  id: string;
+  channel: string;
+  direction: string;
+  scenario: string | null;
+  language: string | null;
+  content_text: string | null;
+  ai_generated: boolean;
+  ai_model: string | null;
+  sent_at: string | null;
+}
+
+export function useListingMessages(listingId: string | undefined) {
+  return useQuery({
+    queryKey: ["listing-messages", listingId],
+    queryFn: async (): Promise<MessageRecord[]> => {
+      const r = await api.get<MessageRecord[]>(`/api/listings/${listingId}/messages`);
+      return r.data;
+    },
+    enabled: Boolean(listingId),
+  });
+}
+
+export function useSendMessage(listingId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (messageId: string): Promise<MessageRecord> => {
+      if (!listingId) throw new Error("listingId required for send");
+      const r = await api.post<MessageRecord>(
+        `/api/listings/${listingId}/messages/${messageId}/send`,
+      );
+      return r.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["listing-messages", listingId] });
+    },
+  });
+}
+
 export function useGenerateDocuments(listingId: string | undefined) {
   const qc = useQueryClient();
   return useMutation({
