@@ -11,7 +11,7 @@ import re
 from dataclasses import asdict, dataclass
 from typing import Literal
 
-from app.models import Buyer, Country, ImportRule, Vehicle
+from app.models import Buyer, Country, ImportRule, User, Vehicle
 from app.services.llm import LLMProvider, create_provider
 
 Scenario = Literal["inquiry", "quote", "negotiate", "shipping", "dispute"]
@@ -217,10 +217,11 @@ COUNTRY_SHIPPING: dict[str, dict[str, str | int | None]] = {
 SYSTEM_PROMPT_TEMPLATE = """\
 You are a professional Korean used-car export company representative writing a business email.
 
-# Sender context
-- Korean SME used-car exporter (small business, 1-3 employees, Incheon-based).
-- Operates on top of marketplaces like 오토위니 / BeForward.
-- Default port of loading: Incheon (IIN), South Korea.
+# Sender (use these EXACT values in the closing/signature — DO NOT use placeholders like [Company Name])
+- Company name: {sender_company}
+- Sender email: {sender_email}
+- Sender phone: {sender_phone}
+- Port of loading: {sender_port}, South Korea
 
 # Recipient context
 - Overseas buyer in {country_name_en} ({country_code}).
@@ -229,7 +230,7 @@ You are a professional Korean used-car export company representative writing a b
 # Scenario brief
 {scenario_brief}
 
-# Style requirements
+# Style requirements — VERY IMPORTANT
 - Tone: formal, courteous, business-appropriate for {language_name}.
 - For Arabic: use Modern Standard Arabic, formal forms (أنتم).
 - For Spanish: use formal "usted" register.
@@ -238,8 +239,20 @@ You are a professional Korean used-car export company representative writing a b
 - Include all numerical facts EXACTLY as given (price, mileage, year, engine cc).
 - Be concise but warm. No hard-sell language. No emoji.
 - **CRITICAL: Body MUST be 250-400 words maximum** (longer responses get truncated).
-- For `quote` scenario: use compact tabular format for cost breakdown (5-7 lines max).
 - Escape newlines in JSON body as \\n (NOT actual newlines inside the string).
+
+# Plain-text formatting — STRICT (this is a plain-text email, not a webpage)
+- DO NOT use markdown bold (**text**, __text__) — write words plainly.
+- DO NOT use markdown bullet stars (* item) — use a plain dash with space ("- item").
+- DO NOT use markdown pipe tables (| col | col |) — write tables as label-value lines:
+  Example for cost breakdown (use this exact label-value style):
+    FOB Incheon ............ USD 10,500
+    Ocean freight (RoRo) ... USD 2,100
+    Marine insurance ....... USD   105
+    --------------------------------------
+    Total CIF Misrata ...... USD 12,705
+- DO NOT use markdown headings (## Section). Use plain "Section:" label and a blank line.
+- DO NOT leave bracketed placeholders like [Your Company] — fill in the sender info from above.
 
 # Compliance / regulatory hints (use if relevant to scenario)
 {compliance_hints}
@@ -247,8 +260,8 @@ You are a professional Korean used-car export company representative writing a b
 # Output contract
 Respond with ONLY a single JSON object — no commentary, no markdown fences:
 {{
-  "subject": "<email subject in target language>",
-  "body":    "<email body in target language, plain text, multi-paragraph allowed via \\n>"
+  "subject": "<email subject in target language, plain text — no markdown>",
+  "body":    "<email body in target language, plain text — no markdown — multi-paragraph via \\n>"
 }}
 """
 
@@ -295,6 +308,7 @@ class MailRequest:
     country: Country
     rules: list[ImportRule] | None = None
     extra_context: str = ""
+    sender: User | None = None  # 발신자 회사 정보 — signature placeholder 방지
 
 
 @dataclass
@@ -319,6 +333,11 @@ class MailWriter:
         user = self._render_user(req)
         result = self.provider.complete(system=system, user=user)
         subject, body = self._parse_json(result.text)
+        # LLM 이 명시적 'no markdown' 지시를 자주 어김 (Gemini 2.5 특히 quote 시
+        # markdown table 강제). 코드 단계서 강제 클리닝 + placeholder 치환.
+        subject = _strip_markdown(subject)
+        body = _strip_markdown(body)
+        body = _replace_signature_placeholders(body, req.sender)
         return MailDraft(
             subject=subject,
             body=body,
@@ -330,12 +349,18 @@ class MailWriter:
 
     # ── prompt rendering ────────────────────────────────────────────
     def _render_system(self, req: MailRequest) -> str:
+        # sender fallback — User 객체 없으면 데모 default
+        s = req.sender
         return SYSTEM_PROMPT_TEMPLATE.format(
             country_code=req.country.code,
             country_name_en=req.country.name_en,
             language_name=LANGUAGE_NAMES.get(req.language, req.language),
             scenario_brief=SCENARIO_BRIEFS[req.scenario],
             compliance_hints=self._compliance_hints(req),
+            sender_company=(s.company_name if s else "Korean Used-Car Export Co."),
+            sender_email=(s.email if s else "export@example.kr"),
+            sender_phone=(s.phone if s and s.phone else "+82-32-555-0000"),
+            sender_port=(s.port_of_loading if s else "Incheon"),
         )
 
     def _render_user(self, req: MailRequest) -> str:
@@ -471,3 +496,89 @@ _FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
 
 def _strip_code_fence(text: str) -> str:
     return _FENCE_RE.sub("", text)
+
+
+# ── Post-processing: LLM 의 markdown 출력을 강제로 plain-text 화 ─────
+_MD_BOLD_RE = re.compile(r"\*\*([^\*\n]+?)\*\*")
+_MD_ITALIC_RE = re.compile(r"(?<!\*)\*(?!\*|\s)([^\*\n]+?)(?<!\s)\*(?!\*)")
+_MD_HEADING_RE = re.compile(r"^#{1,6}\s+", re.MULTILINE)
+_MD_BULLET_RE = re.compile(r"^(\s*)\*\s+", re.MULTILINE)
+
+
+def _strip_markdown(text: str) -> str:
+    """LLM 이 어긴 markdown 을 plain-text 로 강제 변환.
+
+    제거 대상:
+      **bold** → bold
+      *italic* → italic   (단, 단독 별표 bullet 은 -)
+      ## 헤딩  → 헤딩      (# 자체만 제거)
+      * item   → - item
+      | col | col |  → 표 행을 'label: value' 또는 'label  value' 로 평탄화
+    """
+    if not text:
+        return text
+    # 1. bold/italic
+    text = _MD_BOLD_RE.sub(r"\1", text)
+    text = _MD_ITALIC_RE.sub(r"\1", text)
+    # 2. heading 마커
+    text = _MD_HEADING_RE.sub("", text)
+    # 3. bullet '* item' → '- item'
+    text = _MD_BULLET_RE.sub(r"\1- ", text)
+    # 4. pipe table → label  value 형식
+    text = _flatten_pipe_table(text)
+    return text
+
+
+def _flatten_pipe_table(text: str) -> str:
+    """| col1 | col2 | 형식 표를 평탄한 'label  value' 라인으로 변환.
+
+    Gemini 가 quote 시나리오에서 자주 사용. 메일 클라이언트는 markdown
+    table 렌더링 안 하므로 raw `|` 가 깨져 보임.
+    """
+    lines = text.split("\n")
+    out: list[str] = []
+    in_table = False
+    for line in lines:
+        s = line.strip()
+        # separator row: |---|---| 또는 | :--- | :--- |
+        if re.match(r"^\|[\s:\-\|]+\|$", s):
+            in_table = True
+            continue  # 구분선 자체는 제거
+        if s.startswith("|") and s.endswith("|") and "|" in s[1:-1]:
+            cells = [c.strip() for c in s.strip("|").split("|")]
+            cells = [c for c in cells if c]
+            if len(cells) >= 2:
+                # 첫 cell = label, 마지막 cell = value, 가운데는 하이픈으로
+                label = cells[0]
+                value = cells[-1]
+                # 라벨 너비 맞춰 도트로 정렬 (28자)
+                pad = max(2, 32 - len(label))
+                out.append(f"{label} {'.' * pad} {value}")
+                in_table = True
+                continue
+        in_table = False
+        out.append(line)
+    return "\n".join(out)
+
+
+# 회사명 placeholder — LLM 이 자주 쓰는 패턴 (영/한/아랍/노/스/러시아 등)
+_PLACEHOLDER_PATTERNS = [
+    r"\[اسم\s+شرك[تي|ك]م\]",          # Arabic: [내/우리 회사명]
+    r"\[اسم\s+الشركة\]",              # Arabic: [회사명]
+    r"\[شركتك(?:م)?\]",                # Arabic short variant
+    r"\[Your\s+Company(?:\s+Name)?\]",
+    r"\[Company\s+Name\]",
+    r"\[\[?\s*회사명\s*\]\]?",
+    r"\[Nombre\s+de\s+la\s+Empresa\]",  # Spanish
+    r"\[Название\s+компании\]",         # Russian
+    r"\[Nom\s+de\s+l['’]entreprise\]",  # French
+]
+
+
+def _replace_signature_placeholders(body: str, sender: User | None) -> str:
+    """LLM 이 signature 에 [회사명] 같은 placeholder 를 남기면 실제 회사명으로 치환."""
+    if not sender or not sender.company_name:
+        return body
+    for pat in _PLACEHOLDER_PATTERNS:
+        body = re.sub(pat, sender.company_name, body, flags=re.IGNORECASE)
+    return body

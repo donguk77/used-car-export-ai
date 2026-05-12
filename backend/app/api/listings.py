@@ -393,6 +393,7 @@ def draft_mail(
     )
 
     writer = MailWriter()  # uses LLM_PROVIDER env var
+    sender = db.get(User, user_id)  # 발신자 회사명 → signature 자동 inject
     mail_request = MailRequest(
         scenario=payload.scenario,
         language=language,
@@ -401,6 +402,7 @@ def draft_mail(
         country=country,
         rules=country.rules,
         extra_context=payload.extra_context,
+        sender=sender,
     )
     # findings #035 — Gemini ~30% JSON parse fail (영어 long response 위주).
     # 자동 retry 2회 추가 (총 3 시도) — 데모 robustness ↑.
