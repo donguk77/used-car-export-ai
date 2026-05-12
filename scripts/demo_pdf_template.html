@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>중고차 수출 AI 에이전트 PoC — 발표 자료</title>
+<style>
+@page {
+  size: A4 portrait;
+  margin: 16mm 14mm 14mm 14mm;
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+    font-family: "Malgun Gothic", "Pretendard", sans-serif;
+    font-size: 9pt;
+    color: #94a3b8;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Pretendard", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #0f172a;
+  line-height: 1.55;
+  font-size: 10.5pt;
+}
+
+.page {
+  page-break-after: always;
+  min-height: 265mm;
+  display: flex;
+  flex-direction: column;
+}
+.page:last-child { page-break-after: auto; }
+
+/* === 표지 === */
+.cover {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 265mm;
+  padding: 60mm 0 40mm;
+  background: linear-gradient(135deg, #1a3a5c 0%, #0f2236 100%);
+  color: #ffffff;
+  margin: -16mm -14mm 0 -14mm;
+  padding-left: 14mm;
+  padding-right: 14mm;
+}
+.cover .badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  color: #cbd5e1;
+  font-size: 9pt;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 18mm;
+  letter-spacing: 2px;
+}
+.cover h1 {
+  font-size: 32pt;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 8mm;
+}
+.cover .subtitle {
+  font-size: 14pt;
+  font-weight: 300;
+  color: #cbd5e1;
+  max-width: 140mm;
+  margin-bottom: 18mm;
+}
+.cover .meta {
+  font-size: 10pt;
+  color: #94a3b8;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cover .meta strong { color: #e2e8f0; }
+
+/* === 일반 슬라이드 === */
+.slide-header {
+  border-bottom: 2px solid #1a3a5c;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.slide-header h2 {
+  font-size: 18pt;
+  color: #1a3a5c;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.slide-header .step-no {
+  font-size: 10pt;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.screenshot {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin: 8px 0 12px;
+  max-height: 155mm;
+  object-fit: contain;
+  background: #f8fafc;
+}
+
+.narrative {
+  font-size: 10.5pt;
+  color: #334155;
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+.narrative strong { color: #0f172a; }
+.narrative code {
+  background: #f1f5f9;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: 9.5pt;
+}
+
+.bullets {
+  list-style: none;
+  margin: 6px 0;
+}
+.bullets li {
+  padding-left: 16px;
+  position: relative;
+  margin-bottom: 4px;
+  font-size: 10pt;
+  color: #475569;
+}
+.bullets li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #1a3a5c;
+  font-weight: bold;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+.metric {
+  background: #f8fafc;
+  border-left: 3px solid #1a3a5c;
+  padding: 8px 10px;
+}
+.metric .label {
+  font-size: 8.5pt;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.metric .value {
+  font-size: 13pt;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+table.compact {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 9.5pt;
+}
+table.compact th, table.compact td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  text-align: left;
+}
+table.compact th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #475569;
+}
+
+.summary-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 250mm;
+}
+.summary-page h2 {
+  font-size: 24pt;
+  margin-bottom: 20mm;
+  text-align: center;
+  color: #1a3a5c;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12mm;
+  max-width: 160mm;
+  margin: 0 auto;
+}
+.summary-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+.summary-card h3 {
+  font-size: 12pt;
+  color: #1a3a5c;
+  margin-bottom: 6px;
+}
+.summary-card p {
+  font-size: 10pt;
+  color: #475569;
+}
+
+.footer-note {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 8.5pt;
+  color: #94a3b8;
+  display: flex;
+  justify-content: space-between;
+}
+</style>
+</head>
+<body>
+
+<!-- ============= 표지 ============= -->
+<div class="page">
+  <div class="cover">
+    <span class="badge">CAPSTONE · POC · 2026.05</span>
+    <h1>중고차 수출 AI 에이전트</h1>
+    <p class="subtitle">한국 영세 중고차 수출업체의 다국어 메일 + 28국 통관 룰 + 컴플라이언스 자동화 SaaS</p>
+    <div class="meta">
+      <div><strong>한양대학교 ERICA</strong> 수리데이터사이언스 · 조우진</div>
+      <div>산학파트너: <strong>㈜하이쓰리디</strong> 이정욱 대표</div>
+      <div style="margin-top: 12px; font-size: 9pt;">github.com/donguk77/used-car-export-ai</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============= 30초 컷 ============= -->
+<div class="page">
+  <div class="slide-header">
+    <h2>30초 컷 — 문제와 해결</h2>
+    <span class="step-no">1 / {{ total_pages }}</span>
+  </div>
+
+  <h3 style="font-size: 12pt; color: #b91c1c; margin: 12px 0 6px;">📍 문제</h3>
+  <ul class="bullets">
+    <li>한국 중고차 수출 글로벌 점유율 <strong>4위 (8%)</strong></li>
+    <li>인천 송도 영세 수출업체 약 <strong>1,000곳</strong>, 대부분 1~2인 운영</li>
+    <li>영어·아랍어·러시아어 응대 + 28국 규제 + OFAC/Yestrade 검증을 사람이 다 처리</li>
+  </ul>
+
+  <h3 style="font-size: 12pt; color: #b45309; margin: 16px 0 6px;">⚠ 위협</h3>
+  <ul class="bullets">
+    <li>2025.10 부산경찰청, 키르기스스탄 우회수출 적발 — <strong>40대 구속</strong></li>
+    <li>2024.2 산자부 전략물자 798 → <strong>1,159개</strong> 확대 (대형/EV)</li>
+    <li>2026.1 케냐 8년 룰 강화, 영세업체 추적 사실상 불가</li>
+  </ul>
+
+  <h3 style="font-size: 12pt; color: #166534; margin: 16px 0 6px;">✓ 해결</h3>
+  <p class="narrative">
+    LLM 기반 자동화 SaaS — 다국어 메일·통관 룰·서류·컴플라이언스 모두 자동.
+    <strong>한국어 검증 패널</strong> 차별화 (외국어 ↔ 한국어 양방향).
+  </p>
+
+  <div class="metrics">
+    <div class="metric"><div class="label">검증 라운드</div><div class="value">21</div></div>
+    <div class="metric"><div class="label">Findings</div><div class="value">70+</div></div>
+    <div class="metric"><div class="label">시드 국가</div><div class="value">28</div></div>
+  </div>
+
+  <div class="footer-note">
+    <span>한양대 ERICA × ㈜하이쓰리디 산학캡스톤</span>
+    <span>2026.05.12</span>
+  </div>
+</div>
+
+{% for slide in slides %}
+<!-- ============= 슬라이드 {{ slide.no }} ============= -->
+<div class="page">
+  <div class="slide-header">
+    <h2>{{ slide.title }}</h2>
+    <span class="step-no">STEP {{ slide.no }}</span>
+  </div>
+  {% if slide.image %}
+  <img class="screenshot" src="{{ slide.image }}" alt="{{ slide.title }}">
+  {% endif %}
+  <div class="narrative">{{ slide.narrative | safe }}</div>
+  {% if slide.bullets %}
+  <ul class="bullets">
+    {% for b in slide.bullets %}
+    <li>{{ b | safe }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <div class="footer-note">
+    <span>{{ slide.route or '' }}</span>
+    <span>{{ slide.tags or '' }}</span>
+  </div>
+</div>
+{% endfor %}
+
+<!-- ============= 핵심 지표 페이지 ============= -->
+<div class="page">
+  <div class="slide-header">
+    <h2>핵심 지표 — 21 라운드 검증 결과</h2>
+    <span class="step-no">METRICS</span>
+  </div>
+  <table class="compact">
+    <thead>
+      <tr><th>영역</th><th>결과</th><th>참조</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>5x mail 동시 생성</td><td><strong>wall 15.2초</strong> (5x speedup, async I/O)</td><td>#067</td></tr>
+      <tr><td>4x PDF 동시 생성 (다른 listings)</td><td><strong>wall 7.5초</strong> (병렬화)</td><td>#071</td></tr>
+      <tr><td>PDF 같은 listing 직렬화</td><td>16.2초 (with_for_update lock 정합성)</td><td>#071</td></tr>
+      <tr><td>다국어 메일 품질 sample</td><td>AR/ES/RU/EN <strong>5/5 통과</strong>, 평균 2,006 chars</td><td>#072</td></tr>
+      <tr><td>Compliance multi-finding</td><td>KG+Genesis G80 → 3-layer blocked + 7 docs</td><td>#074</td></tr>
+      <tr><td>FSM 12 상태 전환</td><td><strong>4/4 라이브</strong> (skip/backward/idempotent/forward)</td><td>#060</td></tr>
+      <tr><td>Dashboard 데이터 정합성</td><td><strong>9/9 카운트 100%</strong> DB 일치</td><td>#070</td></tr>
+      <tr><td>권한 격리</td><td>user_id 필터 <strong>100% 적용</strong></td><td>#063</td></tr>
+      <tr><td>OFAC SDN scan</td><td>18,947 entries exact + fuzzy (rapidfuzz)</td><td>#042/054</td></tr>
+      <tr><td>의존성 12개</td><td>모두 latest stable (FastAPI 0.115, Pydantic 2.12 등)</td><td>#068</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer-note">
+    <span>전체 findings → docs/validation/findings.md</span>
+    <span>METRICS</span>
+  </div>
+</div>
+
+<!-- ============= 차별화 + 닫는 페이지 ============= -->
+<div class="page">
+  <div class="summary-page">
+    <h2>5종 차별화 + 한 줄 결론</h2>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>1. 통관 사전 검증</h3>
+        <p>28국 룰 엔진 (관세·VAT·연식·핸들). 700ms 즉시 평가.</p>
+      </div>
+      <div class="summary-card">
+        <h3>2. 다국어 메일</h3>
+        <p>en/es/ar/ru 격식체 자동 + 한국어 검증 패널 (Level 2 양방향).</p>
+      </div>
+      <div class="summary-card">
+        <h3>3. 수출 서류 4종 PDF</h3>
+        <p>Invoice/PL/SI/CO 동시 생성. 5건 동시 8초 (병렬).</p>
+      </div>
+      <div class="summary-card">
+        <h3>4. 컴플라이언스 자동 차단</h3>
+        <p>OFAC SDN exact+fuzzy / Russia-proxy / Yestrade. multi-finding stacking.</p>
+      </div>
+      <div class="summary-card">
+        <h3>5. Mock SMTP → 실제 발송</h3>
+        <p>Phase 2 aiosmtplib 한 줄 교체. audit trail (sent_at).</p>
+      </div>
+      <div class="summary-card" style="background: #1a3a5c; color: #ffffff; border: none;">
+        <h3 style="color: #ffffff;">🎯 한 줄</h3>
+        <p style="color: #cbd5e1;">"외국어 모르는 사장님이 한국어로 의도 → AI 가 외국어 작성 → 한국어로 다시 검토 → 발송."</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

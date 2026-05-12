@@ -61,3 +61,7 @@ uploads/
 /screenshot*.png
 
 backend/data/ofac/sdn.xml
+
+# 발표 자동 생성 결과물 — scripts/generate_demo_pdf.py 로 재생성 가능
+demo_captures/
+capstone_demo.pdf
