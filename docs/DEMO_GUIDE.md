@@ -31,7 +31,11 @@ npm run dev  # http://localhost:5173
 
 ---
 
-## 시나리오 5분 (시연 순서 고정)
+## 시나리오 8분 (시연 순서 고정 — 신규 4 features 포함)
+
+> 5분 코어 (STEP 1~6) + 3분 확장 (STEP 7~9 = 제안서 docx 결과물). 시간 부족 시 STEP 7~9 는 narrative 만 짧게.
+
+
 
 ### 🎬 STEP 1 — 마켓플레이스 (30초)
 **URL**: `http://localhost:5173/marketplace`
@@ -148,9 +152,62 @@ npm run dev  # http://localhost:5173
 
 ---
 
+---
+
+### 🎬 STEP 7 — 🆕 LLM Wiki 편집 (60초, 제안서 결과물)
+**URL**: `http://localhost:5173/wiki/DO`
+
+**보여줄 것**:
+- DO 도미니카공화국 편집 화면 — Country meta 14필드 + 통관 룰 3건
+- "통관 룰 (3)" 섹션 → 첫 룰 (passenger / 5년) 어느 필드든 살짝 수정
+- 우상단 노란 dirty 배지 + "메타 저장" 활성화 시연 (실제 저장 X)
+- 신규 국가 추가 모달 도 한 번 보여줄 수 있음 (KW 쿠웨이트 같은 케이스)
+
+**Narrative**:
+> "yaml 시드 28국 외에도 사장님이 직접 웹에서 신규 국가 추가·통관 룰 편집 가능. 룰 엔진 / 메일 / PDF 모두 자동 반영. **제안서 docx '사용자가 LLM Wiki 편집' 결과물 충족**."
+
+---
+
+### 🎬 STEP 8 — 🆕 시세 자동 산출 (45초, 제안서 결과물)
+**URL**: `/vehicles/{vid}` — 우측 패널 "적정 수출가 산출"
+
+**클릭**: 도착국 드롭다운에서 `SY` → `DO` → `KG` 순서로 차례 변경
+
+**보여줄 것**:
+- 동일 차량인데 도착국 따라 가격 변동:
+  - **SY (시리아) → 약 $9,539** (재건 수요 +10%)
+  - **DO (도미니카) → 약 $9,106** (단가 강세 +5%)
+  - **KG (키르기스) → 약 $8,238** (러우회 할인 -5%)
+- 산출 근거 factor breakdown (Baseline + 주행거리 + 도착국 시장)
+- Confidence 배지 (high/medium/low)
+
+**Narrative**:
+> "동급 DB 통계 + baseline 시세표 + 도착국 시장 보정 → 적정 FOB USD 자동 산출. **제안서 '시세 분석 및 적정 수출가 자동 산출' 결과물 충족**."
+
+---
+
+### 🎬 STEP 9 — 🆕 AI 채팅 + MCP (60초, 제안서 결과물 2종)
+**URL**: `/chat`
+
+**클릭**: quick prompt 버튼 "DO 통관 가능 조건" → 응답 + tool_call trace 표시
+
+**추가 시연** (시간 있으면):
+- 입력창에 `VIN: KMHE41LBXJA000001` → decode_vin tool 호출
+- 입력창에 `리비아로 쏘나타 보내려면 뭘 준비해야 해요?` → LLM fallback (Gemini 자연어)
+
+**보여줄 것**:
+- 자연어 → MCP tool 자동 라우팅 (decode_vin / lookup_country_rules / list_vehicles 등 10개)
+- 우측 사이드바 "MCP 10 tools" — 외부 Claude Desktop / Cline 도 동일 호출 가능
+- 추천 액션 버튼 ("→ DO 룰 편집") → Wiki 편집 페이지로 직접 점프
+
+**Narrative**:
+> "**제안서 '채팅 기반 대시보드 UI' + 'Claude Code + MCP' 두 결과물 동시 충족**. 키워드 매칭 fast-path (~ms) + Gemini fallback (~3초) 하이브리드. MCP 표준이라 외부 LLM client 도 호출 가능."
+
+---
+
 ## 마무리 멘트 (15초)
 
-> "21 라운드 70 findings 검증 PoC. **한국어 검증 패널** 차별화 + Phase 2 SMTP 발송 1줄 교체. 영세업체가 실제 사용 가능한 수준."
+> "21 라운드 70+ findings + 77 pytest 검증 PoC. **한국어 검증 패널 + 시세 산출 + LLM Wiki + AI 채팅 + MCP** 9종 차별화. 제안서 docx 결과물 100% 충족. Phase 2 SMTP 발송 1줄 교체로 실서비스 가능."
 
 ---
 

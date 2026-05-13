@@ -87,7 +87,7 @@ export function VehicleDetailPage() {
             <h2 className="text-2xl font-semibold tracking-tight">
               {vehicle.make} {vehicle.model} {vehicle.year}
             </h2>
-            <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
               <Badge variant={statusVariant}>
                 {VEHICLE_STATUS_LABEL[vehicle.status] ?? vehicle.status}
               </Badge>
@@ -95,7 +95,7 @@ export function VehicleDetailPage() {
               {vehicle.vin && (
                 <span className="font-mono text-xs">VIN {vehicle.vin}</span>
               )}
-            </p>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button onClick={() => setCreateListingOpen(true)} className="gap-2">
