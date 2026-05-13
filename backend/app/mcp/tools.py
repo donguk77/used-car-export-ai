@@ -6,8 +6,11 @@ JSON Schema 형태로 input 정의 (Anthropic tool-use / MCP 표준 호환).
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any, Callable
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -254,3 +257,29 @@ def mcp_tools_list() -> list[dict[str, Any]]:
 
 # Handler 등록 표 (dispatcher 가 사용)
 HandlerType = Callable[[dict[str, Any]], ToolResult]
+
+
+def validate_arguments(tool: ToolDefinition, args: dict[str, Any]) -> str | None:
+    """input_schema 검증. 위반 시 사람이 읽을 수 있는 에러 메시지 반환.
+
+    jsonschema 라이브러리는 backend 의존성에 이미 포함됨 (FastAPI/openapi 가
+    transient 로 사용). 외부 MCP client (Claude Desktop 등) 가 잘못된 payload 를
+    보낼 때 silently 통과 방지.
+    """
+    try:
+        from jsonschema import Draft202012Validator, ValidationError
+    except ImportError:
+        # jsonschema 없으면 검증 skip (graceful degrade — PoC 단계)
+        logger.warning("jsonschema not installed — input_schema validation skipped")
+        return None
+
+    try:
+        Draft202012Validator(tool.input_schema).validate(args)
+        return None
+    except ValidationError as e:
+        # jsonpath + 짧은 메시지로 변환
+        path = ".".join(str(p) for p in e.absolute_path) or "(root)"
+        return f"{path}: {e.message}"
+    except Exception as e:  # noqa: BLE001
+        logger.warning("input_schema validation error for tool %s: %s", tool.name, e)
+        return f"schema validation error: {e}"

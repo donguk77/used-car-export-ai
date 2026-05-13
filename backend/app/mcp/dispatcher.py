@@ -11,11 +11,12 @@ import uuid
 from typing import Any
 
 from sqlalchemy import or_, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.compliance import check as compliance_check
 from app.core.rule_engine import evaluate as evaluate_import_rules
-from app.mcp.tools import ToolResult, get_tool
+from app.mcp.tools import ToolResult, get_tool, validate_arguments
 from app.models import Buyer, Country, Listing, Vehicle
 
 logger = logging.getLogger(__name__)
@@ -35,12 +36,26 @@ class MCPDispatcher:
             return ToolResult(ok=False, data=None, error=f"unknown tool: {name!r}")
 
         args = arguments or {}
+
+        # Fix #6 — input_schema 검증 (외부 MCP client 가 잘못된 payload 보낼 때 catch).
+        validation_error = validate_arguments(tool, args)
+        if validation_error:
+            return ToolResult(
+                ok=False, data=None,
+                error=f"input validation failed: {validation_error}",
+            )
+
         handler = getattr(self, f"_h_{tool.handler_key}", None)
         if handler is None:
             return ToolResult(ok=False, data=None, error=f"no handler for {tool.handler_key!r}")
 
         try:
             return handler(args)
+        except SQLAlchemyError as e:
+            # Fix #5 — DB 오류 시 세션 명시적 롤백 (다음 호출 시 세션 오염 방지).
+            self.db.rollback()
+            logger.exception("MCP tool %s — DB error, session rolled back", name)
+            return ToolResult(ok=False, data=None, error=f"{type(e).__name__}: {e}")
         except Exception as e:  # noqa: BLE001
             logger.exception("MCP tool %s failed", name)
             return ToolResult(ok=False, data=None, error=f"{type(e).__name__}: {e}")

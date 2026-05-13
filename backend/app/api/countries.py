@@ -13,9 +13,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from app.api.deps import get_current_user_id
 from app.db import get_db
 from app.models import Country, ImportRule
 
@@ -137,6 +138,7 @@ def list_countries(db: Annotated[Session, Depends(get_db)]) -> list[Country]:
 def create_country(
     payload: CountryUpsert,
     db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],  # noqa: ARG001
 ) -> Country:
     """신규 국가 추가 (28국 외 확장 시연용)."""
     if not payload.code:
@@ -180,6 +182,7 @@ def update_country(
     code: str,
     payload: CountryUpsert,
     db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],  # noqa: ARG001
 ) -> Country:
     country = db.execute(
         select(Country)
@@ -195,7 +198,11 @@ def update_country(
 
 
 @router.delete("/{code}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
-def delete_country(code: str, db: Annotated[Session, Depends(get_db)]) -> Response:
+def delete_country(
+    code: str,
+    db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],  # noqa: ARG001
+) -> Response:
     country = db.get(Country, code.upper())
     if country is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"country {code!r} not found")
@@ -216,6 +223,7 @@ def create_rule(
     code: str,
     payload: RuleUpsert,
     db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],  # noqa: ARG001
 ) -> ImportRule:
     code = code.upper()
     if db.get(Country, code) is None:
@@ -234,6 +242,7 @@ def update_rule(
     rule_id: uuid.UUID,
     payload: RuleUpsert,
     db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],  # noqa: ARG001
 ) -> ImportRule:
     rule = db.get(ImportRule, rule_id)
     if rule is None or rule.country_code != code.upper():
@@ -256,6 +265,7 @@ def delete_rule(
     code: str,
     rule_id: uuid.UUID,
     db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],  # noqa: ARG001
 ) -> Response:
     rule = db.get(ImportRule, rule_id)
     if rule is None or rule.country_code != code.upper():

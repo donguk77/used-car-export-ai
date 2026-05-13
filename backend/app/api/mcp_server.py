@@ -93,8 +93,29 @@ class ChatResponse(BaseModel):
 # 키워드 + LLM 보조로 충분히 빠르고 결정론적. LLM 은 응답 자연어만 생성.
 
 
+# 시드된 28국 ISO 코드 — chat 패턴 매칭 false positive 방지용 화이트리스트.
+# 영어 두 글자 단어 (IS/OK/NO/AS/TO/OF/BMW의 부분 등) 가 국가코드로 잘못
+# 잡히는 것 차단. yaml 시드와 일치 — 신규 국가는 Wiki 추가 시 DB 에서 동적
+# fetch 하지 않고 정적 list 유지 (chat 우선순위 = 빠른 fast-path).
+_KNOWN_COUNTRY_CODES = {
+    "AE", "AZ", "BD", "CL", "CR", "DO", "DZ", "EG", "GH", "JO",
+    "KE", "KG", "KH", "KZ", "LK", "LY", "MM", "MX", "MY", "NG",
+    "PH", "SD", "SY", "TH", "TZ", "UAE", "UZ", "VN", "ZA", "ZW",
+}
+
+
+def _make_country_extractor(group_idx: int):
+    """국가코드 추출 + 화이트리스트 검증."""
+    def extractor(m: re.Match) -> dict[str, Any] | None:
+        code = m.group(group_idx).upper()
+        if code not in _KNOWN_COUNTRY_CODES:
+            return None  # 매칭 무효
+        return {"country_code": code}
+    return extractor
+
+
 _INTENT_PATTERNS = [
-    # (regex, tool_name, arg_extractor)
+    # (regex, tool_name, arg_extractor) — extractor 가 None 반환 시 다음 패턴 시도
     (
         re.compile(r"VIN[\s:=]+([A-HJ-NPR-Z0-9]{17})", re.IGNORECASE),
         "decode_vin",
@@ -106,14 +127,14 @@ _INTENT_PATTERNS = [
         lambda m: {"name": m.group(1)},
     ),
     (
-        re.compile(r"\b([A-Z]{2})\b.*?(?:통관|규제|룰|rule)", re.IGNORECASE),
+        re.compile(r"\b([A-Z]{2})\b.*?(?:통관|규제|룰|rule)"),
         "lookup_country_rules",
-        lambda m: {"country_code": m.group(1).upper()},
+        _make_country_extractor(1),
     ),
     (
-        re.compile(r"(?:통관|규제|룰|rule).*?\b([A-Z]{2})\b", re.IGNORECASE),
+        re.compile(r"(?:통관|규제|룰|rule).*?\b([A-Z]{2})\b"),
         "lookup_country_rules",
-        lambda m: {"country_code": m.group(1).upper()},
+        _make_country_extractor(1),
     ),
     (
         re.compile(r"(?:매물|차량|vehicle).*?(?:목록|리스트|list|보여)", re.IGNORECASE),
@@ -146,15 +167,19 @@ def agent_chat(
     tool_calls: list[dict[str, Any]] = []
     suggested: list[dict[str, str]] = []
 
-    # 1. 패턴 매칭 시도
+    # 1. 패턴 매칭 시도 (extractor 가 None 반환 시 다음 패턴 계속)
     matched_tool = None
     matched_args: dict[str, Any] = {}
     for pattern, tool_name, extractor in _INTENT_PATTERNS:
         m = pattern.search(msg)
-        if m:
-            matched_tool = tool_name
-            matched_args = extractor(m)
-            break
+        if not m:
+            continue
+        extracted = extractor(m)
+        if extracted is None:
+            continue
+        matched_tool = tool_name
+        matched_args = extracted
+        break
 
     if matched_tool:
         steps.append(ChatStep(type="tool_call", content={

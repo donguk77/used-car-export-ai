@@ -127,7 +127,12 @@ def suggest_price(
     n = len(samples)
     db_median: float | None = None
     if n >= 3:
-        prices = sorted(float(s.list_price_usd) for s in samples if s.list_price_usd)
+        # `is not None` 명시 — Decimal('0.0') 가 falsy 로 잘못 제외되는 것 방지.
+        # _find_similar 가 이미 list_price_usd is not None 으로 거르지만, 0원 가격
+        # 매물도 의도적으로 통계에 포함 (이상치 → median 으로 자동 무력화).
+        prices = sorted(
+            float(s.list_price_usd) for s in samples if s.list_price_usd is not None
+        )
         if prices:
             db_median = prices[len(prices) // 2]
 
