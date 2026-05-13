@@ -20,6 +20,12 @@ dependencies = [
     "playwright>=1.50",
     "pypdf>=6.0",
     "python-multipart>=0.0.12",
+    # OFAC SDN fuzzy match (compliance.py)
+    "rapidfuzz>=3.10",
+    # MCP tool input_schema 검증 (mcp/tools.py validate_arguments)
+    "jsonschema>=4.20",
+    # 발표 PDF 생성 스크립트 (scripts/generate_demo_pdf.py — backend health 확인)
+    "requests>=2.32",
 ]
 
 [project.optional-dependencies]

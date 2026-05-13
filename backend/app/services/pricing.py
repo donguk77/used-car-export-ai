@@ -170,10 +170,11 @@ def suggest_price(
         price *= 1 + delta / 100
 
     # 4b. Mileage 보정 (10만km 기준, 1만km당 ±2%)
-    if vehicle.mileage_km:
+    # `is not None` 명시 — 0km (브랜드뉴) 도 정상 처리 (+20% premium 적용).
+    if vehicle.mileage_km is not None:
         diff_km = vehicle.mileage_km - 100_000
         delta = -(diff_km / 10_000) * 2.0
-        delta = max(min(delta, 20.0), -30.0)  # ±20~30% clamp
+        delta = max(min(delta, 20.0), -30.0)  # 상한 +20% / 하한 -30% (비대칭 clamp)
         if abs(delta) >= 0.5:
             factors.append(PriceFactor(
                 "주행거리 보정",
