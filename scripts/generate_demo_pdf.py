@@ -480,6 +480,60 @@ SLIDES = [
             "Phase 2 안내 카드: 비밀번호 변경 + JWT / LLM provider 선택 / 회사 로고 / API 토큰."
         ),
     },
+    # ── 제안서 docx 명시 결과물 추가 구현 (Phase 1 보강) ─────────
+    {
+        "no": 13,
+        "title": "🆕 LLM Wiki — 28국 통관 룰 web 편집 (제안서 결과물)",
+        "image_key": "12_wiki_country",
+        "route": "/wiki/:code  ·  GET/POST/PUT/DELETE /api/countries[/{code}/rules]",
+        "tags": "제안서 §결과물 - '사용자가 직접 LLM Wiki 편집 페이지'",
+        "narrative": (
+            "<strong>대표님 제안서 결과물 충족</strong>. yaml 시드 28국 외에도 web UI 에서 신규 국가 추가, "
+            "Country meta + 통관 룰 (연식·핸들·검사·영사관·서류) CRUD. "
+            "<code>jsonschema</code> Draft202012 input 검증 + <code>get_current_user_id</code> 인증 dep."
+        ),
+        "bullets": [
+            "Country meta 14 필드 + Rule 20 필드 풀 폼 — chip/toggle/select 컴포넌트",
+            "신규 국가 추가 모달 (예: KW 쿠웨이트), cascade rule 삭제 confirm 다이얼로그",
+            "TanStack Query invalidate — 룰 엔진/메일/PDF 모두 자동 반영",
+        ],
+    },
+    {
+        "no": 14,
+        "title": "🆕 시세 자동 분석 + 적정 FOB 산출 (제안서 결과물)",
+        "image_key": "13_pricing",
+        "route": "/vehicles/:id  ·  GET /api/vehicles/{id}/price-suggestion?destination_country=XX",
+        "tags": "제안서 §결과물 - '시세 분석 및 적정 수출가 자동 산출'",
+        "narrative": (
+            "<strong>차량 정보 + 도착국 → 추정 FOB USD + range + 산출 근거</strong>. "
+            "Hybrid: DB 동급 통계(make/model/year ±2) + body×fuel×age baseline 표 + 도착국 시장 보정. "
+            "라이브 검증: 동일 차량 SY $9,539 > DO $9,106 > KG $8,238 (단가 강세 순서)."
+        ),
+        "bullets": [
+            "Mileage / 사고이력 / Luxury 브랜드 자동 factor 적용",
+            "도착국 multiplier — 시리아 +10%, 키르기스 -5% (러우회 할인) 등",
+            "Confidence (high/medium/low) + 산출 근거 factor breakdown 노출",
+        ],
+    },
+    {
+        "no": 15,
+        "title": "🆕 AI 에이전트 채팅 + MCP 서버 (제안서 결과물 2종)",
+        "image_key": "14_chat_mcp",
+        "route": "/chat  ·  POST /api/agent/chat  ·  GET/POST /api/mcp/tools/{list,call}",
+        "tags": "제안서 §결과물 - '채팅 기반 대시보드 UI' + 'Claude Code + MCP'",
+        "narrative": (
+            "<strong>자연어 채팅 → MCP tool 자동 라우팅</strong>. "
+            "키워드 패턴 fast-path (28국 화이트리스트로 false positive 차단) + LLM fallback. "
+            "10 tools (decode_vin, lookup_country_rules, check_compliance, suggest_price, "
+            "check_ofac_sdn, evaluate_import, list_vehicles 등) MCP 표준 호환 — "
+            "<strong>Claude Desktop / Cline 등 외부 MCP client 도 동일 호출 가능</strong>."
+        ),
+        "bullets": [
+            "/api/mcp/tools/list — Anthropic tool-use + MCP tools/list 표준 JSON Schema",
+            "Tool call trace 표시 + 후속 액션 추천 버튼 (Wiki / 매물 등)",
+            "Smoke test 25 케이스 통과 — false positive ('OK 룰', 'US 통관') 차단 검증 ✓",
+        ],
+    },
 ]
 
 
@@ -662,6 +716,41 @@ def main() -> None:
 
         logger.info("=== 11) Settings ===")
         capture(page, "11_settings", url=f"{FRONTEND_URL}/settings")
+
+        # ── 제안서 docx 결과물 추가 구현 캡처 ─────────────────
+        logger.info("=== 12) LLM Wiki — DO 국가 편집 페이지 ===")
+        # /wiki 목록보다 /wiki/DO 편집이 더 임팩트 (Country meta + Rules CRUD)
+        page.goto(f"{FRONTEND_URL}/wiki/DO", wait_until="domcontentloaded")
+        page.wait_for_timeout(2500)
+        capture(page, "12_wiki_country", full_page=True)
+
+        logger.info("=== 13) 시세 자동 산출 — VehicleDetail 우측 위젯 ===")
+        # admin VehicleDetail 우측 PriceSuggestion 카드. KG 도착국 선택 후 캡처.
+        page.goto(f"{FRONTEND_URL}/vehicles/{vehicle_id}", wait_until="domcontentloaded")
+        page.wait_for_timeout(3000)
+        # PriceSuggestion 카드로 스크롤 — '적정 수출가 산출' 텍스트 기준
+        try:
+            price_card = page.locator('text="적정 수출가 산출"').first
+            price_card.scroll_into_view_if_needed(timeout=5000)
+            page.wait_for_timeout(800)
+            # 도착국 KG 선택 (할인 시연)
+            page.locator('select').nth(0).select_option("KG")
+            page.wait_for_timeout(1500)
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"  price card scroll/select 실패: {e}")
+        capture(page, "13_pricing")
+
+        logger.info("=== 14) AI 에이전트 채팅 + MCP tools 사이드바 ===")
+        page.goto(f"{FRONTEND_URL}/chat", wait_until="domcontentloaded")
+        page.wait_for_timeout(2000)
+        # 빠른 prompt 1개 클릭해서 결과 + tool_call trace 가 같이 보이게
+        try:
+            btn = page.locator('button:has-text("DO 통관 가능 조건")').first
+            btn.click(timeout=5000)
+            page.wait_for_timeout(2500)  # API 응답 대기
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"  chat quick prompt 실패: {e}")
+        capture(page, "14_chat_mcp", full_page=True)
 
         browser.close()
         logger.info("스크린샷 캡처 완료.")
