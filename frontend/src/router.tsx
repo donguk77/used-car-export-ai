@@ -5,6 +5,7 @@ import { MarketplaceLayout } from "./layouts/MarketplaceLayout";
 import { BuyerDetailPage } from "./pages/BuyerDetail";
 import { BuyerNewPage } from "./pages/BuyerNew";
 import { BuyersPage } from "./pages/Buyers";
+import { ChatPage } from "./pages/Chat";
 import { DashboardPage } from "./pages/Dashboard";
 import { DocumentsPage } from "./pages/Documents";
 import { ListingDetailPage } from "./pages/ListingDetail";
@@ -20,6 +21,8 @@ import { VehicleDetailPage } from "./pages/VehicleDetail";
 import { VehicleEditPage } from "./pages/VehicleEdit";
 import { VehicleNewPage } from "./pages/VehicleNew";
 import { VehiclesPage } from "./pages/Vehicles";
+import { WikiPage } from "./pages/Wiki";
+import { WikiCountryPage } from "./pages/WikiCountry";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +31,7 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorPage />,
     children: [
       { index: true, element: <DashboardPage /> },
+      { path: "chat", element: <ChatPage /> },
       { path: "vehicles", element: <VehiclesPage /> },
       { path: "vehicles/new", element: <VehicleNewPage /> },
       { path: "vehicles/:id", element: <VehicleDetailPage /> },
@@ -39,6 +43,8 @@ export const router = createBrowserRouter([
       { path: "listings/:id", element: <ListingDetailPage /> },
       { path: "mail", element: <MailPage /> },
       { path: "documents", element: <DocumentsPage /> },
+      { path: "wiki", element: <WikiPage /> },
+      { path: "wiki/:code", element: <WikiCountryPage /> },
       { path: "settings", element: <SettingsPage /> },
     ],
   },

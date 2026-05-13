@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { CountryMatrix } from "@/components/CountryMatrix";
 import { CreateListingModal } from "@/components/CreateListingModal";
+import { PriceSuggestion } from "@/components/PriceSuggestion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -218,8 +219,12 @@ export function VehicleDetailPage() {
           </Card>
         </div>
 
-        {/* 우측 — 통관 매트릭스 */}
-        <aside className="lg:sticky lg:top-6 lg:self-start">
+        {/* 우측 — 시세 + 통관 매트릭스 */}
+        <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+          <PriceSuggestion
+            vehicleId={vehicle.id}
+            currentListPriceUsd={vehicle.list_price_usd ?? null}
+          />
           <CountryMatrix vehicle={vehicle} />
         </aside>
       </div>

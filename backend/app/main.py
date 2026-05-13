@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import buyers, countries, dashboard, health, listings, users, vehicles
+from app.api import buyers, countries, dashboard, health, listings, mcp_server, users, vehicles
 from app.config import get_settings
 
 settings = get_settings()
@@ -59,6 +59,7 @@ app.include_router(buyers.router, prefix="/api")
 app.include_router(countries.router, prefix="/api")
 app.include_router(dashboard.router, prefix="/api")
 app.include_router(users.router, prefix="/api")
+app.include_router(mcp_server.router, prefix="/api")
 
 
 @app.get("/")

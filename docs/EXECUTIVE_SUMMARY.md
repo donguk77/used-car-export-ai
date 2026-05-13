@@ -24,7 +24,7 @@
 
 ---
 
-## 차별화 5종
+## 차별화 9종 (제안서 100% 충족)
 
 | # | 기능 | 시연 시간 |
 |---|------|----------|
@@ -33,6 +33,12 @@
 | 3 | **수출 서류 4종 PDF 자동 생성** (Invoice/PL/SI/CO) | 7초 (5건 동시 8초) |
 | 4 | **컴플라이언스 multi-finding 자동 차단** (OFAC SDN 18k + fuzzy + Russia-proxy + Yestrade) | 즉시 |
 | 5 | **거래 상태 머신** 12 단계 + audit trail (Document.version) | <100ms |
+| 6 | **시세 자동 분석 + 적정 FOB 산출** ★ (동급 DB 통계 + baseline + 도착국 보정) | <100ms |
+| 7 | **LLM Wiki 편집 페이지** ★ (28국 통관 룰 web CRUD) | 즉시 |
+| 8 | **AI 에이전트 채팅** ★ (자연어 → MCP tool 자동 라우팅) | 즉시 / LLM fallback 3초 |
+| 9 | **MCP 서버 추상화** ★ (10 tools, `/api/mcp/tools/{list,call}` 외부 client 호환) | — |
+
+★ = 제안서 docx 명시 결과물 — Phase 1 완료.
 
 ---
 

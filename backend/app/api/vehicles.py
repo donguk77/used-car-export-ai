@@ -175,6 +175,30 @@ def delete_vehicle(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+# ── 시세 자동 분석 + 적정 수출가 산출 (제안서 결과물) ──────────────
+
+
+@router.get("/{vehicle_id}/price-suggestion", response_model=dict[str, Any])
+def get_price_suggestion(
+    vehicle_id: uuid.UUID,
+    db: Annotated[Session, Depends(get_db)],
+    user_id: Annotated[uuid.UUID, Depends(get_current_user_id)],
+    destination_country: Annotated[
+        str | None,
+        Query(description="ISO 3166-1 alpha-2 — 도착국 시장 보정 적용", max_length=2),
+    ] = None,
+) -> dict[str, Any]:
+    """동급 차량 통계 + baseline + 도착국 시장 보정 → FOB USD 산출.
+
+    docs/used_car_export_top20_countries.md 의 도착국 시장 분석 기반 multiplier.
+    """
+    from app.services.pricing import suggest_price  # lazy — circular 방지
+
+    v = _get_owned(db, vehicle_id, user_id)
+    suggestion = suggest_price(db, v, destination_country=destination_country)
+    return suggestion.to_dict()
+
+
 # ── helpers ────────────────────────────────────────────────────
 def _get_owned(db: Session, vehicle_id: uuid.UUID, user_id: uuid.UUID) -> Vehicle:
     v = db.get(Vehicle, vehicle_id)

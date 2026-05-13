@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Bell,
+  BookOpen,
+  Bot,
   Building2,
   Car,
   CheckCircle2,
@@ -28,7 +30,10 @@ type NavItem = {
 const NAV: { section: string; items: NavItem[] }[] = [
   {
     section: "메인",
-    items: [{ label: "대시보드", to: "/", icon: LayoutDashboard }],
+    items: [
+      { label: "대시보드", to: "/", icon: LayoutDashboard },
+      { label: "AI 에이전트 채팅", to: "/chat", icon: Bot },
+    ],
   },
   {
     section: "재고 · 거래",
@@ -43,6 +48,7 @@ const NAV: { section: string; items: NavItem[] }[] = [
     items: [
       { label: "다국어 메일", to: "/mail", icon: Mail },
       { label: "수출 서류", to: "/documents", icon: FileText },
+      { label: "LLM Wiki (28국)", to: "/wiki", icon: BookOpen },
     ],
   },
   {
