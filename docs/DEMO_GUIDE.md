@@ -39,7 +39,7 @@ npm run dev  # http://localhost:5173
 **클릭**: 차량 카드 1개 (예: Hyundai Sonata 2018)
 
 **보여줄 것**:
-- Autobell-style 마켓플레이스 (33대 차량 카드)
+- Autobell-style 마켓플레이스 (시드 10대 차량 카드)
 - 차량 상세 화면 — Spec, 이미지, 28국 통관 매트릭스 우측
 
 **Narrative**:

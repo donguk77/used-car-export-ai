@@ -45,7 +45,7 @@ VIEWPORT = {"width": 1400, "height": 900}
 COMPETITOR_SITES = [
     ("encar", "https://www.encar.com/", "Encar (엔카 — 한국 No.1)"),
     ("beforward", "https://www.beforward.jp/", "BeForward (일본 1위, 400K차)"),
-    ("sbtjapan", "https://www.sbtjapan.com/", "SBT Japan (중규모)"),
+    ("sbtjapan", "https://www.sbtjapan.com/", "SBT Japan (200K+)"),
 ]
 
 
@@ -83,7 +83,7 @@ BENCHMARK_SLIDES = [
     </tr>
     <tr>
       <td><strong>🛒 2. 마켓플레이스</strong></td>
-      <td><strong>Autowini</strong> (한국 No.1, SK엔카 출신)<br>BeForward (일본 1위, 400K차)<br>SBT Japan (중규모)<br>CarFromJapan</td>
+      <td><strong>Autowini</strong> (한국 No.1, SK엔카 출신)<br>BeForward (일본 1위, 400K차)<br>SBT Japan (200K+)<br>CarFromJapan</td>
       <td>영세 셀러가 매물 올리는 채널 · 16~30개 언어 · WhatsApp 영업 (사람) · <strong>AI 자동화 거의 없음</strong></td>
       <td>Autowini Cloudflare 차단<br>나머지 캡처 OK</td>
     </tr>
@@ -115,8 +115,9 @@ BENCHMARK_SLIDES = [
         "route": "https://www.autobellglobal.com/",
         "html": """
 <div class="narrative">
-  현대글로비스 자체 운영 수출 플랫폼. <strong>24,801대 등록</strong> · 영어 단일언어 ·
-  해외 바이어 B2B 전용. 우리 marketplace shell 의 디자인·메뉴 패턴 reference.
+  현대글로비스 자체 운영 수출 플랫폼 (2022.1 론칭). 사이트 표시 <strong>24,801대 (Hero 시점) / 26,885 Units (Used Car Total, 2026-05-12 캡처)</strong> ·
+  영어 단일언어 · 해외 바이어 B2B 전용. 헤럴드경제: 年 10만 차량 거쳐가는 K-중고차 수출 허브.
+  우리 marketplace shell 의 디자인·메뉴 패턴 reference.
   <strong>실제 라이브 사이트를 4 섹션으로 캡처</strong>.
 </div>
 
@@ -146,7 +147,7 @@ BENCHMARK_SLIDES = [
     <img src="{autobell_inventory}" alt="inventory list">
     <div class="ui-cap">
       <strong>④ Used Car 진입 페이지</strong> — "Recommended by Autobell Global" 5-카드 +
-      <strong>26,885 Units in Total</strong> · 좌측 필터 (Autobell Global Special / Condition Reported / Autobell X X Car)
+      <strong>26,885 Units in Total</strong> (사이트 카탈로그 표시, 2026-05-12 캡처 시점) · 좌측 필터 (Autobell Global Special / Condition Reported / Autobell X X Car)
     </div>
   </div>
 </div>
@@ -236,7 +237,7 @@ BENCHMARK_SLIDES = [
     <div class="compare-caption">
       <strong>"Korea's Trusted Used Car Marketplace"</strong><br>
       Autobell Global 메뉴 구조 (Browse / Auction / About) 따라감.
-      차량 카드 · 통관 매트릭스 · 33대 시드.<br>
+      차량 카드 · 통관 매트릭스 · 10대 시드.<br>
       <strong>대기업 corporate 톤 + 영세 SME 접근성</strong>.
     </div>
   </div>
@@ -289,7 +290,7 @@ BENCHMARK_SLIDES = [
     <tr style="background:#fef9c3"><td><strong>컴플라이언스 자동 검사</strong></td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="us-col star">★ 차별화 4 (OFAC+Yestrade)</td></tr>
     <tr style="background:#fef9c3"><td><strong>한국어 검증 패널 (Level 2)</strong></td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="us-col star">★ 차별화 5 ⭐ 신규</td></tr>
     <tr><td>선적 후 추적·알림</td><td class="partial">수동</td><td class="partial">수동</td><td class="partial">수동</td><td class="us-col">Phase 2</td></tr>
-    <tr><td>재고 규모</td><td>400K</td><td>5K</td><td>다수</td><td class="us-col" style="font-size:8.5pt;color:#64748b">N/A (별도)</td></tr>
+    <tr><td>재고 규모</td><td>400K</td><td>200K+</td><td>다수</td><td class="us-col" style="font-size:8.5pt;color:#64748b">N/A (별도)</td></tr>
   </tbody>
 </table>
 
@@ -319,7 +320,7 @@ SLIDES = [
         "narrative": (
             "관리자 첫 화면. <strong>9개 핵심 지표</strong> + 최근 5건 거래 + "
             "컴플라이언스 알림. 모든 카운트가 SQL group_by + sum 으로 DB 진실과 "
-            "100% 일치 (Round 20 검증)."
+            "100% 일치 (#070 라이브 검증)."
         ),
         "bullets": [
             "차량 / 바이어 / 거래 단계별 실시간 카운트",
@@ -334,7 +335,7 @@ SLIDES = [
         "route": "/marketplace",
         "tags": "Marketplace + Admin 2-shell architecture",
         "narrative": (
-            "외부 buyer 가 보는 마켓플레이스. 33대 차량 카드 + 28국 통관 매트릭스. "
+            "외부 buyer 가 보는 마켓플레이스. 10대 차량 카드 + 28국 통관 매트릭스. "
             "Autobell / BeForward 같은 기존 플랫폼 위에서 동작하는 도구로 포지셔닝."
         ),
         "bullets": [
@@ -345,7 +346,7 @@ SLIDES = [
     },
     {
         "no": 4,
-        "title": "Marketplace Catalog — 33대 차량 + 다중 필터",
+        "title": "Marketplace Catalog — 10대 차량 + 다중 필터",
         "image_key": "03_marketplace_catalog",
         "route": "/marketplace/catalog",
         "tags": "TanStack Query · client-side 필터",
@@ -464,7 +465,7 @@ SLIDES = [
         "bullets": [
             "OFAC SDN 18,947건 exact + fuzzy match (rapidfuzz, threshold 85)",
             "Yestrade demo stub (Phase 2 사업자 인증서 통합)",
-            "Round 23 라이브 재검증 #074",
+            "라이브 재검증 #074 (Round 12 후속)",
         ],
     },
     {
@@ -724,7 +725,7 @@ def generate_pdf() -> None:
 
     html = template.render(
         slides=all_slides,
-        total_pages=len(all_slides) + 4,
+        total_pages=len(all_slides) + 5,
     )
 
     # 디버그용 HTML 저장
@@ -748,7 +749,7 @@ def generate_pdf() -> None:
 
     size_kb = OUTPUT_PDF.stat().st_size // 1024
     logger.info(f"✅ PDF 생성 완료: {OUTPUT_PDF}")
-    logger.info(f"   크기: {size_kb} KB / 페이지 추정: ~{len(SLIDES) + 4}")
+    logger.info(f"   크기: {size_kb} KB / 페이지 추정: ~{len(SLIDES) + 5}")
 
 
 if __name__ == "__main__":

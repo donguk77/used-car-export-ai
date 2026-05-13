@@ -93,7 +93,7 @@
 - **공수**: 약 2일
 
 ### 3.2 Frontend bundle code-split
-- **현재**: single chunk 591 KB raw / 176 KB gzip (#076)
+- **현재**: single chunk 569.84 KB raw / 171.12 KB gzip (#076 실측 2026-05-12)
 - **Phase 2**:
   - `vite.config.ts` 의 `manualChunks`: vendor / query / ui 분리
   - 페이지 단위 `React.lazy()` (Settings, Mail, Documents 등)
