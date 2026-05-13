@@ -227,6 +227,8 @@ class MCPDispatcher:
         ])
 
     def _h_generate_mail_draft(self, args: dict[str, Any]) -> ToolResult:
+        # 비용 (~15초 LLM) 때문에 chat/MCP 에서는 직접 실행 X.
+        # 외부 MCP client 가 silent failure 안 하도록 ok=False + 명확한 에러 반환.
         try:
             lid = uuid.UUID(args.get("listing_id") or "")
         except ValueError:
@@ -239,27 +241,24 @@ class MCPDispatcher:
                 ok=False, data=None,
                 error="listing must have buyer_id and destination_country set",
             )
-        # 채팅에서는 LLM 호출 비용 절약을 위해 안내만 제공.
-        # 실제 생성은 mail-draft endpoint 호출 권장.
-        return ToolResult(ok=True, data={
-            "listing_id": str(lid),
-            "scenario": args.get("scenario") or "quote",
-            "language": args.get("language") or "en",
-            "action_required": (
-                f"POST /api/listings/{lid}/mail-draft "
-                f'with body {{"scenario":"{args.get("scenario") or "quote"}",'
-                f'"language":"{args.get("language") or "en"}"}}'
+        return ToolResult(
+            ok=False,
+            data={
+                "listing_id": str(lid),
+                "scenario": args.get("scenario") or "quote",
+                "language": args.get("language") or "en",
+                "estimated_seconds": 15,
+            },
+            error=(
+                f"NOT_IMPLEMENTED_IN_CHAT: 다국어 메일 작성 (~15초/건) 은 "
+                f"비용 절약을 위해 채팅/MCP 에서 직접 실행하지 않습니다. "
+                f"POST /api/listings/{lid}/mail-draft (body: scenario/language) "
+                f"또는 admin UI 의 'AI로 메일 생성하기' 버튼을 사용하세요."
             ),
-            "estimated_seconds": 15,
-            "note": (
-                "다국어 메일 작성은 LLM 1건당 ~15초 소요. 채팅 UI 의 '메일 작성' "
-                "버튼으로 진행하면 한국어 검증 패널 옵션도 사용 가능."
-            ),
-        })
+        )
 
     def _h_generate_export_documents(self, args: dict[str, Any]) -> ToolResult:
-        # 직접 endpoint 호출 대신 안내 — Playwright 호출은 chat 응답 속도 저해 가능.
-        # 안내 + UI 버튼 redirect 권장.
+        # Playwright Chromium 호출 (~7초) 때문에 chat/MCP 에서는 직접 실행 X.
         try:
             lid = uuid.UUID(args.get("listing_id") or "")
         except ValueError:
@@ -267,12 +266,16 @@ class MCPDispatcher:
         listing = self.db.get(Listing, lid)
         if listing is None or listing.user_id != self.user_id:
             return ToolResult(ok=False, data=None, error="listing not found")
-        return ToolResult(ok=True, data={
-            "listing_id": str(lid),
-            "action_required": "POST /api/listings/{id}/documents",
-            "estimated_seconds": 7,
-            "note": "PDF 4종 동시 생성. 채팅 UI 에서 '서류 보기' 버튼으로 진행하세요.",
-        })
+        return ToolResult(
+            ok=False,
+            data={"listing_id": str(lid), "estimated_seconds": 7},
+            error=(
+                f"NOT_IMPLEMENTED_IN_CHAT: PDF 4종 생성 (~7초/건, Playwright) 은 "
+                f"비용 절약을 위해 채팅/MCP 에서 직접 실행하지 않습니다. "
+                f"POST /api/listings/{lid}/documents 또는 admin UI 의 "
+                f"'4종 PDF 생성하기' 버튼을 사용하세요."
+            ),
+        )
 
     def _h_dashboard_summary(self, args: dict[str, Any]) -> ToolResult:
         from sqlalchemy import func

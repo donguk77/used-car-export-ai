@@ -193,8 +193,10 @@ TOOLS: list[ToolDefinition] = [
     ToolDefinition(
         name="generate_mail_draft",
         description=(
-            "거래(listing) ID + 시나리오 + 언어 → 다국어 격식 메일 자동 작성. "
-            "한국어 검증 패널 옵션 가능."
+            "[HTTP-only] 거래(listing) ID + 시나리오 + 언어 → 다국어 격식 메일 자동 작성. "
+            "비용·시간 (~15초/건) 때문에 채팅/MCP 에서는 직접 실행하지 않고 호출 안내 metadata 만 "
+            "반환합니다. 실제 생성은 POST /api/listings/{id}/mail-draft 또는 admin UI 의 "
+            "'AI로 메일 생성하기' 버튼으로 진행하세요. (한국어 검증 패널 옵션 포함)"
         ),
         input_schema={
             "type": "object",
@@ -217,8 +219,10 @@ TOOLS: list[ToolDefinition] = [
     ToolDefinition(
         name="generate_export_documents",
         description=(
-            "거래(listing) ID → Invoice/Packing List/Shipping Instruction/C/O 4종 PDF 자동 생성. "
-            "Document.version 자동 increment."
+            "[HTTP-only] 거래(listing) ID → Invoice/Packing List/Shipping Instruction/C/O 4종 PDF "
+            "자동 생성. Playwright Chromium 호출 (~7초/건) 때문에 채팅/MCP 에서는 직접 실행하지 "
+            "않고 호출 안내 metadata 만 반환합니다. 실제 생성은 POST /api/listings/{id}/documents "
+            "또는 admin UI 의 '4종 PDF 생성하기' 버튼으로 진행하세요. (Document.version 자동 increment)"
         ),
         input_schema={
             "type": "object",

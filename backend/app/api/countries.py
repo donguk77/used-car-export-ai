@@ -3,6 +3,14 @@
 기존 GET 목록 + 단건 endpoint 에 더해, 28국 yaml rule을 웹 UI에서 편집할 수 있도록
 country/rule CRUD endpoints 추가. 제안서 "사용자가 직접 LLM Wiki를 편집·확장할 수
 있는 관리 페이지" 충족.
+
+⚠ 멀티테넌트 격리 정책 (PoC 단계):
+    - vehicles/buyers/listings = user_id 격리 (각 사용자 자기 것만)
+    - countries/import_rules = **글로벌 master data** (전 사용자 공유)
+    - 모든 mutation endpoint 에 get_current_user_id 인증 dep 만 두고
+      role-based 권한 체크는 안 함 — PoC 는 단일 demo 사용자 전제.
+    - Phase 2 (멀티유저 도입): role 컬럼 + admin only 체크 + optimistic
+      lock (Country.version 컬럼) 으로 동시 편집 충돌 방지 필요.
 """
 
 from __future__ import annotations
@@ -153,6 +161,7 @@ def create_country(
     db.add(country)
     db.commit()
     db.refresh(country)
+    _invalidate_chat_country_cache()
     return country
 
 
@@ -208,6 +217,7 @@ def delete_country(
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"country {code!r} not found")
     db.delete(country)  # cascade rules
     db.commit()
+    _invalidate_chat_country_cache()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -279,6 +289,18 @@ def delete_rule(
 
 
 # ── helpers ────────────────────────────────────────────────────────
+
+
+def _invalidate_chat_country_cache() -> None:
+    """Wiki POST/DELETE 후 chat 의 국가 화이트리스트 캐시 즉시 invalidate.
+
+    mcp_server.py 와 양방향 import 회피 위해 lazy import.
+    """
+    try:
+        from app.api.mcp_server import _invalidate_country_codes_cache
+        _invalidate_country_codes_cache()
+    except ImportError:  # noqa: S110
+        pass
 
 
 def _apply_country(country: Country, payload: CountryUpsert) -> None:

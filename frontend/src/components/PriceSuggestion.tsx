@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DollarSign, Info, Loader2, TrendingDown, TrendingUp } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -228,29 +228,44 @@ function ConfidenceBadge({ confidence }: { confidence: string }) {
 }
 
 function ApplyButton({ vehicleId, suggested }: { vehicleId: string; suggested: number }) {
-  const [applying, setApplying] = useState(false);
-  const apply = async () => {
-    setApplying(true);
-    try {
-      await api.patch(`/api/vehicles/${vehicleId}`, {
+  const qc = useQueryClient();
+  const [error, setError] = useState<string | null>(null);
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const r = await api.patch(`/api/vehicles/${vehicleId}`, {
         list_price_usd: Math.round(suggested),
       });
-      window.location.reload();
-    } catch (e) {
-      console.error(e);
-      setApplying(false);
-    }
-  };
+      return r.data;
+    },
+    onSuccess: () => {
+      // window.location.reload() 안티패턴 제거 — TanStack Query invalidate 로
+      // 영향 받는 쿼리만 갱신 (cache 보존, chat state 등 유지)
+      qc.invalidateQueries({ queryKey: ["vehicles"] });
+      qc.invalidateQueries({ queryKey: ["vehicles", "detail", vehicleId] });
+      qc.invalidateQueries({ queryKey: ["vehicles", "price", vehicleId] });
+      setError(null);
+    },
+    onError: (e) => {
+      setError(e instanceof Error ? e.message : String(e));
+    },
+  });
+
   return (
-    <Button
-      onClick={apply}
-      disabled={applying}
-      className="w-full gap-2"
-      variant="outline"
-      size="sm"
-    >
-      {applying && <Loader2 className="h-3 w-3 animate-spin" />}
-      추천가를 등록가로 반영
-    </Button>
+    <div className="space-y-1">
+      <Button
+        onClick={() => mutation.mutate()}
+        disabled={mutation.isPending}
+        className="w-full gap-2"
+        variant="outline"
+        size="sm"
+      >
+        {mutation.isPending && <Loader2 className="h-3 w-3 animate-spin" />}
+        추천가를 등록가로 반영
+      </Button>
+      {error && (
+        <p className="text-[10px] text-destructive">{error}</p>
+      )}
+    </div>
   );
 }

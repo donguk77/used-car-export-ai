@@ -161,7 +161,7 @@ function CountryCard({ country: c }: { country: CountryRow }) {
               {c.name_ko ?? c.name_en}
             </h4>
           </div>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">{c.name_en}</p>
+          <span className="mt-0.5 block truncate text-xs text-muted-foreground">{c.name_en}</span>
         </div>
         <Globe2 className="h-4 w-4 shrink-0 text-muted-foreground" />
       </div>

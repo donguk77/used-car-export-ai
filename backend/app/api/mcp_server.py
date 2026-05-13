@@ -18,12 +18,14 @@ from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user_id
 from app.db import get_db
 from app.mcp import get_dispatcher
 from app.mcp.tools import TOOLS, mcp_tools_list
+from app.models import Country
 
 logger = logging.getLogger(__name__)
 
@@ -93,60 +95,75 @@ class ChatResponse(BaseModel):
 # 키워드 + LLM 보조로 충분히 빠르고 결정론적. LLM 은 응답 자연어만 생성.
 
 
-# 시드된 28국 ISO 코드 — chat 패턴 매칭 false positive 방지용 화이트리스트.
-# 영어 두 글자 단어 (IS/OK/NO/AS/TO/OF/BMW의 부분 등) 가 국가코드로 잘못
-# 잡히는 것 차단. yaml 시드와 일치 — 신규 국가는 Wiki 추가 시 DB 에서 동적
-# fetch 하지 않고 정적 list 유지 (chat 우선순위 = 빠른 fast-path).
-_KNOWN_COUNTRY_CODES = {
-    "AE", "AZ", "BD", "CL", "CR", "DO", "DZ", "EG", "GH", "JO",
-    "KE", "KG", "KH", "KZ", "LK", "LY", "MM", "MX", "MY", "NG",
-    "PH", "SD", "SY", "TH", "TZ", "UAE", "UZ", "VN", "ZA", "ZW",
-}
+# 시드 28국 + Wiki 에서 추가된 국가 모두 인식 — DB 동적 조회.
+# chat 의 매 호출마다 DB hit 은 부담이라, 60초 TTL 로 캐싱.
+# Wiki POST/DELETE 시 invalidate (`/api/countries/*` mutation 이후 호출)
+# 하면 즉시 반영, 아니면 최대 60초 지연.
+import time as _time
+
+_country_codes_cache: tuple[float, frozenset[str]] | None = None
+_COUNTRY_CACHE_TTL_SEC = 60.0
 
 
-def _make_country_extractor(group_idx: int):
-    """국가코드 추출 + 화이트리스트 검증."""
+def _known_country_codes(db: Session) -> frozenset[str]:
+    """Cached frozenset of all seeded country codes (DB-backed)."""
+    global _country_codes_cache
+    now = _time.monotonic()
+    if _country_codes_cache is not None:
+        cached_at, codes = _country_codes_cache
+        if now - cached_at < _COUNTRY_CACHE_TTL_SEC:
+            return codes
+    codes = frozenset(db.execute(select(Country.code)).scalars().all())
+    _country_codes_cache = (now, codes)
+    return codes
+
+
+def _invalidate_country_codes_cache() -> None:
+    """Wiki mutation endpoints 가 호출 (즉시 반영 보장용)."""
+    global _country_codes_cache
+    _country_codes_cache = None
+
+
+def _make_country_extractor(group_idx: int, db: Session):
+    """국가코드 추출 + DB 화이트리스트 검증."""
     def extractor(m: re.Match) -> dict[str, Any] | None:
         code = m.group(group_idx).upper()
-        if code not in _KNOWN_COUNTRY_CODES:
-            return None  # 매칭 무효
+        if code not in _known_country_codes(db):
+            return None  # 시드/Wiki 에 없는 코드
         return {"country_code": code}
     return extractor
 
 
-_INTENT_PATTERNS = [
-    # (regex, tool_name, arg_extractor) — extractor 가 None 반환 시 다음 패턴 시도
-    (
-        re.compile(r"VIN[\s:=]+([A-HJ-NPR-Z0-9]{17})", re.IGNORECASE),
-        "decode_vin",
-        lambda m: {"vin": m.group(1).upper()},
-    ),
-    (
-        re.compile(r"\b(?:OFAC|제재|sanctions?)\b.*?[\"']([^\"']+)[\"']", re.IGNORECASE),
-        "check_ofac_sdn",
-        lambda m: {"name": m.group(1)},
-    ),
-    (
-        re.compile(r"\b([A-Z]{2})\b.*?(?:통관|규제|룰|rule)"),
-        "lookup_country_rules",
-        _make_country_extractor(1),
-    ),
-    (
-        re.compile(r"(?:통관|규제|룰|rule).*?\b([A-Z]{2})\b"),
-        "lookup_country_rules",
-        _make_country_extractor(1),
-    ),
-    (
-        re.compile(r"(?:매물|차량|vehicle).*?(?:목록|리스트|list|보여)", re.IGNORECASE),
-        "list_vehicles",
-        lambda m: {"limit": 10},
-    ),
-    (
-        re.compile(r"(?:대시보드|dashboard|요약|summary)", re.IGNORECASE),
-        "dashboard_summary",
-        lambda m: {},
-    ),
-]
+# 정규식 + tool 매핑 — 국가 코드 화이트리스트는 DB 동적이라
+# extractor 가 db 를 받음. 패턴 자체는 module-level 컴파일 (성능).
+_VIN_RE = re.compile(r"VIN[\s:=]+([A-HJ-NPR-Z0-9]{17})", re.IGNORECASE)
+_OFAC_RE = re.compile(r"\b(?:OFAC|제재|sanctions?)\b.*?[\"']([^\"']+)[\"']", re.IGNORECASE)
+_COUNTRY_RULE_RE_1 = re.compile(r"\b([A-Z]{2})\b.*?(?:통관|규제|룰|rule)")
+_COUNTRY_RULE_RE_2 = re.compile(r"(?:통관|규제|룰|rule).*?\b([A-Z]{2})\b")
+_VEHICLES_LIST_RE = re.compile(r"(?:매물|차량|vehicle).*?(?:목록|리스트|list|보여)", re.IGNORECASE)
+_DASHBOARD_RE = re.compile(r"(?:대시보드|dashboard|요약|summary)", re.IGNORECASE)
+
+
+def _match_intent(msg: str, db: Session) -> tuple[str, dict[str, Any]] | None:
+    """자연어 → (tool_name, arguments). 매칭 안되면 None (LLM fallback)."""
+    if m := _VIN_RE.search(msg):
+        return "decode_vin", {"vin": m.group(1).upper()}
+    if m := _OFAC_RE.search(msg):
+        return "check_ofac_sdn", {"name": m.group(1)}
+    known = _known_country_codes(db)
+    if m := _COUNTRY_RULE_RE_1.search(msg):
+        code = m.group(1).upper()
+        if code in known:
+            return "lookup_country_rules", {"country_code": code}
+    if m := _COUNTRY_RULE_RE_2.search(msg):
+        code = m.group(1).upper()
+        if code in known:
+            return "lookup_country_rules", {"country_code": code}
+    if _VEHICLES_LIST_RE.search(msg):
+        return "list_vehicles", {"limit": 10}
+    if _DASHBOARD_RE.search(msg):
+        return "dashboard_summary", {}
+    return None
 
 
 @router.post("/agent/chat", response_model=ChatResponse)
@@ -167,21 +184,10 @@ def agent_chat(
     tool_calls: list[dict[str, Any]] = []
     suggested: list[dict[str, str]] = []
 
-    # 1. 패턴 매칭 시도 (extractor 가 None 반환 시 다음 패턴 계속)
-    matched_tool = None
-    matched_args: dict[str, Any] = {}
-    for pattern, tool_name, extractor in _INTENT_PATTERNS:
-        m = pattern.search(msg)
-        if not m:
-            continue
-        extracted = extractor(m)
-        if extracted is None:
-            continue
-        matched_tool = tool_name
-        matched_args = extracted
-        break
-
-    if matched_tool:
+    # 1. 패턴 매칭 시도 (DB 화이트리스트 기반 — Wiki 신규 국가 자동 인식)
+    matched = _match_intent(msg, db)
+    if matched is not None:
+        matched_tool, matched_args = matched
         steps.append(ChatStep(type="tool_call", content={
             "tool": matched_tool, "arguments": matched_args,
         }))

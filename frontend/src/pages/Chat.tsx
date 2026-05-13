@@ -17,11 +17,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { cn, formatApiError } from "@/lib/utils";
 
+// MCP tool 호출 결과 — data 형태는 tool 별로 다름 (decode_vin → DecodedVin,
+// list_vehicles → Vehicle[], dashboard_summary → counts dict 등). 신규 tool
+// 추가 시 dispatcher 가 ToolResult.data 에 임의 구조 반환 가능 → frontend 는
+// JSON.stringify 로만 표시하므로 broad type 유지가 합리적.
+type ToolCallData = Record<string, unknown> | unknown[] | string | number | null;
+
 interface ToolCall {
   tool: string;
   arguments: Record<string, unknown>;
   ok: boolean;
-  data: unknown;
+  data: ToolCallData;
   error: string | null;
 }
 
@@ -98,6 +104,9 @@ export function ChatPage() {
   }, [turns]);
 
   const send = async (text: string) => {
+    // Race condition 차단 — sendMutation 진행 중이면 신규 호출 무시.
+    // (textarea Enter / quick prompt / suggested action 모두 send() 경유)
+    if (sendMutation.isPending) return;
     const trimmed = text.trim();
     if (!trimmed) return;
     setInput("");
