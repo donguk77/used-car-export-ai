@@ -58,7 +58,7 @@
 - **공수**: 약 3일 (API 키 신청 + 통합)
 
 ### 2.3 Yestrade 정식 API
-- **현재**: 4개 demo tax_id stub (`_YESTRADE_DEMO_TAX_IDS`)
+- **현재**: 2개 demo tax_id stub (`_YESTRADE_DEMO_TAX_IDS`)
 - **Phase 2**:
   - 사업자 인증서 + Yestrade (산자부 무역안보관리원) 가입
   - 회사명·tax_id 검색 API 통합
